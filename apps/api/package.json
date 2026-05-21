@@ -1,0 +1,43 @@
+{
+  "name": "api",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node --trace-deprecation src/main.js",
+    "start": "node src/main.js",
+    "lint": "eslint . --quiet"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@supabase/supabase-js": "^2.106.1",
+    "bcryptjs": "^2.4.3",
+    "canvas": "^3.2.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "eslint-plugin-import": "^2.32.0",
+    "express": "^5.0.1",
+    "express-rate-limit": "^8.3.2",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "google-auth-library": "^9.14.0",
+    "helmet": "^8.0.0",
+    "jsdom": "^29.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^5.0.7",
+    "mammoth": "^1.12.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.1.1",
+    "node-cron": "^3.0.0",
+    "pdf-lib": "^1.17.1",
+    "pocketbase": "^0.25.0",
+    "srt-parser-2": "^1.2.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "globals": "^15.14.0"
+  }
+}

@@ -1,0 +1,39 @@
+import { Router } from 'express';
+import healthCheck from './health-check.js';
+import authRoutes from './auth.js';
+import adminRoutes from './admin.js';
+// import aiRoutes from './ai.js';
+import pdfRoutes from './pdf.js';
+import audioRoutes from './audio.js';
+import subtitleRoutes from './subtitle.js';
+import analyticsRoutes from './analytics.js';
+import sitemapRoutes from './sitemap.js';
+import robotsRoutes from './robots.js';
+import seoValidationRoutes from './seo-validation.js';
+import seoRoutes from './seo.js';
+import integratedAiRouter from './integrated-ai.js';
+import emailReportsRouter from './email-reports.js';
+import toolStatusRouter from './tool-status.js';
+import adsRoutes from './ads.js';
+
+export default () => {
+    const router = Router();
+    router.get('/health', healthCheck);
+    router.use('/auth', authRoutes);
+    router.use('/admin', adminRoutes);
+    // router.use('/ai', aiRoutes);
+    router.use('/pdf', pdfRoutes);
+    router.use('/audio', audioRoutes);
+    router.use('/subtitle', subtitleRoutes);
+    router.use('/analytics', analyticsRoutes);
+    router.use('/seo-validation', seoValidationRoutes);
+    router.use('/seo', seoRoutes);
+    router.use('/integrated-ai', integratedAiRouter);
+    router.use('/email-reports', emailReportsRouter);
+    router.use('/tool-status', toolStatusRouter);
+    router.use('/', sitemapRoutes);
+    router.use('/', robotsRoutes);
+    router.use('/', adsRoutes);
+
+    return router;
+};

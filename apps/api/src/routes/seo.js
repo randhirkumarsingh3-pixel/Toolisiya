@@ -1,0 +1,43 @@
+import 'dotenv/config';
+import express from 'express';
+import { seoMetadata, defaultSeoMetadata } from '../constants/seoMetadata.js';
+import logger from '../utils/logger.js';
+
+const router = express.Router();
+
+// Helper function to normalize slug (convert to lowercase, replace spaces with hyphens)
+const normalizeSlug = (slug) => {
+  return slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+};
+
+// GET /seo/:toolName - Retrieve SEO settings for a tool
+router.get('/:toolName', async (req, res) => {
+  const { toolName } = req.params;
+
+  if (!toolName) {
+    return res.status(400).json({ error: 'Tool name is required' });
+  }
+
+  const normalizedSlug = normalizeSlug(toolName);
+  logger.info(`Fetching SEO metadata for tool slug: ${normalizedSlug}`);
+
+  // Look up the tool in the seoMetadata object
+  const toolSeoData = seoMetadata[normalizedSlug];
+
+  if (!toolSeoData) {
+    logger.warn(`SEO metadata not found for tool slug: ${normalizedSlug}, returning default metadata`);
+    return res.json({
+      success: true,
+      data: defaultSeoMetadata,
+    });
+  }
+
+  logger.info(`SEO metadata found for tool slug: ${normalizedSlug}`);
+
+  res.json({
+    success: true,
+    data: toolSeoData,
+  });
+});
+
+export default router;

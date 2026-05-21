@@ -1,0 +1,42 @@
+{
+  "name": "Toolisiya - Pro Utilities",
+  "short_name": "Toolisiya",
+  "description": "The Ultimate Toolkit for Modern Professionals and Daily Life",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity", "finance", "education"],
+  "shortcuts": [
+    {
+      "name": "Recent Tools",
+      "short_name": "Recent",
+      "description": "Quickly access your recently used tools",
+      "url": "/app?tab=recent",
+      "icons": [{ "src": "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Categories",
+      "short_name": "Categories",
+      "description": "Browse all tool categories",
+      "url": "/browse-categories",
+      "icons": [{ "src": "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}
