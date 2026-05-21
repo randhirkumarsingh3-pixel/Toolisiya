@@ -43,10 +43,23 @@ process.on('SIGTERM', async () => {
 	process.exit();
 });
 
+// CORS_ORIGIN can be a comma-separated list e.g. "https://toolisiya.com,https://www.toolisiya.com"
+const allowedOrigins = (process.env.CORS_ORIGIN || '*')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
 app.use(helmet());
 app.use(securityHeaders);
 app.use(cors({
-	origin: process.env.CORS_ORIGIN,
+	origin: allowedOrigins.length === 1 && allowedOrigins[0] === '*'
+		? '*'
+		: (origin, callback) => {
+			// Allow requests with no origin (curl, Postman, server-to-server)
+			if (!origin) return callback(null, true);
+			if (allowedOrigins.includes(origin)) return callback(null, true);
+			return callback(new Error(`CORS: origin ${origin} not allowed`));
+		},
 	credentials: true,
 }));
 app.use(morgan('combined'));

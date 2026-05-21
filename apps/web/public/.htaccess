@@ -2,28 +2,25 @@
     RewriteEngine On
     RewriteBase /
 
-    # Proxy /hcgi/api/* requests to Node.js backend (port 3001)
-    RewriteCond %{REQUEST_URI} ^/hcgi/api/ [NC]
-    RewriteRule ^hcgi/api/(.*)$ http://localhost:3001/$1 [P,L]
-
-    # React SPA fallback — serve index.html for all non-file routes
+    # React SPA — serve index.html for all non-file routes so React Router works
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Cache static assets for 1 week
+    # Cache JS/CSS assets for 1 week (they have content hashes in filenames)
     <If "%{REQUEST_URI} =~ m#^/assets/.*$#">
         Header set Cache-Control "public, max-age=604800"
     </If>
-    # Never cache HTML files (ensures fresh React app)
+    # Never cache index.html so users always get the latest version
     <FilesMatch "\.html$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"
     </FilesMatch>
 </IfModule>
 
-# Enable Gzip compression for faster loading
+# Enable Gzip compression for faster page loads
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
 </IfModule>
+
