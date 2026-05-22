@@ -13,6 +13,7 @@ const STATIC_PAGES = [
   { path: '/terms', changefreq: 'yearly', priority: 0.6, label: 'Terms' },
   { path: '/privacy', changefreq: 'yearly', priority: 0.6, label: 'Privacy' },
   { path: '/faq', changefreq: 'monthly', priority: 0.6, label: 'FAQ' },
+  { path: '/download', changefreq: 'monthly', priority: 0.7, label: 'Download App' },
 ];
 
 // Helper function to escape XML special characters
@@ -61,7 +62,7 @@ router.get('/sitemap.xml', async (req, res) => {
     // Fetch all active tools from tools collection
     logger.info('Fetching active tools');
     const tools = await pb.collection('tools').getFullList({
-      filter: 'enabled = true',
+      filter: 'status = "active"',
       fields: 'id,category,updated',
     });
 
