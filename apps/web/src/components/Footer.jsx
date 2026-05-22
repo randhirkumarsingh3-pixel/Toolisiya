@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Mail, Shield, FileText, Info, LayoutGrid } from 'lucide-react';
 
-const LOGO_URL = "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png";
+const LOGO_URL = "/logo-transparent.png";
 
 export default function Footer() {
   const location = useLocation();

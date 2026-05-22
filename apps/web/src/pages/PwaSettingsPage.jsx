@@ -45,7 +45,7 @@ const PwaSettingsPage = () => {
         // Show test notification
         new Notification('Toolisiya Alerts Active', {
           body: 'You will now receive productivity and timer alerts.',
-          icon: 'https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png'
+          icon: '/logo-transparent.png'
         });
       } else {
         setNotificationsEnabled(false);

@@ -1,26 +1,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const LOGO_URL = "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png";
+const LOGO_URL = "/logo-transparent.png";
 
 export default function SplashScreen() {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-        className="w-32 h-32 md:w-40 md:h-40"
-      >
-        <img 
+      <div className="flex items-center justify-center bg-white rounded-full shadow-lg border border-border/10 p-4 w-32 h-32 md:w-40 md:h-40 relative">
+        <motion.img 
           src={LOGO_URL} 
           alt="Toolisiya Loading..." 
-          className="w-full h-full object-contain drop-shadow-lg"
+          className="w-20 h-20 md:w-28 md:h-28 object-contain"
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear"
+          }}
         />
-      </motion.div>
+      </div>
       <motion.h1 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

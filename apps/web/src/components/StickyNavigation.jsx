@@ -4,9 +4,9 @@ import { Home, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const StickyNavigation = ({ global = false }) => {
-  if (!global) return null;
-  
   const navigate = useNavigate();
+
+  if (!global) return null;
 
   return (
     <div className="relative w-full bg-card/40 border-b border-border/80 px-4 py-3 flex justify-between items-center mb-4 transition-all duration-200">

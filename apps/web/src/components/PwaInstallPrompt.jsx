@@ -62,7 +62,7 @@ const PwaInstallPrompt = () => {
           className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex items-center gap-3 bg-card border shadow-xl p-3 md:p-4 rounded-2xl max-w-[320px]"
         >
           <div className="flex-shrink-0 w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
-            <img src="https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png" alt="Icon" className="w-8 h-8 object-contain" />
+            <img src="/logo-transparent.png" alt="Icon" className="w-8 h-8 object-contain" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-foreground truncate">Install Toolisiya App</p>

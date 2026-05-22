@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import pb from '@/lib/pocketbaseClient.js';
 
-const LOGO_URL = "https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png";
+const LOGO_URL = "/logo-transparent.png";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);

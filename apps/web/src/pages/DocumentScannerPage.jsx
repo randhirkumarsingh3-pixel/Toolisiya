@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Camera, RefreshCw, Check, X, Download, FileImage, FileText, GripVertical, Trash2, Plus, Sun, Contrast, Upload, Smartphone, AlertCircle, ArrowRight } from 'lucide-react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -389,36 +390,39 @@ export default function DocumentScannerPage() {
                 </div>
               </div>
             ) : (
-              <div className="fixed inset-0 z-50 bg-black flex flex-col">
-                <div className="flex-1 relative flex items-center justify-center overflow-hidden">
-                  <video 
-                    ref={videoRef} 
-                    autoPlay 
-                    playsInline 
-                    muted 
-                    className="absolute min-w-full min-h-full object-cover"
-                  />
-                  <div className="absolute inset-8 md:inset-16 border-2 border-white/50 rounded-xl pointer-events-none">
-                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl"></div>
-                    <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl"></div>
-                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl"></div>
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-xl"></div>
+              createPortal(
+                <div className="fixed inset-0 z-[9999] bg-black flex flex-col">
+                  <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+                    <video 
+                      ref={videoRef} 
+                      autoPlay 
+                      playsInline 
+                      muted 
+                      className="absolute min-w-full min-h-full object-cover"
+                    />
+                    <div className="absolute inset-8 md:inset-16 border-2 border-white/50 rounded-xl pointer-events-none">
+                      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl"></div>
+                      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl"></div>
+                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl"></div>
+                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-xl"></div>
+                    </div>
                   </div>
-                </div>
-                <div className="h-32 bg-black/90 flex items-center justify-between px-10 pb-safe">
-                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full w-12 h-12" onClick={stopCamera}>
-                    <X className="w-8 h-8" />
-                  </Button>
-                  <button 
-                    onClick={capturePhoto}
-                    className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-transparent active:scale-95 transition-transform"
-                    aria-label="Take photo"
-                  >
-                    <div className="w-16 h-16 rounded-full bg-white"></div>
-                  </button>
-                  <div className="w-12"></div>
-                </div>
-              </div>
+                  <div className="h-36 bg-black/90 flex items-center justify-between px-10 pb-8 md:pb-6">
+                    <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full w-12 h-12" onClick={stopCamera}>
+                      <X className="w-8 h-8" />
+                    </Button>
+                    <button 
+                      onClick={capturePhoto}
+                      className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-transparent active:scale-95 transition-transform"
+                      aria-label="Take photo"
+                    >
+                      <div className="w-16 h-16 rounded-full bg-white"></div>
+                    </button>
+                    <div className="w-12"></div>
+                  </div>
+                </div>,
+                document.body
+              )
             )}
           </div>
         )}

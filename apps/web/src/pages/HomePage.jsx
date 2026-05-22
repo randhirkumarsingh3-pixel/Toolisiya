@@ -1,3 +1,4 @@
+/* eslint-disable import/namespace */
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -250,7 +251,7 @@ const HomePage = () => {
                 
                 <div className="shrink-0 relative hidden md:block">
                   <div className="w-48 h-48 bg-muted rounded-3xl border-4 border-border flex items-center justify-center shadow-lg rotate-3 hover:rotate-0 transition-transform duration-500">
-                    <img src="https://horizons-cdn.hostinger.com/bdd6546f-fbd6-4325-a50e-17d2da2d4211/cee60d0209af8e0fbb7ee09e30a392b9.png" alt="App Icon" className="w-24 h-24 drop-shadow-md" />
+                    <img src="/logo-transparent.png" alt="App Icon" className="w-24 h-24 drop-shadow-md" />
                   </div>
                 </div>
               </div>

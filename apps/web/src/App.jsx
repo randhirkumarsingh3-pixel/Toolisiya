@@ -243,9 +243,12 @@ const GeneratorsPage = lazy(() => import('./pages/GeneratorsPage.jsx'));
 const LoadingFallback = () => (
   <div className="min-h-[100dvh] flex items-center justify-center bg-background w-full">
     <div className="flex flex-col items-center gap-6">
-      <div className="relative w-16 h-16">
-        <div className="absolute inset-0 rounded-full border-4 border-muted"></div>
-        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+      <div className="flex items-center justify-center bg-white rounded-full shadow-lg border border-border/10 p-2 w-16 h-16 relative">
+        <img
+          src="/logo-transparent.png"
+          alt="Toolisiya"
+          className="w-12 h-12 object-contain animate-[spin_3s_linear_infinite]"
+        />
       </div>
       <div className="h-5 w-32 bg-muted/50 rounded-md animate-pulse"></div>
     </div>

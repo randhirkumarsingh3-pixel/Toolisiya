@@ -1,3 +1,4 @@
+/* eslint-disable import/namespace */
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';

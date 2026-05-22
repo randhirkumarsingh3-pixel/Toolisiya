@@ -9,6 +9,7 @@
 - [Admin Secure Login - Toolisiya](/adminlogin): No description available
 - [Admin Users - Toolisiya Admin](/usermanagement): No description available
 - [Analytics Dashboard - Admin Console](/adminanalyticsdashboard): No description available
+- [App Settings - Toolisiya](/pwasettings): No description available
 - [Area Converter - Sq Meters to Sq Feet | Toolisiya](/areaconverter): Free online area converter. Convert square meters to square feet, acres to hectares, square miles to square kilometers, and more.
 - [Audit Logs - Admin](/auditlog): No description available
 - [Best Free Developer Tools Online - Toolisiya](/toolsfordevelopers): Enhance your coding workflow with tools for developers online. Access free JSON formatters, base64 encoders, and more.
