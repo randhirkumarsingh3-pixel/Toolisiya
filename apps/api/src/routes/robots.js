@@ -13,9 +13,13 @@ router.get('/robots.txt', (req, res) => {
 
   const robotsTxt = `User-agent: *
 Allow: /
+Disallow: /admin
 Disallow: /admin/
 Disallow: /api/
 Disallow: /hcgi/
+Disallow: /profile
+Disallow: /settings
+Disallow: /app
 
 Sitemap: ${baseUrl}/sitemap.xml
 `;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Mail, Shield, FileText, Info, LayoutGrid } from 'lucide-react';
+import { Mail, Shield, FileText, Info, LayoutGrid, Download } from 'lucide-react';
 
 const LOGO_URL = "/logo-transparent.png";
 
@@ -65,6 +65,11 @@ export default function Footer() {
             <div className="space-y-4">
               <h4 className="font-bold text-foreground">Company</h4>
               <ul className="space-y-3">
+                <li>
+                  <Link to="/download" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <Download className="w-4 h-4" /> Download App
+                  </Link>
+                </li>
                 <li>
                   <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                     <Info className="w-4 h-4" /> About Us

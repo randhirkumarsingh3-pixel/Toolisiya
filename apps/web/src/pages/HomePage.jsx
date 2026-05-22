@@ -13,6 +13,7 @@ import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
 import * as LucideIcons from 'lucide-react';
 import ToolCard from '@/components/ToolCard.jsx';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 // Fallback icons for categories if needed
 const categoryIcons = {
@@ -27,6 +28,7 @@ const categoryIcons = {
 const HomePage = () => {
   const { activeTools, activeCategories, isLoading } = useActiveTools();
   const { recentTools } = useAppUsage();
+  const { isInstalled, install } = usePWAInstall();
 
   // Sort and pick top 8 tools as "Popular" (or those marked show_in_menu)
   const popularTools = useMemo(() => {
@@ -127,6 +129,18 @@ const HomePage = () => {
                   <SearchBar />
                 </div>
               </div>
+
+              {!isInstalled && (
+                <div className="mb-10 flex justify-center">
+                  <Button 
+                    onClick={install} 
+                    size="lg" 
+                    className="h-12 px-6 text-sm font-bold rounded-xl shadow-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-2 flex items-center transition-all duration-300 transform hover:scale-105 active:scale-95 border border-emerald-500/20"
+                  >
+                    <Download className="w-4 h-4 animate-bounce" /> Download Toolisiya App
+                  </Button>
+                </div>
+              )}
               
               <div className="flex flex-wrap justify-center gap-6 text-sm font-semibold text-muted-foreground">
                 <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-500" /> Private & Secure</span>
@@ -244,9 +258,23 @@ const HomePage = () => {
                     <li className="flex items-center gap-2"><Download className="w-5 h-5 text-primary" /> 1-Click Install</li>
                     <li className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Uses &lt;1MB Space</li>
                   </ul>
-                  <Button asChild size="lg" className="h-14 px-8 text-base font-bold rounded-xl shadow-md bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
-                    <Link to="/settings">Get the App</Link>
-                  </Button>
+                  {!isInstalled ? (
+                    <Button 
+                      onClick={install} 
+                      size="lg" 
+                      className="h-14 px-8 text-base font-bold rounded-xl shadow-md bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto gap-2"
+                    >
+                      <Download className="w-5 h-5" /> Install Toolisiya App
+                    </Button>
+                  ) : (
+                    <Button 
+                      disabled 
+                      size="lg" 
+                      className="h-14 px-8 text-base font-bold rounded-xl shadow-md bg-emerald-500/20 text-emerald-700 border border-emerald-500/30 w-full sm:w-auto gap-2"
+                    >
+                      <CheckCircle2 className="w-5 h-5" /> App Installed
+                    </Button>
+                  )}
                 </div>
                 
                 <div className="shrink-0 relative hidden md:block">

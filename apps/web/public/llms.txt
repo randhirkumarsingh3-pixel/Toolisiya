@@ -18,6 +18,7 @@
 - [Contact Us | Toolisiya](/contactus): Get in touch with the Toolisiya team for support, feedback, or business inquiries.
 - [Dashboard - Toolisiya Admin](/admindashboard): No description available
 - [Database Backups - Admin](/databasebackup): No description available
+- [Download Toolisiya App - Install PWA for Android, iOS & Desktop](/pwadownload): Install Toolisiya App on your Android, iOS, or Desktop device. Get 1-click access, full-screen offline support, and native performance.
 - [Essential Tools for Daily Life - Toolisiya](/dailylifetools): Smart tools for daily use. Convert currencies, track habits, and plan your meals completely free online.
 - [Forgot Password - Toolisiya](/forgotpassword): No description available
 - [Free Birthday Invitation Maker - Create Beautiful Birthday Invitations Online](/birthdayinvitations): Create fun and colorful birthday invitations with bilingual support. Customize with photos, colors, and fonts. Download as PDF or Image.
