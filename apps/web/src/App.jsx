@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
 import { ActiveToolsProvider, useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { AppUsageProvider } from '@/contexts/AppUsageContext.jsx';
+import { PwaProvider } from '@/contexts/PwaContext.jsx';
 import ProtectedRoute from '@/components/ProtectedRoute.jsx';
 import AdminProtectedRoute from '@/components/AdminProtectedRoute.jsx';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
@@ -33,6 +34,7 @@ const VerificationTestPage = lazy(() => import('./pages/VerificationTestPage.jsx
 const ProfilePage = lazy(() => import('./pages/ProfilePage.jsx'));
 const PwaDashboardPage = lazy(() => import('./pages/PwaDashboardPage.jsx'));
 const PwaSettingsPage = lazy(() => import('./pages/PwaSettingsPage.jsx'));
+const PwaDownloadPage = lazy(() => import('./pages/PwaDownloadPage.jsx'));
 
 // Legal & Info Pages
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
@@ -359,6 +361,8 @@ const AppContent = () => {
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/app" element={<PwaDashboardPage />} />
             <Route path="/settings" element={<PwaSettingsPage />} />
+            <Route path="/download" element={<PwaDownloadPage />} />
+            <Route path="/download-app" element={<Navigate to="/download" replace />} />
 
             <Route path="/best-free-online-tools" element={<BestFreeToolsPage />} />
             <Route path="/tools-for-students" element={<ToolsForStudentsPage />} />
@@ -584,9 +588,11 @@ function App() {
     <AuthProvider>
       <ActiveToolsProvider>
         <AppUsageProvider>
-          <Router>
-            <AppContent />
-          </Router>
+          <PwaProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </PwaProvider>
         </AppUsageProvider>
       </ActiveToolsProvider>
     </AuthProvider>

@@ -1,33 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Settings, Moon, Sun, Monitor, Bell, Download, Trash2, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Settings, Moon, Sun, Monitor, Bell, Download, Trash2, ShieldCheck, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 const PwaSettingsPage = () => {
   const { theme, setTheme, systemTheme } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isStandalone, setIsStandalone] = useState(false);
+  const { isInstalled, install } = usePWAInstall();
 
   useEffect(() => {
     // Check notification permission
     if ('Notification' in window) {
       setNotificationsEnabled(Notification.permission === 'granted');
     }
-
-    // Check if running as PWA
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone);
-
-    // Listen for install prompt
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const handleNotificationToggle = async (checked) => {
@@ -54,19 +43,6 @@ const PwaSettingsPage = () => {
     } else {
       toast.info('Notifications disabled in app. Note: You may need to disable them in your browser settings as well.');
       setNotificationsEnabled(false);
-    }
-  };
-
-  const handleInstallApp = async () => {
-    if (!deferredPrompt) {
-      toast.info('The app is already installed or your browser does not support this action.');
-      return;
-    }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      toast.success('Thank you for installing Toolisiya!');
-      setDeferredPrompt(null);
     }
   };
 
@@ -142,18 +118,33 @@ const PwaSettingsPage = () => {
               <Switch checked={notificationsEnabled} onCheckedChange={handleNotificationToggle} />
             </div>
 
-            {!isStandalone && deferredPrompt && (
-              <button onClick={handleInstallApp} className="w-full flex items-center justify-between p-4 hover:bg-muted/30 transition-colors text-left">
+            {isInstalled ? (
+              <div className="w-full flex items-center justify-between p-4 text-left">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-emerald-600">Toolisiya App Installed</p>
+                    <p className="text-xs text-muted-foreground">Ready to use offline from your Home Screen</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Active
+                </span>
+              </div>
+            ) : (
+              <button onClick={install} className="w-full flex items-center justify-between p-4 hover:bg-muted/30 transition-colors text-left group">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                     <Download className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="font-medium">Install App</p>
-                    <p className="text-xs text-muted-foreground">Add to Home Screen for fast access</p>
+                    <p className="text-xs text-muted-foreground">Add to Home Screen or Desktop for fast access</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
               </button>
             )}
           </div>

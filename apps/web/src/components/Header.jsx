@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, LogOut, Search, ChevronDown } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogOut, Search, ChevronDown, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import pb from '@/lib/pocketbaseClient.js';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 const LOGO_URL = "/logo-transparent.png";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isInstalled, install } = usePWAInstall();
   
   // Dynamic Nav State
   const [navCategories, setNavCategories] = useState([]);
@@ -140,6 +142,11 @@ export default function Header() {
               })}
               
               <li>
+                <NavLink to="/download" className={({ isActive }) => `text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}>
+                  Download App
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to="/about" className={({ isActive }) => `text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}>
                   About
                 </NavLink>
@@ -149,6 +156,16 @@ export default function Header() {
 
           {/* Desktop Right Actions */}
           <div className="hidden xl:flex items-center gap-4 shrink-0">
+            {!isInstalled && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={install} 
+                className="gap-2 border-emerald-500/30 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 font-bold"
+              >
+                <Download className="w-4 h-4" /> Install App
+              </Button>
+            )}
             
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
@@ -208,6 +225,7 @@ export default function Header() {
               );
             })}
             
+            <NavLink to="/download" className={({ isActive }) => `px-4 py-3.5 text-base font-bold rounded-xl transition-colors ${isActive ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}`}>Download App</NavLink>
             <NavLink to="/about" className={({ isActive }) => `px-4 py-3.5 text-base font-bold rounded-xl transition-colors ${isActive ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}`}>About</NavLink>
             
             <div className="pt-6 mt-4 border-t border-border flex flex-col gap-3">
@@ -223,6 +241,19 @@ export default function Header() {
               ) : (
                 <Button asChild variant="default" className="w-full h-12 text-base rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
                   <Link to="/login">Log in to your account</Link>
+                </Button>
+              )}
+              
+              {!isInstalled && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    install();
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="w-full justify-start h-12 text-base rounded-xl font-bold border-emerald-500/30 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 mt-2"
+                >
+                  <Download className="w-5 h-5 mr-3 text-emerald-600" /> Install Toolisiya App
                 </Button>
               )}
             </div>

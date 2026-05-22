@@ -2,59 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { Download, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 const PwaInstallPrompt = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const { isInstallable, isInstalled, install } = usePWAInstall();
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    const handler = (e) => {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      setDeferredPrompt(e);
-      // Update UI notify the user they can install the PWA
-      // We wait a few seconds before showing so it's not too aggressive
-      setTimeout(() => setShowPrompt(true), 5000);
-    };
+    // Only show if the app is installable and not already installed, and hasn't been dismissed
+    const dismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+    if (isInstallable && !isInstalled && !dismissed) {
+      const timer = setTimeout(() => setShowPrompt(true), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isInstallable, isInstalled]);
 
-    window.addEventListener('beforeinstallprompt', handler);
-
-    // If app is already installed
-    window.addEventListener('appinstalled', () => {
-      setShowPrompt(false);
-      setDeferredPrompt(null);
-      console.log('PWA was installed');
-    });
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    
-    // Show the install prompt
-    deferredPrompt.prompt();
-    
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to the install prompt: ${outcome}`);
-    
-    // We've used the prompt, and can't use it again, throw it away
-    setDeferredPrompt(null);
+  const handleInstallClick = () => {
+    install();
     setShowPrompt(false);
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    // Could save to localStorage here so we don't bother them again for a while
+    localStorage.setItem('pwa_prompt_dismissed', 'true');
   };
+
+  if (isInstalled) return null;
 
   return (
     <AnimatePresence>
-      {showPrompt && deferredPrompt && (
+      {showPrompt && isInstallable && (
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,3 +60,4 @@ const PwaInstallPrompt = () => {
 };
 
 export default PwaInstallPrompt;
+

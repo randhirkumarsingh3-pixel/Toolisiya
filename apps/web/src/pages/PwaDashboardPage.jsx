@@ -5,10 +5,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   Clock, Star, ArrowRight, Activity, Zap, Flame, Shield, 
   User, Mail, Camera, Save, LogOut, Wrench, Settings, 
-  LineChart, Sparkles, Smartphone, Check, AlertCircle 
+  LineChart, Sparkles, Smartphone, Check, AlertCircle, Download
 } from 'lucide-react';
 import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 import pb from '@/lib/pocketbaseClient.js';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 
 export default function PwaDashboardPage() {
+  const { isInstalled, install } = usePWAInstall();
   const { recentTools, favoriteTools } = useAppUsage();
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
@@ -391,7 +393,7 @@ export default function PwaDashboardPage() {
 
                 <Card className="border-border/40 shadow-sm bg-card p-6">
                   <h3 className="font-bold text-base mb-2">Tips to maximize productivity</h3>
-                  <ul className="space-y-2.5 text-sm text-muted-foreground">
+                  <ul className="space-y-2.5 text-sm text-muted-foreground mb-4">
                     <li className="flex items-start gap-2">
                       <span className="text-primary font-bold mt-0.5">•</span>
                       Save bookmarks to Favorites to instantly trigger them from your Header menu search bar.
@@ -401,6 +403,11 @@ export default function PwaDashboardPage() {
                       Install Toolisiya PWA on your mobile or desktop client for direct offline-ready access to file converters.
                     </li>
                   </ul>
+                  {!isInstalled && (
+                    <Button onClick={install} className="w-full rounded-xl bg-primary text-primary-foreground font-semibold shadow hover:bg-primary/90 flex items-center justify-center gap-2">
+                      <Download className="w-4 h-4" /> Install Toolisiya App
+                    </Button>
+                  )}
                 </Card>
               </div>
             )}
