@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import pb from '@/lib/pocketbaseClient.js';
 import { generateSEOTemplate } from '@/utils/seoTemplateGenerator.js';
+import { getToolSeoContent } from '@/data/toolSeoContent.js';
+import { toolPageData } from '@/data/toolPageData.js';
 
 export default function SEOHead({ toolName, category, defaultSlug, defaultTitle, defaultDescription, defaultKeywords }) {
   const location = useLocation();
@@ -34,15 +36,33 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
 
   if (!seoData) return null;
 
-  // Enforce production canonical domain URL
+  // Resolve Tool Name & Category from paths dynamically if not explicitly provided
+  const pathParts = slug.split('/');
+  const cleanToolId = pathParts[pathParts.length - 1] || 'home';
+  const pageData = toolPageData[cleanToolId];
+  const derivedToolName = toolName || pageData?.toolName || (cleanToolId !== 'home' ? cleanToolId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : null);
+  const derivedCategory = category || pageData?.category || (pathParts.length > 1 ? pathParts[0].charAt(0).toUpperCase() + pathParts[0].slice(1) : null);
+
+  // Enforce production canonical domain URL matching the exact served path (preventing 404s)
   const domain = 'https://toolisiya.com';
-  const cleanSlug = slug === 'home' ? '' : slug;
-  const canonicalUrl = seoData.canonical_url || `${domain}/${cleanSlug}`;
+  const cleanPath = location.pathname.replace(/\/$/, '');
+  const canonicalUrl = seoData.canonical_url || `${domain}${cleanPath}`;
   
-  // Resolve meta variables with robust fallbacks
-  const title = seoData.meta_title || defaultTitle || (toolName ? `${toolName} - Free Online Tool | Toolisiya` : 'Toolisiya - Free Online Utilities & Productivity Tools');
-  const description = seoData.meta_description || defaultDescription || 'Use our free online tools for PDF processing, image editing, developer utilities, financial calculations, and productivity. Fast, secure, and client-side.';
-  const keywords = seoData.meta_keywords || defaultKeywords || (toolName ? `${toolName.toLowerCase()}, free ${toolName.toLowerCase()}, online ${toolName.toLowerCase()}, toolisiya` : 'free online tools, developer tools, calculator, productivity, toolisiya');
+  // Index control for private/admin/incomplete layouts
+  const isNoIndex = 
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/profile') ||
+    location.pathname.startsWith('/settings') ||
+    location.pathname.startsWith('/app') ||
+    location.pathname.startsWith('/verification');
+  const robotsContent = isNoIndex ? "noindex, nofollow" : "index, follow";
+
+  // Resolve meta variables with robust, action-oriented CTR fallbacks
+  const title = seoData.meta_title || defaultTitle || (derivedToolName ? `${derivedToolName} - Free Online Tool | Toolisiya` : 'Toolisiya - Free Online Utilities & Productivity Tools');
+  const description = seoData.meta_description || defaultDescription || (derivedToolName 
+    ? `Use our free online ${derivedToolName} to easily process your tasks. Fast, secure, and client-side. Try it now!` 
+    : 'Use our free online tools for PDF processing, image editing, developer utilities, financial calculations, and productivity. Fast, secure, and client-side. Start using our free tools now!');
+  const keywords = seoData.meta_keywords || defaultKeywords || (derivedToolName ? `${derivedToolName.toLowerCase()}, free ${derivedToolName.toLowerCase()}, online ${derivedToolName.toLowerCase()}, toolisiya` : 'free online tools, developer tools, calculator, productivity, toolisiya');
   const ogImage = seoData.og_image || `${domain}/og-default.png`;
 
   // 1. Breadcrumb List Schema
@@ -56,28 +76,28 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
         "name": "Home",
         "item": domain
       },
-      category ? {
+      derivedCategory ? {
         "@type": "ListItem",
         "position": 2,
-        "name": category,
-        "item": `${domain}/${category.toLowerCase()}`
+        "name": derivedCategory,
+        "item": `${domain}/${derivedCategory.toLowerCase()}`
       } : null,
-      {
+      derivedToolName ? {
         "@type": "ListItem",
-        "position": category ? 3 : 2,
-        "name": toolName || slug,
+        "position": derivedCategory ? 3 : 2,
+        "name": derivedToolName,
         "item": `${domain}/${slug}`
-      }
+      } : null
     ].filter(Boolean)
   };
 
   // 2. WebApplication Schema (Rendered only on tool pages)
-  const webAppSchema = toolName ? {
+  const webAppSchema = derivedToolName ? {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": toolName,
+    "name": derivedToolName,
     "operatingSystem": "All",
-    "applicationCategory": "BusinessApplication",
+    "applicationCategory": derivedCategory ? `${derivedCategory}Application` : "BusinessApplication",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "url": `${domain}/${slug}`,
     "offers": {
@@ -87,9 +107,23 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
     }
   } : null;
 
-  // 3. FAQ Schema parsing
+  // 3. Dynamic FAQ Schema based on actual tool Q&As
   let faqSchemaObj = null;
-  if (seoData.faq_schema) {
+  const localSeoContent = getToolSeoContent(cleanToolId);
+  if (localSeoContent && localSeoContent.faq && localSeoContent.faq.length > 0) {
+    faqSchemaObj = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": localSeoContent.faq.map(item => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    };
+  } else if (seoData.faq_schema) {
     try {
       faqSchemaObj = typeof seoData.faq_schema === 'string' ? JSON.parse(seoData.faq_schema) : seoData.faq_schema;
     } catch (e) {
@@ -109,6 +143,7 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
 
   return (
     <Helmet>
+      <meta name="robots" content={robotsContent} />
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />

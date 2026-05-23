@@ -41,6 +41,8 @@ const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
 const ContactUsPage = lazy(() => import('./pages/ContactUsPage.jsx'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage.jsx'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage.jsx'));
+const BlogListPage = lazy(() => import('./pages/BlogListPage.jsx'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage.jsx'));
 
 // Content Pages
 const BestFreeToolsPage = lazy(() => import('./pages/BestFreeToolsPage.jsx'));
@@ -354,6 +356,8 @@ const AppContent = () => {
             <Route path={import.meta.env.VITE_ADMIN_LOGIN_PATH || "/admin-a8f4c2e9"} element={<AdminLoginPage />} />
             <Route path="/admin-login" element={<Navigate to="/" replace />} />
             
+            <Route path="/blog" element={<BlogListPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/browse-categories" element={<BrowseAllCategoriesPage />} />
             <Route path="/categories" element={<Navigate to="/browse-categories" replace />} />
             <Route path="/health-report" element={<HealthReportPage />} />

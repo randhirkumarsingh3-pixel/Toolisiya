@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { 
   MoveRight, CheckCircle2, ShieldCheck, Zap,
-  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon
+  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon, HelpCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.jsx';
@@ -14,6 +14,9 @@ import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
 import * as LucideIcons from 'lucide-react';
 import ToolCard from '@/components/ToolCard.jsx';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
+import WhyToolisiyaSection from '@/components/WhyToolisiyaSection.jsx';
+import HowItWorksSection from '@/components/HowItWorksSection.jsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 // Fallback icons for categories if needed
 const categoryIcons = {
@@ -58,6 +61,46 @@ const HomePage = () => {
       <Helmet>
         <title>Toolisiya - Pro Utilities & Productivity Tools</title>
         <meta name="description" content="The ultimate toolkit for modern professionals. Compress images, merge PDFs, format code, and calculate taxes. 100% Free, Secure, and Lightning Fast." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Toolisiya?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Toolisiya is a comprehensive, centralized platform of free online utility tools. We provide essential tools for PDF manipulation, image processing, developer utilities, format converters, and financial calculations to streamline your daily workflows."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is my data secure when using your tools?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, your data is 100% private and secure. Most of our tools process files and calculations locally inside your browser using client-side JavaScript. For tools requiring server-side assistance, we immediately and permanently delete uploaded files once the operation is complete."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to pay or create an account?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No, Toolisiya is completely free. We do not enforce paywalls, feature limits, or required accounts. You can use our entire catalog instantly."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use Toolisiya offline?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! Toolisiya is built as a Progressive Web App (PWA). You can install the platform directly onto your desktop computer, Android, or iOS device, and use client-side tools offline."
+                }
+              }
+            ]
+          })}
+        </script>
       </Helmet>
       
       <main className="flex-1 w-full relative">
@@ -231,10 +274,60 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* How It Works Section */}
+        <HowItWorksSection />
+
+        {/* Why Choose Toolisiya Section */}
+        <WhyToolisiyaSection />
+
+        {/* Homepage FAQs Section */}
+        <section className="py-24 bg-muted/30 border-t border-border px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <div className="flex justify-center mb-4 text-primary"><HelpCircle className="w-12 h-12" /></div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-foreground">Frequently Asked Questions</h2>
+              <p className="text-muted-foreground text-lg">Common questions about the Toolisiya platform, privacy, and offline use.</p>
+            </div>
+            
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              <AccordionItem value="item-1" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+                <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
+                  What is Toolisiya?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
+                  Toolisiya is a comprehensive, centralized platform of free online utility tools. We provide essential tools for PDF manipulation, image processing, developer utilities, format converters, and financial calculations to streamline your daily workflows.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+                <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
+                  Is my data secure when using your tools?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
+                  Yes, your data is 100% private and secure. Most of our tools process files and calculations locally inside your browser using client-side JavaScript. For tools requiring server-side assistance, we immediately and permanently delete uploaded files once the operation is complete. We never store, inspect, or share your files.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+                <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
+                  Do I need to pay or create an account?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
+                  No, Toolisiya is completely free. We do not enforce paywalls, feature limits, or required accounts. You can use our entire catalog instantly. Creating an account is entirely optional and serves to enable saving personalized templates or dashboard preferences.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+                <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
+                  Can I use Toolisiya offline?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
+                  Yes! Toolisiya is built as a Progressive Web App (PWA). You can install the platform directly onto your desktop computer, Android, or iOS device using the PWA download prompts. Once installed, client-side tools remain fully functional even when you do not have an active internet connection.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </section>
+
         {/* AdSense Placeholder / White Space */}
         <div className="w-full h-8 md:h-16"></div>
-
-
 
       </main>
     </div>

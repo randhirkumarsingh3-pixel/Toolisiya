@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Copy, Check, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -19,16 +20,7 @@ const TextCaseConverterPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Text Case Converter"
-      description="Convert text between UPPERCASE, lowercase, camelCase, snake_case, and more instantly."
-      category="Utilities"
-      categoryPath="/utilities"
-      faqs={[
-        { question: "What is camelCase?", answer: "camelCase writes phrases without spaces or punctuation, indicating the separation of words with a single capitalized letter (e.g., myVariableName)." },
-        { question: "What is snake_case?", answer: "snake_case replaces spaces with underscores and uses all lowercase letters (e.g., my_variable_name)." }
-      ]}
-    >
+    <ToolPageTemplate toolData={toolPageData['text-case-generator']}>
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Input Text</CardTitle>
@@ -66,7 +58,7 @@ const TextCaseConverterPage = () => {
           </div>
         </CardContent>
       </Card>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

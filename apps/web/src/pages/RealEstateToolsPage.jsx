@@ -3,9 +3,11 @@ import { Helmet } from 'react-helmet';
 import { Search, Building, Palette, Grid3x3, Sofa } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const RealEstateToolsPage = () => {
+  const { activeUrls } = useActiveTools();
   const [searchQuery, setSearchQuery] = useState('');
 
   const tools = [
@@ -15,10 +17,11 @@ const RealEstateToolsPage = () => {
     { id: 'carpet-area-calculator', name: 'Carpet Area Calculator', path: '/real-estate/carpet-area-calculator', description: 'Calculate total carpet area and estimated cost for multiple rooms.', icon: Sofa },
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -58,6 +61,22 @@ const RealEstateToolsPage = () => {
                 <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
               </div>
             )}
+
+            {/* SEO Content Section */}
+            <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Free Real Estate & Construction Calculators</h2>
+              <p className="text-muted-foreground mb-4">
+                Toolisiya provides a powerful set of free online real estate and construction calculators tailored for contractors, interior designers, and homeowners. Accurately estimate the total materials required and costs for your renovation projects, ensuring your budgets and resource planning are precise before the actual work begins.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Paint, Tile, and Area Calculators</h2>
+              <p className="text-muted-foreground mb-4">
+                Our suite includes dedicated tools like the Paint Calculator to determine the exact gallons of paint needed for your walls, and the Tile Calculator to measure flooring requirements with waste factored in. Additionally, use the Carpet Area Calculator to easily sum up the livable area across multiple rooms for accurate property valuations and listings.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Construction Tools?</h2>
+              <p className="text-muted-foreground">
+                All real estate and construction calculators on Toolisiya are completely free and require no account sign-up. Accessible directly from your browser on any device, these interactive utilities ensure you can crunch numbers quickly whether you're at the office or directly on the job site. Plan smarter and build better with Toolisiya.
+              </p>
+            </div>
           </div>
         </main>
       </div>

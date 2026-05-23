@@ -442,7 +442,7 @@ export default function DocumentScannerPage() {
                     <img 
                       ref={imgRef}
                       src={rawCapture} 
-                      alt="Captured" 
+                      alt="Captured document preview" 
                       onLoad={onImageLoad}
                       className="max-h-[50vh] w-auto object-contain pointer-events-none"
                       style={{ filter: getPreviewFilterStyle() }}

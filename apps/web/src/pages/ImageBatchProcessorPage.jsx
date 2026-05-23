@@ -189,7 +189,7 @@ const ImageBatchProcessorPage = () => {
               return (
                 <Card key={file.id} className="overflow-hidden border-border/50 shadow-sm relative">
                   <div className="h-[100px] checkerboard-bg p-2 flex items-center justify-center">
-                    <img src={processed ? processed.url : file.preview} className="max-h-full max-w-full object-contain" alt="" />
+                    <img src={processed ? processed.url : file.preview} className="max-h-full max-w-full object-contain" alt={`${file.name} preview`} />
                   </div>
                   <div className="p-2 text-xs truncate bg-card">
                     {file.name}

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Search, FileDown } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const PDFToolsPage = () => {
   const { seoData } = useSEOData('pdf');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,10 +32,11 @@ const PDFToolsPage = () => {
     { id: 'word-to-pdf', name: 'Word to PDF', path: '/pdf/word-to-pdf', icon: FileDown, description: 'Convert Word documents to PDF.' }
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -79,6 +82,22 @@ const PDFToolsPage = () => {
               <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
             </div>
           )}
+
+          {/* SEO Content Section */}
+          <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Comprehensive Free PDF Tools</h2>
+            <p className="text-muted-foreground mb-4">
+              Toolisiya offers a complete suite of free online PDF tools that let you merge, split, compress, and edit PDF documents without installing heavy software. Whether you're combining monthly reports, extracting specific pages, or converting an Excel spreadsheet into a presentation-ready PDF, our tools provide fast and accurate results directly in your browser.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Secure PDF Manipulation & Editing</h2>
+            <p className="text-muted-foreground mb-4">
+              Protect your document integrity by adding custom watermarks, page numbers, or embedding QR codes securely. Our PDF tools are optimized for privacy—processing happens quickly without the need to create an account. Easily remove blank pages, rotate misaligned scans, or convert PDF pages into high-quality images with just a few clicks.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Online PDF Utilities?</h2>
+            <p className="text-muted-foreground">
+              All Toolisiya PDF tools are 100% free with no hidden limits. They are designed for students, professionals, and businesses who need quick, reliable document management. With no sign-up required, you can optimize your digital workflow and manage your PDF files securely, efficiently, and effortlessly from any device.
+            </p>
+          </div>
         </div>
       </main>
     </div>

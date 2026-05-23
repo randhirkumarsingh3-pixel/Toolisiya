@@ -5,9 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.jsx';
-import SEOHead from '@/components/SEOHead.jsx';
-import NavigationButtons from '@/components/NavigationButtons.jsx';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 
 const PREDEFINED_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#10b981', 
@@ -126,131 +125,118 @@ const ColorPickerPage = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <SEOHead defaultTitle="Color Picker & Converter | Toolisiya" defaultDescription="Pick colors, convert between HEX, RGB, HSL, and discover color harmonies." />
-      <main className="flex-1 py-8">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <NavigationButtons />
-          <BreadcrumbNavigation customTitle="Color Picker" />
-          
-          <div className="mb-8 mt-4 text-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">Color Picker & Converter</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Explore colors, convert formats instantly, and discover beautiful harmonies for your next design project.</p>
-          </div>
+    <ToolPageTemplate toolData={toolPageData['color-picker']}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="border-border shadow-md">
+            <CardContent className="p-6 space-y-6">
+              <div className="flex justify-center mb-4">
+                <div className="relative w-full aspect-square rounded-2xl shadow-inner border border-border overflow-hidden" style={{ backgroundColor: hex }}>
+                  <input 
+                    type="color" 
+                    value={hex} 
+                    onChange={handleHexChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-4 space-y-6">
-              <Card className="border-border shadow-md">
-                <CardContent className="p-6 space-y-6">
-                  <div className="flex justify-center mb-4">
-                    <div className="relative w-full aspect-square rounded-2xl shadow-inner border border-border overflow-hidden" style={{ backgroundColor: hex }}>
-                      <input 
-                        type="color" 
-                        value={hex} 
-                        onChange={handleHexChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">HEX</Label>
+                  <div className="flex gap-2">
+                    <Input value={hex} onChange={handleHexChange} className="font-mono uppercase" />
+                    <Button variant="secondary" onClick={() => copyToClipboard(hex)}><Copy className="h-4 w-4" /></Button>
                   </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">HEX</Label>
-                      <div className="flex gap-2">
-                        <Input value={hex} onChange={handleHexChange} className="font-mono uppercase" />
-                        <Button variant="secondary" onClick={() => copyToClipboard(hex)}><Copy className="h-4 w-4" /></Button>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">RGB</Label>
-                      <div className="flex gap-2">
-                        <Input value={rgb.r} onChange={(e) => handleRgbChange(e, 'r')} type="number" min="0" max="255" className="font-mono text-center px-1" />
-                        <Input value={rgb.g} onChange={(e) => handleRgbChange(e, 'g')} type="number" min="0" max="255" className="font-mono text-center px-1" />
-                        <Input value={rgb.b} onChange={(e) => handleRgbChange(e, 'b')} type="number" min="0" max="255" className="font-mono text-center px-1" />
-                        <Button variant="secondary" onClick={() => copyToClipboard(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`)}><Copy className="h-4 w-4" /></Button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">HSL</Label>
-                      <div className="flex gap-2">
-                        <Input value={hsl.h} onChange={(e) => handleHslChange(e, 'h')} type="number" min="0" max="360" className="font-mono text-center px-1" />
-                        <Input value={hsl.s} onChange={(e) => handleHslChange(e, 's')} type="number" min="0" max="100" className="font-mono text-center px-1" />
-                        <Input value={hsl.l} onChange={(e) => handleHslChange(e, 'l')} type="number" min="0" max="100" className="font-mono text-center px-1" />
-                        <Button variant="secondary" onClick={() => copyToClipboard(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`)}><Copy className="h-4 w-4" /></Button>
-                      </div>
-                    </div>
+                </div>
+                
+                <div>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">RGB</Label>
+                  <div className="flex gap-2">
+                    <Input value={rgb.r} onChange={(e) => handleRgbChange(e, 'r')} type="number" min="0" max="255" className="font-mono text-center px-1" />
+                    <Input value={rgb.g} onChange={(e) => handleRgbChange(e, 'g')} type="number" min="0" max="255" className="font-mono text-center px-1" />
+                    <Input value={rgb.b} onChange={(e) => handleRgbChange(e, 'b')} type="number" min="0" max="255" className="font-mono text-center px-1" />
+                    <Button variant="secondary" onClick={() => copyToClipboard(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`)}><Copy className="h-4 w-4" /></Button>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
 
-            <div className="lg:col-span-8 space-y-8">
-              <Card className="border-border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl"><Palette className="h-5 w-5 text-primary" /> Harmonies</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center pb-6">
-                    <div className="col-span-2 md:col-span-4 mb-4 text-center border-b border-border w-full pb-4">
-                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Complementary</p>
-                      <div className="flex justify-center gap-8">
-                        <ColorSwatch color={hex} label="Base" />
-                        <ColorSwatch color={harmonies.complementary} label="Comp" />
-                      </div>
-                    </div>
-
-                    <div className="col-span-2 text-center w-full">
-                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Analogous</p>
-                      <div className="flex justify-center gap-4">
-                        <ColorSwatch color={harmonies.analogous2} label="-30°" />
-                        <ColorSwatch color={hex} label="Base" />
-                        <ColorSwatch color={harmonies.analogous1} label="+30°" />
-                      </div>
-                    </div>
-
-                    <div className="col-span-2 text-center w-full">
-                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Triadic</p>
-                      <div className="flex justify-center gap-4">
-                        <ColorSwatch color={harmonies.triadic1} label="+120°" />
-                        <ColorSwatch color={hex} label="Base" />
-                        <ColorSwatch color={harmonies.triadic2} label="+240°" />
-                      </div>
-                    </div>
+                <div>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block">HSL</Label>
+                  <div className="flex gap-2">
+                    <Input value={hsl.h} onChange={(e) => handleHslChange(e, 'h')} type="number" min="0" max="360" className="font-mono text-center px-1" />
+                    <Input value={hsl.s} onChange={(e) => handleHslChange(e, 's')} type="number" min="0" max="100" className="font-mono text-center px-1" />
+                    <Input value={hsl.l} onChange={(e) => handleHslChange(e, 'l')} type="number" min="0" max="100" className="font-mono text-center px-1" />
+                    <Button variant="secondary" onClick={() => copyToClipboard(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`)}><Copy className="h-4 w-4" /></Button>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-xl">Predefined Palette</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-6 md:grid-cols-9 gap-3">
-                    {PREDEFINED_COLORS.map(c => (
-                      <div 
-                        key={c} 
-                        className="aspect-square rounded-md shadow-sm border border-border cursor-pointer transition-transform hover:scale-110 active:scale-95"
-                        style={{ backgroundColor: c }}
-                        onClick={() => setHex(c)}
-                        title={c}
-                      >
-                        {hex.toUpperCase() === c.toUpperCase() && (
-                          <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-md">
-                            <CheckCircle2 className="h-5 w-5 text-white" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
-    </div>
+
+        <div className="lg:col-span-8 space-y-8">
+          <Card className="border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl"><Palette className="h-5 w-5 text-primary" /> Harmonies</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center pb-6">
+                <div className="col-span-2 md:col-span-4 mb-4 text-center border-b border-border w-full pb-4">
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Complementary</p>
+                  <div className="flex justify-center gap-8">
+                    <ColorSwatch color={hex} label="Base" />
+                    <ColorSwatch color={harmonies.complementary} label="Comp" />
+                  </div>
+                </div>
+
+                <div className="col-span-2 text-center w-full">
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Analogous</p>
+                  <div className="flex justify-center gap-4">
+                    <ColorSwatch color={harmonies.analogous2} label="-30°" />
+                    <ColorSwatch color={hex} label="Base" />
+                    <ColorSwatch color={harmonies.analogous1} label="+30°" />
+                  </div>
+                </div>
+
+                <div className="col-span-2 text-center w-full">
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">Triadic</p>
+                  <div className="flex justify-center gap-4">
+                    <ColorSwatch color={harmonies.triadic1} label="+120°" />
+                    <ColorSwatch color={hex} label="Base" />
+                    <ColorSwatch color={harmonies.triadic2} label="+240°" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl">Predefined Palette</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-6 md:grid-cols-9 gap-3">
+                {PREDEFINED_COLORS.map(c => (
+                  <div 
+                    key={c} 
+                    className="aspect-square rounded-md shadow-sm border border-border cursor-pointer transition-transform hover:scale-110 active:scale-95"
+                    style={{ backgroundColor: c }}
+                    onClick={() => setHex(c)}
+                    title={c}
+                  >
+                    {hex.toUpperCase() === c.toUpperCase() && (
+                      <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-md">
+                        <CheckCircle2 className="h-5 w-5 text-white" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </ToolPageTemplate>
   );
 };
 

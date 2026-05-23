@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { blogPosts } from './apps/web/src/data/blogPosts.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,11 +16,11 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const STATIC_PAGES = [
   { path: '/', changefreq: 'weekly', priority: 1.0 },
   { path: '/about', changefreq: 'monthly', priority: 0.6 },
-  { path: '/contact', changefreq: 'monthly', priority: 0.6 },
-  { path: '/terms', changefreq: 'yearly', priority: 0.6 },
-  { path: '/privacy', changefreq: 'yearly', priority: 0.6 },
-  { path: '/faq', changefreq: 'monthly', priority: 0.6 },
+  { path: '/contact-us', changefreq: 'monthly', priority: 0.6 },
+  { path: '/terms-of-service', changefreq: 'yearly', priority: 0.6 },
+  { path: '/privacy-policy', changefreq: 'yearly', priority: 0.6 },
   { path: '/download', changefreq: 'monthly', priority: 0.7 },
+  { path: '/blog', changefreq: 'weekly', priority: 0.7 },
 ];
 
 const escapeXml = (str) => {
@@ -156,6 +157,18 @@ async function main() {
         xml += '    <priority>0.8</priority>\n';
         xml += '  </url>\n';
       }
+      
+      // Add blog posts to sitemap dynamically
+      console.log(`Adding ${blogPosts.length} blog posts to sitemap...`);
+      for (const post of blogPosts) {
+        const lastmod = formatDate(new Date());
+        xml += '  <url>\n';
+        xml += `    <loc>${escapeXml(baseUrl + '/blog/' + post.slug)}</loc>\n`;
+        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += '    <changefreq>monthly</changefreq>\n';
+        xml += '    <priority>0.6</priority>\n';
+        xml += '  </url>\n';
+      }
     }
 
     xml += '</urlset>';
@@ -183,6 +196,27 @@ Sitemap: ${baseUrl}/sitemap.xml
 
     fs.writeFileSync(robotsPath, robotsTxt, 'utf8');
     console.log(`✅ Static robots.txt created successfully at: ${robotsPath}`);
+
+    // Generate static ads.txt
+    let adsenseId = '';
+    try {
+      if (supabaseKey) {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const { data: records, error: dbErr } = await supabase.from('website_settings').select('adsense_publisher_id').limit(1);
+        if (!dbErr && records && records.length > 0) {
+          adsenseId = records[0].adsense_publisher_id || '';
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Warning: Failed to fetch adsense_publisher_id for static ads.txt:', e.message);
+    }
+
+    const adsTxtPath = path.join(publicDir, 'ads.txt');
+    const adsTxtContent = adsenseId 
+      ? `google.com, ${adsenseId}, DIRECT, f08c47fec0942fa0\n`
+      : `# Google AdSense not configured yet.\n`;
+    fs.writeFileSync(adsTxtPath, adsTxtContent, 'utf8');
+    console.log(`✅ Static ads.txt created successfully at: ${adsTxtPath}`);
 
   } catch (err) {
     console.error('❌ Error generating static SEO files:', err.message);

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 import { ArrowRightLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
 
 const AREA_UNITS = {
   'sq_m': { name: 'Square Meters', factor: 1 },
@@ -45,16 +45,7 @@ const AreaConverterPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Area Converter"
-      description="Convert between different units of area including square meters, square feet, acres, and hectares."
-      category="Utilities"
-    >
-      <Helmet>
-        <title>Area Converter - Sq Meters to Sq Feet | Toolisiya</title>
-        <meta name="description" content="Free online area converter. Convert square meters to square feet, acres to hectares, square miles to square kilometers, and more." />
-      </Helmet>
-
+    <ToolPageTemplate toolData={toolPageData['area-converter']}>
       <Card className="shadow-sm border-border/50">
         <CardContent className="p-6 sm:p-8">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
@@ -131,23 +122,7 @@ const AreaConverterPage = () => {
           )}
         </CardContent>
       </Card>
-
-      <div className="mt-12 space-y-6">
-        <h2 className="text-2xl font-bold">About Area Conversion</h2>
-        <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground">
-          <p>
-            Area is the quantity that expresses the extent of a two-dimensional region or shape in the plane. The standard SI unit for area is the square meter (m²).
-          </p>
-          <h3>Common Conversions</h3>
-          <ul>
-            <li><strong>1 Square Meter (m²)</strong> = 10.7639 Square Feet (sq ft)</li>
-            <li><strong>1 Hectare</strong> = 10,000 Square Meters = 2.47105 Acres</li>
-            <li><strong>1 Acre</strong> = 43,560 Square Feet = 4,046.86 Square Meters</li>
-            <li><strong>1 Square Mile</strong> = 640 Acres = 2.58999 Square Kilometers</li>
-          </ul>
-        </div>
-      </div>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

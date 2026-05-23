@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { Search, Code, FileJson, Link as LinkIcon, Palette, Volume2, Mic, Fingerprint, QrCode, Barcode, Key, Hash } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
@@ -8,6 +9,7 @@ import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const DeveloperToolsPage = () => {
   const { seoData } = useSEOData('developer');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -27,10 +29,11 @@ const DeveloperToolsPage = () => {
     { id: 'markdown-to-html', name: 'Markdown to HTML', path: '/developer/markdown-to-html', description: 'Instantly convert Markdown syntax into clean HTML code.', icon: FileJson }
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (!activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -83,6 +86,22 @@ const DeveloperToolsPage = () => {
                 <p className="text-muted-foreground">We couldn't find anything matching "{searchQuery}"</p>
               </div>
             )}
+
+            {/* SEO Content Section */}
+            <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Free Developer Tools & Utilities</h2>
+              <p className="text-muted-foreground mb-4">
+                Toolisiya provides a powerful collection of free, browser-based developer tools designed to streamline your coding workflow. Whether you need to format complex JSON payloads, beautify minified XML/HTML, or securely generate Version 4 UUIDs, our utilities deliver instant, client-side results without sending your sensitive data to any server.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Encode, Decode, and Optimize</h2>
+              <p className="text-muted-foreground mb-4">
+                Our platform includes essential encoding tools like Base64 encoders and URL decoders that safely handle query parameters and tokens. Front-end developers can leverage our advanced Color Picker to convert between HEX, RGB, and HSL values instantly, while our text-to-speech and code beautifier tools help test and refine applications faster.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Why Choose Toolisiya Developer Tools?</h2>
+              <p className="text-muted-foreground">
+                All developer utilities on Toolisiya are 100% free with no sign-ups or API keys required. Built with privacy in mind, tools like the Password Generator and Hash Generators execute entirely within your browser, ensuring your secure strings and credentials never touch a remote database. Experience fast, reliable, and secure development directly from your browser.
+              </p>
+            </div>
           </div>
         </main>
       </div>

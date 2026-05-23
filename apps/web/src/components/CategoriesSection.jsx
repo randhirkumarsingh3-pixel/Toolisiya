@@ -35,12 +35,15 @@ const categorySlugMapping = {
 };
 
 const CategoriesSection = () => {
-  const { inactiveCategorySlugs } = useActiveTools();
+  const { inactiveCategorySlugs, activeTools } = useActiveTools();
 
   const visibleCategories = CATEGORIES.filter(cat => {
     const slug = categorySlugMapping[cat.path];
     return !inactiveCategorySlugs.has(slug);
-  });
+  }).map(cat => ({
+    ...cat,
+    tools: cat.tools.filter(toolName => activeTools.some(t => t.name === toolName))
+  }));
 
   return (
     <section className="py-24 bg-muted/40">

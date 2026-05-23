@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 import { ArrowRightLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
 
 const SPEED_UNITS = {
   'm/s': { name: 'Meters per second', factor: 1 },
@@ -42,16 +42,7 @@ const SpeedConverterPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Speed Converter"
-      description="Convert between different units of speed including km/h, mph, m/s, and knots."
-      category="Utilities"
-    >
-      <Helmet>
-        <title>Speed Converter - km/h to mph | Toolisiya</title>
-        <meta name="description" content="Free online speed converter. Convert kilometers per hour (km/h) to miles per hour (mph), meters per second (m/s), knots, and more." />
-      </Helmet>
-
+    <ToolPageTemplate toolData={toolPageData['speed-converter']}>
       <Card className="shadow-sm border-border/50">
         <CardContent className="p-6 sm:p-8">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
@@ -128,23 +119,7 @@ const SpeedConverterPage = () => {
           )}
         </CardContent>
       </Card>
-
-      <div className="mt-12 space-y-6">
-        <h2 className="text-2xl font-bold">About Speed Conversion</h2>
-        <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground">
-          <p>
-            Speed is the rate at which an object covers distance. The standard SI unit for speed is meters per second (m/s), but kilometers per hour (km/h) and miles per hour (mph) are more commonly used in everyday life for vehicle speeds.
-          </p>
-          <h3>Common Conversions</h3>
-          <ul>
-            <li><strong>1 km/h</strong> = 0.621371 mph</li>
-            <li><strong>1 mph</strong> = 1.60934 km/h</li>
-            <li><strong>1 knot</strong> = 1.15078 mph (used primarily in aviation and maritime)</li>
-            <li><strong>1 m/s</strong> = 3.6 km/h</li>
-          </ul>
-        </div>
-      </div>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

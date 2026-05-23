@@ -10,6 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 
 const CATEGORIES = [
   {
@@ -203,11 +204,17 @@ const CATEGORIES = [
 ];
 
 const BrowseAllCategoriesPage = () => {
+  const { activeUrls, inactiveCategorySlugs } = useActiveTools();
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const navigate = useNavigate();
 
   const filteredCategories = CATEGORIES
+    .filter(cat => !inactiveCategorySlugs.has(cat.id))
+    .map(cat => ({
+      ...cat,
+      tools: cat.tools.filter(t => activeUrls.has(t.path))
+    }))
     .filter(cat => 
       cat.name.toLowerCase().includes(search.toLowerCase()) || 
       cat.desc.toLowerCase().includes(search.toLowerCase()) ||

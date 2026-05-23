@@ -46,19 +46,25 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold mb-4">4. Cookies & Tracking</h2>
+              <h2 className="text-2xl font-semibold mb-4">4. Google AdSense & DoubleClick Cookies</h2>
               <p>
-                We use cookies to enhance functionality and analyze site usage. This includes Google AdSense DoubleClick 
-                cookies to serve relevant ads based on your prior visits to our website or other websites. You can opt out 
-                of personalized advertising by visiting Google's Ads Settings.
+                Google, as a third-party vendor, uses cookies to serve advertisements on Toolisiya. Google's use of the DoubleClick cookie enables it and its partners to serve ads to our users based on their visits to Toolisiya and other websites on the Internet.
+              </p>
+              <p className="mt-2">
+                We use third-party advertising companies to serve ads when you visit our website. These companies may use information (not including your name, address, email address, or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you.
+              </p>
+              <p className="mt-2">
+                <strong>How to Opt-Out:</strong> Users may opt out of personalized advertising. You can manage your Google ad settings or opt out of the DoubleClick cookie for interest-based advertising by visiting the <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">Google Ads Settings</a> page. Alternatively, you can opt out of a third-party vendor's use of cookies for interest-based advertising by visiting <a href="https://aboutads.info" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">aboutads.info</a>.
               </p>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold mb-4">5. Third-Party Services</h2>
+              <h2 className="text-2xl font-semibold mb-4">5. Third-Party Web Analytics & Advertising</h2>
               <p>
-                We may use third-party services such as Google AdSense and analytics providers. These third parties have 
-                their own privacy policies addressing how they use such information.
+                Toolisiya works with third-party service providers, including Google AdSense, Google Analytics, and others, who use cookies, web beacons, and other tracking technologies to collect and analyze information about site usage, traffic patterns, and ad performance. 
+              </p>
+              <p className="mt-2">
+                These third-party vendors and ad networks may place cookies on your browser when you visit our site. These cookies are subject to the respective privacy policies of those third-party providers. We encourage you to review their policies to understand their data processing practices and your options for managing cookies.
               </p>
             </section>
 

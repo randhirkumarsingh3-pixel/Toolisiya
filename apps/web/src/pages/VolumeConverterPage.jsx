@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { conversionFactors } from '@/utils/helpers.js';
-import NavigationButtons from '@/components/NavigationButtons.jsx';
 
 const VolumeConverterPage = () => {
   const [amount, setAmount] = useState('1');
@@ -37,18 +37,7 @@ const VolumeConverterPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Volume Converter"
-      description="Convert between milliliters, liters, gallons, pints, cups, and spoons."
-      category="Converters"
-      categoryPath="/converters"
-      formula={["Value in ml = Input × (From Unit Rate)", "Result = Value in ml / (To Unit Rate)"]}
-      faqs={[
-        { question: "How many cups in a gallon?", answer: "There are 16 US cups in a US gallon." },
-        { question: "How many milliliters in a teaspoon?", answer: "There are approximately 4.93 milliliters in a US teaspoon." }
-      ]}
-    >
-      <NavigationButtons />
+    <ToolPageTemplate toolData={toolPageData['volume-converter']}>
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Convert Volume</CardTitle>
@@ -85,7 +74,7 @@ const VolumeConverterPage = () => {
           </div>
         </CardContent>
       </Card>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

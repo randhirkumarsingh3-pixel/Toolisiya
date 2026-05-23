@@ -14,10 +14,51 @@ import autoTable from 'jspdf-autotable';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
-// Configure multer for file uploads
-const upload = multer({
+// Configure multer for PDF, Excel, and Word uploads with MIME and size constraints
+const uploadPdf = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF files are allowed.'));
+    }
+  }
+});
+
+const uploadExcel = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+      'application/octet-stream'
+    ];
+    if (allowed.includes(file.mimetype) || file.originalname.toLowerCase().endsWith('.xlsx') || file.originalname.toLowerCase().endsWith('.xls')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only Excel spreadsheets (.xlsx, .xls) are allowed.'));
+    }
+  }
+});
+
+const uploadWord = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB limit
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+      'application/octet-stream'
+    ];
+    if (allowed.includes(file.mimetype) || file.originalname.toLowerCase().endsWith('.docx') || file.originalname.toLowerCase().endsWith('.doc')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only Word documents (.docx, .doc) are allowed.'));
+    }
+  }
 });
 
 // Helper function to validate PDF
@@ -31,7 +72,7 @@ const validatePDF = async (buffer) => {
 };
 
 // POST /pdf/merge
-router.post('/merge', upload.array('files', 20), async (req, res) => {
+router.post('/merge', uploadPdf.array('files', 20), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'At least one PDF file is required' });
   }
@@ -69,7 +110,7 @@ router.post('/merge', upload.array('files', 20), async (req, res) => {
 });
 
 // POST /pdf/split
-router.post('/split', upload.single('file'), async (req, res) => {
+router.post('/split', uploadPdf.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'PDF file is required' });
   }
@@ -145,7 +186,7 @@ router.post('/split', upload.single('file'), async (req, res) => {
 });
 
 // POST /pdf/watermark
-router.post('/watermark', upload.single('file'), async (req, res) => {
+router.post('/watermark', uploadPdf.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'PDF file is required' });
   }
@@ -224,7 +265,7 @@ router.post('/watermark', upload.single('file'), async (req, res) => {
 });
 
 // POST /pdf/excel-to-pdf
-router.post('/excel-to-pdf', upload.single('file'), async (req, res) => {
+router.post('/excel-to-pdf', uploadExcel.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Excel file is required' });
   }
@@ -266,7 +307,7 @@ router.post('/excel-to-pdf', upload.single('file'), async (req, res) => {
 });
 
 // POST /pdf/word-to-pdf
-router.post('/word-to-pdf', upload.single('file'), async (req, res) => {
+router.post('/word-to-pdf', uploadWord.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Word file is required' });
   }

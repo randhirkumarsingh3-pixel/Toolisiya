@@ -92,7 +92,8 @@ export const ActiveToolsProvider = ({ children }) => {
       activeTools, 
       activeCategories, 
       inactiveCategorySlugs, 
-      isLoading 
+      isLoading,
+      fetchActiveTools
     }}>
       {children}
     </ActiveToolsContext.Provider>

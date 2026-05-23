@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Search, FileText, PenTool, LayoutTemplate, DollarSign } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const CareerPage = () => {
   const { seoData } = useSEOData('career');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -18,10 +20,11 @@ const CareerPage = () => {
     { id: 'salary-calculator', name: 'Salary Calculator', path: '/finance/salary-calculator', description: 'Calculate take-home salary and plan negotiations. Free • No Sign-up Required.', icon: DollarSign }
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -73,6 +76,22 @@ const CareerPage = () => {
                 <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
               </div>
             )}
+
+            {/* SEO Content Section */}
+            <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Free Online Career Tools</h2>
+              <p className="text-muted-foreground mb-4">
+                Boost your career prospects with our suite of free online career tools. Whether you are a fresh graduate or an experienced professional, our tools help you stand out. Use our Resume Builder to create ATS-friendly CVs that catch the eye of recruiters, or generate custom tailored cover letters in seconds using our Cover Letter Generator.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Track Applications and Manage Salaries</h2>
+              <p className="text-muted-foreground mb-4">
+                A successful job hunt requires organization. Keep track of all your ongoing interviews, offers, and application statuses with our Job Application Tracker. Once you land an offer, use the Salary Calculator to determine your exact take-home pay, helping you negotiate your compensation package with confidence.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Secure, Fast, and Free</h2>
+              <p className="text-muted-foreground">
+                All of our career and productivity tools are 100% free with no hidden fees and no sign-up required. Your personal data, such as your resume details and salary figures, are processed locally in your browser to ensure maximum privacy and security. Start building your professional profile today!
+              </p>
+            </div>
           </div>
         </main>
       </div>

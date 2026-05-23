@@ -7,9 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
-import SEOHead from '@/components/SEOHead.jsx';
-import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.jsx';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 
 const MALE_FIRST_NAMES = ['Liam', 'Noah', 'Oliver', 'Elijah', 'James', 'William', 'Benjamin', 'Lucas', 'Henry', 'Alexander', 'Mason', 'Michael', 'Ethan', 'Daniel', 'Jacob', 'Logan', 'Jackson', 'Levi', 'Sebastian', 'Mateo', 'Jack', 'Owen', 'Theodore', 'Aiden', 'Samuel', 'Joseph', 'John', 'David', 'Wyatt', 'Matthew'];
 
@@ -87,20 +86,8 @@ const RandomNameGeneratorPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Random Name Generator"
-      description="Generate random names for characters, projects, or testing."
-      category="Utilities"
-      categoryPath="/utilities"
-    >
-      <SEOHead
-        defaultTitle="Free Random Name Generator - Generate Names Instantly | Toolisiya"
-        defaultDescription="Generate random male, female, unisex, or full names instantly. Perfect for character creation, testing, or creative projects. Free • No Sign-up Required."
-        keywords="random name generator, name generator, random names, character names, fake names, free online tools"
-      />
-      <BreadcrumbNavigation customTitle="Random Name Generator" />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
+    <ToolPageTemplate toolData={toolPageData['random-name-generator']}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="shadow-md border-border">
             <CardHeader className="bg-muted/30 border-b pb-4">
@@ -240,7 +227,7 @@ const RandomNameGeneratorPage = () => {
           )}
         </div>
       </div>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

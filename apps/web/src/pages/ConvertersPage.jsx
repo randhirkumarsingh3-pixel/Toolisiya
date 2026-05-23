@@ -3,9 +3,11 @@ import { Helmet } from 'react-helmet';
 import { Search, Ruler, Weight, Thermometer, Beaker, DollarSign, Image as ImageIcon, Music, Video, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const ConvertersPage = () => {
+  const { activeUrls } = useActiveTools();
   const [searchQuery, setSearchQuery] = useState('');
 
   const tools = [
@@ -21,10 +23,11 @@ const ConvertersPage = () => {
     { id: 'excel-to-pdf', name: 'Excel to PDF', path: '/pdf/excel-to-pdf', description: 'Convert Microsoft Excel spreadsheets to PDF format.', icon: FileText },
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -64,6 +67,22 @@ const ConvertersPage = () => {
                 <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
               </div>
             )}
+
+            {/* SEO Content Section */}
+            <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Free Unit, Media & File Converters</h2>
+              <p className="text-muted-foreground mb-4">
+                Toolisiya provides a versatile and comprehensive suite of free online converters. Whether you need to convert physical measurements like length, weight, and temperature, or transform digital files like images and documents, our tools offer fast, accurate, and seamless conversions directly within your web browser.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Seamless Media and Currency Conversions</h2>
+              <p className="text-muted-foreground mb-4">
+                Beyond basic units, our platform excels in media transformations. Quickly convert videos, audio tracks, and images into different formats to suit your project requirements. Additionally, our live currency converter keeps you updated with real-time exchange rates, making it an indispensable tool for travelers, freelancers, and businesses.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Conversion Tools?</h2>
+              <p className="text-muted-foreground">
+                All converters on Toolisiya are 100% free with no registration required. We prioritize user privacy, processing media files client-side whenever possible to ensure your data is safe. With intuitive interfaces and rapid processing speeds, you can rely on Toolisiya for all your daily conversion needs without any hassle.
+              </p>
+            </div>
           </div>
         </main>
       </div>

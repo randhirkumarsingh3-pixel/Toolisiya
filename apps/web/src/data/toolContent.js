@@ -1154,5 +1154,231 @@ export const toolContent = {
       { title: "JSON Formatter", url: "/json-formatter", description: "Format JSON code blocks" },
       { title: "Word Counter", url: "/document/word-counter", description: "Check article length" }
     ]
+  },
+  'random-name-generator': {
+    title: "Free Random Name Generator: Creative Names for Characters & Projects",
+    introduction: "Finding the perfect name for a character in a novel, a new baby, a business, or a digital project can be a daunting creative task. Staring at a blank page often leads to writer's block or repetitive choices. Our free online Random Name Generator is a powerful, creative utility designed to spark instant inspiration. By combining extensive linguistic datasets, phonetic patterns, and naming categories, the tool generates a diverse array of names at the click of a button. Whether you need male, female, or gender-neutral names, or unique fantasy monikers for game development, this tool has you covered. By running entirely locally in your browser, it guarantees complete privacy and speed, letting you generate thousands of ideas instantly without sign-ups or subscription fees.",
+    howToUse: [
+      { title: "Select Category and Gender", description: "Choose the target gender (Male, Female, or All) and name category to narrow down the linguistic database for the generated list." },
+      { title: "Configure List Length", description: "Specify how many names you would like to generate in a single batch (from 1 to 50 names at a time)." },
+      { title: "Generate and Refresh", description: "Click the 'Generate' button. The tool immediately creates a random list. Click again if you want a fresh set of name options." },
+      { title: "Copy and Save", description: "Review the list, click on any name to copy it to your clipboard, or download the full generated batch as a text file for your records." }
+    ],
+    realWorldExamples: [
+      { title: "Creative Writer's Block", scenario: "An Indian novelist is writing a mystery thriller set in Mumbai and needs to name 15 minor characters with authentic and diverse names.", outcome: "They use the Random Name Generator to quickly get a list of realistic names, saving hours of brainstorming and keeping their writing momentum intact." },
+      { title: "Game Developer Characters", scenario: "An indie game developer is building a role-playing game (RPG) and needs a large pool of unique names for non-player characters (NPCs).", outcome: "They generate multiple lists of male and female names, copy them into their game database, and instantly populate the game world with unique characters." }
+    ],
+    tipsAndTricks: [
+      { title: "Check Meanings and Origins", description: "Once you find a name you like, do a quick search on its historical origin or cultural meaning to ensure it fits the background context." },
+      { title: "Test Pronunciation Out Loud", description: "Speak the name out loud several times. Ensure it is easy to pronounce and flows naturally within sentences or dialogue." },
+      { title: "Combine Names Creatively", description: "Use the generated first names and mix them with different family names to create highly unique combinations." }
+    ],
+    commonMistakes: [
+      { title: "Choosing Overly Common Names", description: "Using names that are extremely common or cliché for main characters.", prevention: "Select the 'Rare' or unique categories in the naming parameters to ensure your choices stand out." },
+      { title: "Ignoring Cultural Context", description: "Giving a character a name that does not align with their historical or regional background.", prevention: "Filter name generation by specific linguistic regions or origins to ensure cultural authenticity." }
+    ],
+    faqs: [
+      { question: "How are the names generated?", answer: "Our tool utilizes a local database of thousands of real-world and creative name elements, randomly combining them based on your selected filters." },
+      { question: "Is this tool free to use?", answer: "Yes, it is 100% free with no hidden charges, limits on generation, or account requirements." },
+      { question: "Can I use these names commercially?", answer: "Yes, all generated names are free to use for commercial projects, novels, games, or business names." },
+      { question: "Is my session data private?", answer: "Absolutely. The generation algorithm runs client-side in your browser, meaning your generated names are never stored or transmitted to our servers." }
+    ],
+    relatedTools: [
+      { title: "Slug Generator", url: "/generator/slug-generator", description: "Convert generated names into SEO URLs" },
+      { title: "Word Counter", url: "/document/word-counter", description: "Count words in your creative draft" }
+    ]
+  },
+  'slug-generator': {
+    title: "Free SEO URL Slug Generator: Create Clean & Friendly URLs",
+    introduction: "In search engine optimization (SEO), clean and descriptive URLs are a key ranking factor. A 'slug' is the part of a URL that identifies a particular page in human-readable keywords instead of ugly parameters like '?id=123'. Our free online Slug Generator instantly converts any article title, product name, or phrase into a search-engine-friendly slug. It removes special characters, strips out unnecessary 'stop words' like 'and' or 'the', converts uppercase letters to lowercase, and replaces spaces with clean hyphens. This ensures your URLs are readable, memorable, and optimized for Google indexing. Fast, secure, and processing entirely in your browser, this is an essential tool for bloggers, e-commerce managers, and web developers.",
+    howToUse: [
+      { title: "Input Your Text", description: "Type or paste your page title, article headline, or product name into the input text box." },
+      { title: "Toggle Options", description: "Decide whether you want to strip common English stop words (like 'a', 'an', 'the') or keep them in the slug." },
+      { title: "Instant Generation", description: "The tool processes the input in real-time, showing the cleaned and optimized slug in the output box." },
+      { title: "Copy URL Slug", description: "Click the copy button to capture the slug and paste it directly into your CMS or database schema." }
+    ],
+    realWorldExamples: [
+      { title: "Blogging Platform Publish", scenario: "An Indian tech blogger writes an article titled: 'Top 10 Best Developer Tools for Productivity in 2026!'.", outcome: "They paste the title into the Slug Generator. It outputs 'top-10-best-developer-tools-productivity-2026'. They use this for the post URL, making it search-friendly and neat." },
+      { title: "E-Commerce Product Launch", scenario: "A store manager adds a new product: 'Wireless Noise-Cancelling Headphones (Blue & Black)'.", outcome: "The generator outputs 'wireless-noise-cancelling-headphones-blue-black', which works as a perfect product page URL path." }
+    ],
+    tipsAndTricks: [
+      { title: "Keep it Short", description: "Shorter URLs are easier for users to read and share. Aim for 3 to 5 descriptive keywords in your slug." },
+      { title: "Strip Out Stop Words", description: "Removing words like 'is', 'on', 'with', 'for' keeps the URL focused on main keywords, which helps SEO relevance." },
+      { title: "Always Use Lowercase", description: "Web servers are case-sensitive. Keeping slugs entirely lowercase prevents broken link errors due to casing mismatches." }
+    ],
+    commonMistakes: [
+      { title: "Using Special Characters", description: "Including symbols like commas, question marks, or ampersands in a URL path.", prevention: "Always use a slug generator to strip these characters, as they can cause browser encoding issues." },
+      { title: "Leaving Spaces in URLs", description: "Not replacing spaces with hyphens, leading to URLs containing ugly '%20' characters.", prevention: "Always use hyphens as standard separators, as they are Google's preferred URL delimiter." }
+    ],
+    faqs: [
+      { question: "What is a URL slug?", answer: "A slug is the user-friendly portion of a web address that comes after the domain name, describing the page content." },
+      { question: "Why are slugs important for SEO?", answer: "Search engines read slugs to understand what a page is about. Clean, keyword-rich slugs help improve search rankings." },
+      { question: "Does this tool support non-English characters?", answer: "Yes, it transliterates accented characters to standard ASCII equivalents so that your slugs remain clean and valid." },
+      { question: "Is my input text secure?", answer: "Yes, all processing is done locally on your machine. Your titles are never sent to external servers." }
+    ],
+    relatedTools: [
+      { title: "Text Case Generator", url: "/generator/text-case-generator", description: "Format article titles before slug generation" },
+      { title: "Base64 Encoder", url: "/developer/base64-encoder", description: "Encode URLs for developer APIs" }
+    ]
+  },
+  'text-case-generator': {
+    title: "Free Text Case Generator: UPPERCASE, lowercase, & Title Case Converter",
+    introduction: "Manually retyping text to change its casing is a waste of time, especially when dealing with long articles, code snippets, or structured documents. Our free online Text Case Generator allows you to instantly transform your text into various casing formats with a single click. It supports standard UPPERCASE, lowercase, Sentence Case (capitalizes the first word of each sentence), Title Case (capitalizes major words for headings), camelCase, and alternating case. This is a must-have utility for developers formatting code variables, editors styling headlines, and students correcting accidental caps-lock typing. All text is processed securely inside your browser, ensuring your files and content remain private.",
+    howToUse: [
+      { title: "Paste Your Text", description: "Paste the raw text you want to modify into the large input text area." },
+      { title: "Choose Casing Style", description: "Click on the button corresponding to your target case (e.g. UPPERCASE, lowercase, Sentence Case, or Title Case)." },
+      { title: "Review Output", description: "The text area updates instantly to show the formatted version of your text." },
+      { title: "Copy Formatted Text", description: "Click the copy button to copy the output to your clipboard for use in your document or editor." }
+    ],
+    realWorldExamples: [
+      { title: "Accidental Caps Lock Typist", scenario: "An office worker types an entire paragraph with Caps Lock turned on by accident.", outcome: "Instead of retyping, they paste it into the generator, click 'Sentence Case', and instantly fix the paragraph formatting." },
+      { title: "Coding Variable Naming", scenario: "A programmer wants to convert a list of database columns into camelCase format for JavaScript variables.", outcome: "They paste the list, select camelCase, and copy the formatted code, saving manual editing time." }
+    ],
+    tipsAndTricks: [
+      { title: "Use Sentence Case for Paragraphs", description: "Sentence Case automatically corrects capitalization at the beginning of sentences and after full stops." },
+      { title: "Title Case for Headlines", description: "Use Title Case for blog posts and book titles. It handles capitalizing principal words while leaving articles and prepositions lowercase." },
+      { title: "Check for Proper Nouns", description: "Automatic converters might not know which words are proper nouns. Do a quick review to ensure names and places are correctly capitalized." }
+    ],
+    commonMistakes: [
+      { title: "Retyping Text Manually", description: "Spending time manually editing the case of large text blocks.", prevention: "Always copy the text into a case converter to handle the formatting in one click." },
+      { title: "Forgetting to Proofread Acronyms", description: "Converting acronyms like 'NASA' to lowercase or sentence case, which ruins their capitalization.", prevention: "Briefly scan acronyms and adjust them manually after converting the bulk text." }
+    ],
+    faqs: [
+      { question: "What is Title Case?", answer: "Title Case capitalizes the first letter of each word except for short articles, conjunctions, and prepositions (like 'and', 'the', 'of')." },
+      { question: "Does this tool support bulk text?", answer: "Yes, you can paste thousands of lines at once, and the converter will format all of them instantly." },
+      { question: "Is my text uploaded or stored?", answer: "No, all conversion logic is performed in JavaScript on your device. Your data never leaves your browser." }
+    ],
+    relatedTools: [
+      { title: "Slug Generator", url: "/generator/slug-generator", description: "Create slugs from formatted text" },
+      { title: "Word Counter", url: "/document/word-counter", description: "Count words in your converted text" }
+    ]
+  },
+  'area-converter': {
+    title: "Free Area Unit Converter: Convert Square Meters, Feet, Acres & Hectares",
+    introduction: "Converting area measurements is a frequent requirement in real estate, farming, construction, and educational projects. Different regions and industries use varying units—such as square meters for scientific research, square feet for residential properties, acres for agricultural lands, and hectares for large-scale surveying. Our free online Area Converter simplifies these calculations by providing instant, accurate conversions across all standard metric and imperial units. Simply enter your value, choose your units, and see the conversion across all other area measurements simultaneously. With zero-latency client-side calculations, this tool provides immediate and reliable results without any ads or sign-ups.",
+    howToUse: [
+      { title: "Enter the Area Value", description: "Input the numeric value you want to convert into the input field." },
+      { title: "Select Input Unit", description: "Select the starting area unit (e.g. square meters, square feet, acres) from the dropdown list." },
+      { title: "View Conversion Table", description: "The converter instantly calculates the equivalent area values for all other units in real-time." },
+      { title: "Copy the Result", description: "Click the copy button next to your desired output unit to copy the exact value to your clipboard." }
+    ],
+    realWorldExamples: [
+      { title: "Buying Agricultural Land", scenario: "An Indian buyer is looking at a farm listed as 5 hectares, but they only understand land size in acres.", outcome: "They input 5 hectares into the converter, and immediately see that it equals approximately 12.35 acres, helping them make an informed purchase decision." },
+      { title: "Apartment Renovation Layouts", scenario: "An architect receives a drawing showing room dimensions in square meters, but the flooring supplier quotes prices per square foot.", outcome: "The architect inputs the square meters into the converter to get the exact square footage, ensuring an accurate price quote for the client." }
+    ],
+    tipsAndTricks: [
+      { title: "Double-Check Local Units", description: "Some regions use traditional units like Bigha or Guntha. Make sure to convert them to standard acres or hectares first before using standard calculators." },
+      { title: "Use Decimal Precision", description: "For small layouts or high-value land transactions, keep at least 4 decimal places for maximum conversion accuracy." },
+      { title: "Understand Hectare vs Acre", description: "Remember that 1 hectare is larger than 1 acre (1 Hectare is equal to approximately 2.47 Acres)." }
+    ],
+    commonMistakes: [
+      { title: "Confusing Linear and Area Units", description: "Confusing square meters with linear meters when measuring space.", prevention: "Always ensure you are using area dimensions (length × width) before inputting values into the area converter." },
+      { title: "Rounding Off Too Early", description: "Rounding off conversion results mid-way through construction calculations.", prevention: "Always keep the full unrounded conversion values until your final calculations are complete." }
+    ],
+    faqs: [
+      { question: "How many square feet are in a square meter?", answer: "One square meter is equal to approximately 10.764 square feet." },
+      { question: "What is a hectare?", answer: "A hectare is a metric unit of area equal to 10,000 square meters, or 100 ares. It is primarily used for land measurement." },
+      { question: "Is this converter suitable for scientific projects?", answer: "Yes, the calculations use high-precision floating-point arithmetic suitable for academic and professional applications." }
+    ],
+    relatedTools: [
+      { title: "Weight Converter", url: "/converters/weight-converter", description: "Convert weight units" },
+      { title: "Volume Converter", url: "/converters/volume-converter", description: "Convert volume measurements" }
+    ]
+  },
+  'speed-converter': {
+    title: "Free Speed Unit Converter: Convert km/h, mph, m/s, & Knots",
+    introduction: "Speed measurements are used differently across various fields and regions. While cars in India and Europe show speed in kilometers per hour (km/h), the US and UK use miles per hour (mph). Aviation and maritime industries measure speed in knots, while physics and engineering often require meters per second (m/s). Our free online Speed Converter provides a simple, instantaneous way to convert speed values between all standard metric, imperial, and specialty units. Whether you are checking meteorological wind speeds, calculating vehicle travel times, or working on a science assignment, this tool provides instant calculations with absolute precision.",
+    howToUse: [
+      { title: "Enter the Speed Value", description: "Input the numeric speed value into the conversion box." },
+      { title: "Select Source Unit", description: "Choose the speed unit you are starting with (e.g. km/h, mph, knots) from the dropdown." },
+      { title: "Analyze Conversion List", description: "Review the instant conversion output list displaying the speed in all other supported units." },
+      { title: "Copy the Value", description: "Copy your target conversion value to your clipboard with a single click." }
+    ],
+    realWorldExamples: [
+      { title: "Travel Speed Comparison", scenario: "An Indian traveler rents a car in the US where speed limits are listed in mph, but they are used to driving in km/h.", outcome: "They convert a 65 mph speed limit and see it is roughly 104.6 km/h, helping them drive at a safe and legal pace." },
+      { title: "Maritime Wind Forecasting", scenario: "A sailor check a weather report stating wind speed is 15 knots, but they want to know the speed in km/h to estimate safety.", outcome: "They convert 15 knots to km/h, getting 27.78 km/h, which helps them prepare the sails correctly." }
+    ],
+    tipsAndTricks: [
+      { title: "Understand Knots in Travel", description: "A knot represents one nautical mile per hour. It is slightly faster than a standard statute mile per hour." },
+      { title: "Convert m/s for Physics", description: "Meters per second (m/s) is the standard SI unit of speed. Always convert your speed values to m/s when solving physics equations." },
+      { title: "Mach Speed Reference", description: "Mach speed represents the speed of sound. Note that Mach 1 varies depending on temperature and atmospheric pressure." }
+    ],
+    commonMistakes: [
+      { title: "Confusing Miles and Kilometers", description: "Assuming mph and km/h are equivalent, leading to speeding violations or wrong math.", prevention: "Always use a speed converter to get the exact ratio, as 1 mile is approximately 1.61 kilometers." },
+      { title: "Using Incorrect Standard Units", description: "Mixing up knots and mph in aviation calculations.", prevention: "Always double-check the specified unit systems in navigation charts." }
+    ],
+    faqs: [
+      { question: "How do I convert mph to km/h?", answer: "Multiply the mph speed by 1.60934 to get the equivalent speed in km/h." },
+      { question: "What is 1 knot in km/h?", answer: "One knot is equal to exactly 1.852 kilometers per hour." },
+      { question: "Is this speed calculator free?", answer: "Yes, it is entirely free and works offline since all logic runs in your browser." }
+    ],
+    relatedTools: [
+      { title: "Area Converter", url: "/converters/area-converter", description: "Convert area sizes" },
+      { title: "Volume Converter", url: "/converters/volume-converter", description: "Convert volume units" }
+    ]
+  },
+  'volume-converter': {
+    title: "Free Volume Converter: Convert Liters, Gallons, Cups & Milliliters",
+    introduction: "Accurately converting volume measurements is crucial for cooking, chemistry experiments, shipping logistics, and automotive work. Since different countries use different standards—like US gallons versus UK imperial gallons, or metric liters versus kitchen cups—doing the math manually can easily lead to mistakes. Our free online Volume Converter is designed to provide instantaneous, error-free conversions between standard metric and imperial units. Input your value once, and see the exact equivalent measurements in liters, milliliters, gallons, quarts, pints, and cups. Running client-side for maximum speed and privacy, this tool is the perfect companion for home kitchens, laboratories, and warehouses.",
+    howToUse: [
+      { title: "Input the Volume", description: "Enter the quantity you wish to convert into the number input box." },
+      { title: "Select Starting Unit", description: "Select your starting volume unit (e.g. liters, US gallons, cups) from the dropdown list." },
+      { title: "Check Conversions", description: "Review the generated conversion table showing the volume equivalent in all other standard units." },
+      { title: "Copy the Result", description: "Click the copy icon next to the calculated unit to copy it to your clipboard." }
+    ],
+    realWorldExamples: [
+      { title: "Following Online Recipes", scenario: "A home baker in Mumbai is following a baking video that lists liquid ingredients in cups, but their kitchen scale only measures in milliliters.", outcome: "They convert 2.5 cups and see it is approximately 591.47 ml, allowing them to measure their ingredients accurately." },
+      { title: "Importing Engine Oils", scenario: "A mechanic imports synthetic motor oil from the US labeled in gallons, but needs to fill a car engine that requires 4.5 liters.", outcome: "They convert the liters to US gallons to know exactly how much oil to pour from the container." }
+    ],
+    tipsAndTricks: [
+      { title: "US vs UK Gallons", description: "Be careful when converting gallons. A UK imperial gallon (4.546 liters) is larger than a US gallon (3.785 liters)." },
+      { title: "Use Milliliters for Baking", description: "Baking is an exact science. Always convert cups to milliliters (ml) or grams for high-precision recipes." },
+      { title: "Volume vs Weight", description: "Remember that volume measures space, not weight. 1 liter of water weighs 1 kg, but 1 liter of oil is lighter." }
+    ],
+    commonMistakes: [
+      { title: "Confusing US and Imperial Gallons", description: "Using US gallon ratios for UK imperial recipes or fluid systems, leading to wrong volumes.", prevention: "Select the correct specific gallon type from the converter dropdown." },
+      { title: "Mixing Volume and Mass", description: "Assuming fluid ounces and ounces of weight are the same thing.", prevention: "Use a volume converter for liquids and a weight converter for dry weights." }
+    ],
+    faqs: [
+      { question: "How many ml are in a standard cup?", answer: "A standard US cup is equal to 236.588 milliliters, while a metric cup is exactly 250 milliliters." },
+      { question: "How many liters are in a US gallon?", answer: "One US gallon is equal to approximately 3.78541 liters." },
+      { question: "Is this converter private?", answer: "Yes. All conversions are performed locally in your browser and no data is shared." }
+    ],
+    relatedTools: [
+      { title: "Weight Converter", url: "/converters/weight-converter", description: "Convert weight units" },
+      { title: "Area Converter", url: "/converters/area-converter", description: "Convert area units" }
+    ]
+  },
+  'weight-converter': {
+    title: "Free Weight & Mass Converter: Convert Kilograms, Pounds, Ounces & Tons",
+    introduction: "Whether you are calculating package shipping rates, checking luggage weights for an international flight, measuring baking ingredients, or doing scientific experiments, converting weight units is a daily necessity. Metric units like kilograms and grams are standard globally, but countries like the US still rely heavily on pounds and ounces. Our free online Weight Converter simplifies this process by providing instant, precise conversions between all major metric and imperial mass units. Enter your weight value, select the source unit, and see the exact equivalent values in kilograms, grams, pounds, ounces, and tons. It processes all calculations locally, ensuring instant results and absolute privacy.",
+    howToUse: [
+      { title: "Enter the Weight", description: "Type the weight value you wish to convert into the input field." },
+      { title: "Choose the Unit", description: "Select the starting weight unit (e.g. kilograms, pounds, ounces) from the dropdown selector." },
+      { title: "Review Conversions", description: "Look at the conversion output grid showing the equivalent weight across all other units." },
+      { title: "Copy Your Value", description: "Click the copy button to save the converted weight value directly to your clipboard." }
+    ],
+    realWorldExamples: [
+      { title: "Airport Luggage Planning", scenario: "A traveler in India is packing a suitcase for a flight to London. The airline's baggage limit is 50 pounds, but their bathroom scale only measures in kilograms.", outcome: "They input 50 pounds into the converter and see it is equal to 22.68 kg. They weigh the bag to ensure it is under 22 kg, avoiding excess baggage fees at the airport." },
+      { title: "Shipping E-commerce Goods", scenario: "An online seller lists a handcrafted product weighing 350 grams, but the shipping carrier requires weights in pounds for US packages.", outcome: "The seller converts 350 grams to pounds (0.77 lbs), enabling them to purchase the correct shipping label online." }
+    ],
+    tipsAndTricks: [
+      { title: "Understand Ounce vs Fluid Ounce", description: "An ounce (oz) is a unit of weight, while a fluid ounce (fl oz) is a unit of volume. Use the correct tool depending on what you are measuring." },
+      { title: "Use High Precision for Baking", description: "When scaling bread recipes, convert pounds to grams since small changes in yeast or salt weight can change the baking outcome." },
+      { title: "Tons vs Tonnes", description: "A metric tonne (1,000 kg) is different from a US short ton (907.18 kg) or a UK long ton (1,016.05 kg). Pay attention to regional terminology." }
+    ],
+    commonMistakes: [
+      { title: "Confusing Mass and Volume", description: "Measuring dry ingredients like flour using a liquid measuring jug.", prevention: "Always weigh dry ingredients using a kitchen scale and convert to grams or ounces using the weight converter." },
+      { title: "Incorrect Conversions for Shipping", description: "Rounding weights down when printing courier labels.", prevention: "Always round up slightly to prevent your packages from being rejected or returned by the courier." }
+    ],
+    faqs: [
+      { question: "How many grams are in a pound?", answer: "One pound (lb) is equal to exactly 453.59237 grams." },
+      { question: "How many kilograms are in a pound?", answer: "One pound is equal to approximately 0.45359 kilograms." },
+      { question: "Is this weight converter safe to use?", answer: "Yes, it runs entirely client-side in your browser, meaning no data is sent or stored on our servers." }
+    ],
+    relatedTools: [
+      { title: "Volume Converter", url: "/converters/volume-converter", description: "Convert volume measurements" },
+      { title: "Area Converter", url: "/converters/area-converter", description: "Convert area measurements" }
+    ]
   }
 };

@@ -15,9 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import PasswordResetModal from '@/components/admin/PasswordResetModal.jsx';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const UserManagement = () => {
+  const [activeTab, setActiveTab] = useState('admin');
   const [users, setUsers] = useState([]);
+  const [appUsers, setAppUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
@@ -29,6 +32,7 @@ const UserManagement = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   // Forms
@@ -40,13 +44,20 @@ const UserManagement = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const records = await pb.collection('admin_users').getList(1, 50, {
-        $autoCancel: false
-      });
-      setUsers(records.items || []);
+      if (activeTab === 'admin') {
+        const records = await pb.collection('admin_users').getList(1, 50, {
+          $autoCancel: false
+        });
+        setUsers(records.items || []);
+      } else {
+        const records = await pb.collection('users').getList(1, 50, {
+          $autoCancel: false
+        });
+        setAppUsers(records.items || []);
+      }
     } catch (err) {
-      console.error('Error fetching admin users:', err);
-      setError('Failed to load admin users. Please verify your permissions or try again.');
+      console.error('Error fetching users:', err);
+      setError(`Failed to load ${activeTab} users. Please verify your permissions or try again.`);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +65,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [activeTab]);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -150,21 +161,33 @@ const UserManagement = () => {
     return matchSearch && matchRole && matchStatus;
   });
 
+  const filteredAppUsers = appUsers.filter(u => {
+    const safeEmail = u.email || '';
+    const safeName = u.name || '';
+    const safeSearch = search ? search.toLowerCase() : '';
+    
+    const matchSearch = safeEmail.toLowerCase().includes(safeSearch) || 
+                       safeName.toLowerCase().includes(safeSearch);
+    return matchSearch;
+  });
+
   return (
     <div className="space-y-6 animate-in fade-in pb-12">
       <Helmet><title>Admin Users - Toolisiya Admin</title></Helmet>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Admin Users</h1>
-          <p className="text-muted-foreground mt-1">Manage staff and administrator access to the platform.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight">User Management</h1>
+          <p className="text-muted-foreground mt-1">Manage staff, administrators, and app users.</p>
         </div>
-        <Button onClick={() => {
-          setFormData({ email: '', name: '', role: 'viewer', status: 'Active' });
-          setIsAddOpen(true);
-        }} className="gap-2">
-          <UserPlus className="h-4 w-4" /> Add Admin User
-        </Button>
+        {activeTab === 'admin' && (
+          <Button onClick={() => {
+            setFormData({ email: '', name: '', role: 'viewer', status: 'Active' });
+            setIsAddOpen(true);
+          }} className="gap-2">
+            <UserPlus className="h-4 w-4" /> Add Admin User
+          </Button>
+        )}
       </div>
 
       {error ? (
@@ -179,131 +202,238 @@ const UserManagement = () => {
           </AlertDescription>
         </Alert>
       ) : (
-        <Card className="shadow-sm border-border/50">
-          <CardHeader className="pb-4">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-              <CardTitle>Staff Directory</CardTitle>
-              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="Search email or name..." 
-                    className="pl-9 bg-muted/50"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-4">
+            <TabsTrigger value="admin">Admin Users</TabsTrigger>
+            <TabsTrigger value="app">App Users</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="admin">
+            <Card className="shadow-sm border-border/50">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                  <CardTitle>Staff Directory</CardTitle>
+                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search email or name..." 
+                        className="pl-9 bg-muted/50"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </div>
+                    <Select value={roleFilter} onValueChange={setRoleFilter}>
+                      <SelectTrigger className="w-[130px]"><SelectValue placeholder="Role" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Roles</SelectItem>
+                        <SelectItem value="super_admin">Super Admin</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="editor">Editor</SelectItem>
+                        <SelectItem value="viewer">Viewer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="w-[120px]"><SelectValue placeholder="Status" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="Active">Active</SelectItem>
+                        <SelectItem value="Inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
-                  <SelectTrigger className="w-[130px]"><SelectValue placeholder="Role" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="super_admin">Super Admin</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="editor">Editor</SelectItem>
-                    <SelectItem value="viewer">Viewer</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[120px]"><SelectValue placeholder="Status" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border overflow-hidden">
-              <Table>
-                <TableHeader className="bg-muted/50">
-                  <TableRow>
-                    <TableHead className="w-[250px]">User Details</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Last Login</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    Array(3).fill(0).map((_, i) => (
-                      <TableRow key={i}>
-                        <TableCell><Skeleton className="h-10 w-full" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-16" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-8 w-24 ml-auto" /></TableCell>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-muted/50">
+                      <TableRow>
+                        <TableHead className="w-[250px]">User Details</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Last Login</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))
-                  ) : filteredUsers.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                        No admin users found.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredUsers.map((user) => (
-                      <TableRow key={user.id} className="hover:bg-muted/30">
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
-                              {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex flex-col max-w-[200px]">
-                              <span className="font-semibold truncate text-sm">{user.name || 'No Name'}</span>
-                              <span className="text-xs text-muted-foreground truncate" title={user.id}>{user.email}</span>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="uppercase text-[10px] tracking-wider">{user.role}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={user.status === 'Active' ? "bg-emerald-500/10 text-emerald-600 border-none" : "bg-slate-500/10 text-slate-600 border-none"}>
-                            {user.status || 'Unknown'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {new Date(user.created).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" title="Change Password" onClick={() => openPasswordReset(user)}>
-                              <Key className="h-4 w-4 text-blue-500" />
-                            </Button>
-                            <Button variant="ghost" size="icon" title={user.status === 'Active' ? "Deactivate" : "Activate"} onClick={() => toggleStatus(user)}>
-                              {user.status === 'Active' ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <MonitorSmartphone className="h-4 w-4 text-muted-foreground" />}
-                            </Button>
-                            <Button variant="ghost" size="icon" title="Edit User" onClick={() => {
-                              setSelectedUser(user);
-                              setFormData({ email: user.email, name: user.name, role: user.role, status: user.status || 'Active' });
-                              setIsEditOpen(true);
-                            }}>
-                              <Edit className="h-4 w-4 text-orange-500" />
-                            </Button>
-                            <Button variant="ghost" size="icon" title="Delete User" onClick={() => {
-                              setSelectedUser(user);
-                              setIsDeleteOpen(true);
-                            }}>
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                    </TableHeader>
+                    <TableBody>
+                      {isLoading ? (
+                        Array(3).fill(0).map((_, i) => (
+                          <TableRow key={i}>
+                            <TableCell><Skeleton className="h-10 w-full" /></TableCell>
+                            <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                            <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                            <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                            <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                            <TableCell className="text-right"><Skeleton className="h-8 w-24 ml-auto" /></TableCell>
+                          </TableRow>
+                        ))
+                      ) : filteredUsers.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                            No admin users found.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredUsers.map((user) => (
+                          <TableRow key={user.id} className="hover:bg-muted/30">
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                  {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex flex-col max-w-[200px]">
+                                  <span className="font-semibold truncate text-sm">{user.name || 'No Name'}</span>
+                                  <span className="text-xs text-muted-foreground truncate" title={user.id}>{user.email}</span>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="uppercase text-[10px] tracking-wider">{user.role}</Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary" className={user.status === 'Active' ? "bg-emerald-500/10 text-emerald-600 border-none" : "bg-slate-500/10 text-slate-600 border-none"}>
+                                {user.status || 'Unknown'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(user.created).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-1">
+                                <Button variant="ghost" size="icon" title="View Details" onClick={() => {
+                                  setSelectedUser(user);
+                                  setIsViewOpen(true);
+                                }}>
+                                  <MonitorSmartphone className="h-4 w-4 text-primary" />
+                                </Button>
+                                <Button variant="ghost" size="icon" title="Change Password" onClick={() => openPasswordReset(user)}>
+                                  <Key className="h-4 w-4 text-blue-500" />
+                                </Button>
+                                <Button variant="ghost" size="icon" title={user.status === 'Active' ? "Deactivate" : "Activate"} onClick={() => toggleStatus(user)}>
+                                  {user.status === 'Active' ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <MonitorSmartphone className="h-4 w-4 text-muted-foreground" />}
+                                </Button>
+                                <Button variant="ghost" size="icon" title="Edit User" onClick={() => {
+                                  setSelectedUser(user);
+                                  setFormData({ email: user.email, name: user.name, role: user.role, status: user.status || 'Active' });
+                                  setIsEditOpen(true);
+                                }}>
+                                  <Edit className="h-4 w-4 text-orange-500" />
+                                </Button>
+                                <Button variant="ghost" size="icon" title="Delete User" onClick={() => {
+                                  setSelectedUser(user);
+                                  setIsDeleteOpen(true);
+                                }}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="app">
+            <Card className="shadow-sm border-border/50">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                  <CardTitle>App Users Directory</CardTitle>
+                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search email or name..." 
+                        className="pl-9 bg-muted/50"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-muted/50">
+                      <TableRow>
+                        <TableHead className="w-[250px]">User Details</TableHead>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Verified</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                    </TableHeader>
+                    <TableBody>
+                      {isLoading ? (
+                        Array(3).fill(0).map((_, i) => (
+                          <TableRow key={i}>
+                            <TableCell><Skeleton className="h-10 w-full" /></TableCell>
+                            <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                            <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                            <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                            <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                          </TableRow>
+                        ))
+                      ) : filteredAppUsers.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                            No app users found.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredAppUsers.map((user) => (
+                          <TableRow key={user.id} className="hover:bg-muted/30">
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                  {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex flex-col max-w-[200px]">
+                                  <span className="font-semibold truncate text-sm">{user.name || 'No Name'}</span>
+                                  <span className="text-xs text-muted-foreground truncate" title={user.email}>{user.email}</span>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {user.id}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(user.created).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {user.verified ? (
+                                <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none">Yes</Badge>
+                              ) : (
+                                <Badge variant="outline" className="text-muted-foreground">No</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button variant="ghost" size="icon" title="View Details" onClick={() => {
+                                setSelectedUser(user);
+                                setIsViewOpen(true);
+                              }}>
+                                <MonitorSmartphone className="h-4 w-4 text-primary" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       )}
 
       {/* ADD USER MODAL */}
@@ -425,6 +555,76 @@ const UserManagement = () => {
         onClose={() => setIsPasswordModalOpen(false)} 
         user={selectedUser} 
       />
+
+      {/* VIEW DETAILS MODAL */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>User Details</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <div className="space-y-4 py-4">
+              <div className="flex items-center gap-4 border-b pb-4">
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl">
+                  {selectedUser.name ? selectedUser.name.charAt(0).toUpperCase() : selectedUser.email.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">{selectedUser.name || 'No Name Provided'}</h3>
+                  <p className="text-muted-foreground text-sm">{selectedUser.email}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-sm">
+                <div>
+                  <span className="text-muted-foreground block text-xs">ID</span>
+                  <span className="font-medium font-mono text-xs">{selectedUser.id}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-xs">Collection</span>
+                  <span className="font-medium capitalize">{selectedUser.collectionName}</span>
+                </div>
+                {selectedUser.collectionName === 'admin_users' ? (
+                  <>
+                    <div>
+                      <span className="text-muted-foreground block text-xs">Role</span>
+                      <Badge variant="outline" className="uppercase text-[10px] mt-1">{selectedUser.role}</Badge>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block text-xs">Status</span>
+                      <Badge variant="secondary" className={`mt-1 ${selectedUser.status === 'Active' ? "bg-emerald-500/10 text-emerald-600" : "bg-slate-500/10 text-slate-600"}`}>
+                        {selectedUser.status || 'Unknown'}
+                      </Badge>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <span className="text-muted-foreground block text-xs">Verified</span>
+                    <Badge variant="outline" className={`mt-1 ${selectedUser.verified ? "border-emerald-500 text-emerald-600" : ""}`}>
+                      {selectedUser.verified ? "Yes" : "No"}
+                    </Badge>
+                  </div>
+                )}
+                <div>
+                  <span className="text-muted-foreground block text-xs">Created At</span>
+                  <span className="font-medium">{new Date(selectedUser.created).toLocaleString()}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground block text-xs">Updated At</span>
+                  <span className="font-medium">{new Date(selectedUser.updated).toLocaleString()}</span>
+                </div>
+                {selectedUser.lastLogin && (
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground block text-xs">Last Login</span>
+                    <span className="font-medium">{new Date(selectedUser.lastLogin).toLocaleString()}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

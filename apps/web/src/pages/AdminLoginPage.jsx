@@ -32,7 +32,7 @@ const AdminLoginPage = () => {
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
-      toast.error('Invalid admin credentials or inactive account.');
+      toast.error(err.message || 'Invalid admin credentials or inactive account.');
     } finally {
       setIsLoading(false);
     }

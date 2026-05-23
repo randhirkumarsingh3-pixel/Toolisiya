@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import routes from './routes/index.js';
 import { errorMiddleware } from './middleware/index.js';
 import securityHeaders from './middleware/security-headers.js';
+import { globalRateLimit } from './middleware/global-rate-limit.js';
 import logger from './utils/logger.js';
 import { initializeEmailScheduler, stopEmailScheduler } from './utils/emailScheduler.js';
 
@@ -51,6 +52,7 @@ const allowedOrigins = (process.env.CORS_ORIGIN || '*')
 
 app.use(helmet());
 app.use(securityHeaders);
+app.use(globalRateLimit);
 app.use(cors({
 	origin: allowedOrigins.length === 1 && allowedOrigins[0] === '*'
 		? '*'

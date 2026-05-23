@@ -4,10 +4,12 @@ import { Search, FlaskConical, Atom, Activity, Zap, Waves, Dna } from 'lucide-re
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const ScienceToolsPage = () => {
   const { seoData } = useSEOData('category_science');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,10 +32,11 @@ const ScienceToolsPage = () => {
     { id: 'wave-speed-calculator', name: 'Wave Speed Calculator', path: '/science/wave-speed-calculator', description: 'Calculate wave speed, frequency, or wavelength.', category: 'Physics', icon: Waves },
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const chemistryTools = filteredTools.filter(t => t.category === 'Chemistry');
   const physicsTools = filteredTools.filter(t => t.category === 'Physics');
@@ -117,6 +120,22 @@ const ScienceToolsPage = () => {
               <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
             </div>
           )}
+
+          {/* SEO Content Section */}
+          <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Free Science Calculators & Tools</h2>
+            <p className="text-muted-foreground mb-4">
+              Toolisiya provides a comprehensive collection of free science calculators designed for students, educators, and professionals. Whether you are balancing chemical equations, calculating physical forces, or converting biological sequences, our interactive tools deliver precise and reliable results directly in your browser without any required downloads.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Chemistry, Physics, and Biology Tools</h2>
+            <p className="text-muted-foreground mb-4">
+              Our platform covers a wide range of scientific disciplines. Use our Chemistry calculators to determine molarity, molality, and pH levels instantly. Our Physics utilities simplify complex calculations for velocity, kinetic energy, and Ohm's law. For biologists, our DNA/RNA converters streamline sequence analysis securely on your own device.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Why Rely on Toolisiya Science Tools?</h2>
+            <p className="text-muted-foreground">
+              Accuracy and accessibility are our top priorities. All science tools on Toolisiya are completely free and require no account creation. Powered by client-side scripting, your inputs remain completely private. Explore our growing library of scientific utilities to optimize your research, coursework, and laboratory calculations today.
+            </p>
+          </div>
         </div>
       </main>
     </div>

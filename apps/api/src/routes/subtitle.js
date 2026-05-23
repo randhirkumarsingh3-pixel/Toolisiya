@@ -6,14 +6,28 @@ import logger from '../utils/logger.js';
 
 const router = express.Router();
 
+// Supported subtitle formats
+const SUPPORTED_FORMATS = ['srt', 'vtt', 'ass', 'sub'];
+
+const SUPPORTED_MIME_TYPES = [
+  'text/plain',
+  'text/vtt',
+  'application/x-subrip',
+  'application/octet-stream'
+];
+
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    if (SUPPORTED_MIME_TYPES.includes(file.mimetype) || SUPPORTED_FORMATS.includes(file.originalname.split('.').pop().toLowerCase())) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only subtitle files (.srt, .vtt, .ass, .sub) are allowed.'));
+    }
+  }
 });
-
-// Supported subtitle formats
-const SUPPORTED_FORMATS = ['srt', 'vtt', 'ass', 'sub'];
 
 // Helper function to parse SRT format
 const parseSRT = (content) => {

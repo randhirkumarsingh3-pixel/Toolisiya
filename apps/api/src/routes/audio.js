@@ -13,14 +13,37 @@ const router = express.Router();
 // Set ffmpeg path
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
+// Supported audio formats
+const SUPPORTED_FORMATS = ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'];
+
+const SUPPORTED_MIME_TYPES = [
+  'audio/mpeg',
+  'audio/mp3',
+  'audio/wav',
+  'audio/x-wav',
+  'audio/vnd.wave',
+  'audio/ogg',
+  'application/ogg',
+  'audio/mp4',
+  'audio/x-m4a',
+  'audio/flac',
+  'audio/x-flac',
+  'audio/aac',
+  'audio/x-aac'
+];
+
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
+  fileFilter: (req, file, cb) => {
+    if (SUPPORTED_MIME_TYPES.includes(file.mimetype) || SUPPORTED_FORMATS.includes(file.originalname.split('.').pop().toLowerCase())) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only audio files are allowed.'));
+    }
+  }
 });
-
-// Supported audio formats
-const SUPPORTED_FORMATS = ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'];
 
 // POST /audio/convert
 router.post('/convert', upload.single('file'), async (req, res) => {

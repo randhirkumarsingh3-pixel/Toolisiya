@@ -4,10 +4,12 @@ import { Search, Calculator, Percent, Receipt, Landmark, PiggyBank, Wallet, File
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const FinancePage = () => {
   const { seoData } = useSEOData('category_finance');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -24,10 +26,11 @@ const FinancePage = () => {
     { id: 'advanced-scientific-calculator', name: 'Advanced Scientific Calculator', path: '/finance/advanced-scientific-calculator', description: 'Free advanced scientific calculator with trigonometric functions, logarithms, and more.', icon: Sigma },
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -80,6 +83,22 @@ const FinancePage = () => {
               <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
             </div>
           )}
+
+          {/* SEO Content Section */}
+          <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Free Financial Calculators & Tools</h2>
+            <p className="text-muted-foreground mb-4">
+              Toolisiya offers a comprehensive suite of free financial calculators designed to help you make informed decisions about your money. Whether you need to calculate your monthly EMI for a new loan, estimate your income tax based on the latest slabs, or determine the exact GST amount for an invoice, our tools provide accurate and instant results.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Plan Your Investments and Taxes</h2>
+            <p className="text-muted-foreground mb-4">
+              Managing personal finance requires precision. Use our SIP calculator to forecast your mutual fund returns, or the FD calculator to understand your fixed deposit maturity amounts. For business owners and freelancers, our invoice and bill generators make creating professional, tax-compliant documents effortless and fast.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Finance Tools?</h2>
+            <p className="text-muted-foreground">
+              All our finance utilities are 100% free and require no sign-up. They run directly in your browser ensuring complete privacy for your sensitive financial data. Our calculators are regularly updated to reflect the latest tax rules and financial formulas, ensuring you always get reliable figures for your budget planning.
+            </p>
+          </div>
         </div>
       </main>
     </div>

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import CalculatorLayout from '@/components/CalculatorLayout.jsx';
+import ToolPageTemplate from '@/components/ToolPageTemplate.jsx';
+import { toolPageData } from '@/data/toolPageData.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { conversionFactors } from '@/utils/helpers.js';
-import NavigationButtons from '@/components/NavigationButtons.jsx';
 
 const WeightConverterPage = () => {
   const [amount, setAmount] = useState('1');
@@ -37,18 +37,7 @@ const WeightConverterPage = () => {
   };
 
   return (
-    <CalculatorLayout
-      title="Weight Converter"
-      description="Convert between milligrams, grams, kilograms, ounces, pounds, and tons instantly."
-      category="Converters"
-      categoryPath="/converters"
-      formula={["Value in Grams = Input × (From Unit Rate)", "Result = Value in Grams / (To Unit Rate)"]}
-      faqs={[
-        { question: "How many pounds in a kilogram?", answer: "There are approximately 2.20462 pounds in one kilogram." },
-        { question: "How many ounces in a pound?", answer: "There are exactly 16 ounces in one pound." }
-      ]}
-    >
-      <NavigationButtons />
+    <ToolPageTemplate toolData={toolPageData['weight-converter']}>
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Convert Weight</CardTitle>
@@ -85,7 +74,7 @@ const WeightConverterPage = () => {
           </div>
         </CardContent>
       </Card>
-    </CalculatorLayout>
+    </ToolPageTemplate>
   );
 };
 

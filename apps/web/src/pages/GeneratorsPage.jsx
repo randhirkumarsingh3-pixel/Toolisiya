@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { Search, QrCode, Barcode, Key, Hash, FileText, User } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
@@ -8,6 +9,7 @@ import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const GeneratorsPage = () => {
   const { seoData } = useSEOData('generators');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,10 +22,11 @@ const GeneratorsPage = () => {
     { id: 'random-name-generator', name: 'Random Name Generator', path: '/generator/random-name-generator', description: 'Generate realistic placeholder names.', icon: User },
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <>
@@ -74,6 +77,22 @@ const GeneratorsPage = () => {
                 <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
               </div>
             )}
+
+            {/* SEO Content Section */}
+            <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Free Online Generators</h2>
+              <p className="text-muted-foreground mb-4">
+                Toolisiya provides a versatile collection of free online generators to create essential digital assets in seconds. Whether you are generating highly secure passwords for your accounts, creating customized QR codes for marketing campaigns, or building standard barcodes for retail inventory, our platform delivers instant, reliable results directly within your browser.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Secure & Private Data Creation</h2>
+              <p className="text-muted-foreground mb-4">
+                We prioritize your privacy and data security. Tools like our Password Generator, UUID Generator, and Random Name Generator execute entirely on the client-side. This means that your randomly generated data, cryptographic keys, and unique identifiers are never sent to or stored on our servers, ensuring complete confidentiality.
+              </p>
+              <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Generators?</h2>
+              <p className="text-muted-foreground">
+                All generators on Toolisiya are completely free to use with no hidden fees, subscriptions, or sign-ups required. From converting text to URL-friendly slugs to generating 1D barcodes, our tools are optimized for speed and ease of use, making them perfect for developers, marketers, and everyday users who need quick solutions.
+              </p>
+            </div>
           </div>
         </main>
       </div>

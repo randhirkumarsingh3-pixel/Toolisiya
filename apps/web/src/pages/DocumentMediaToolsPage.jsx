@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Search, FileText } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { Input } from '@/components/ui/input';
 import ToolCard from '@/components/ToolCard.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 
 const DocumentMediaToolsPage = () => {
   const { seoData } = useSEOData('document');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -70,10 +72,11 @@ const DocumentMediaToolsPage = () => {
     }
   ];
 
-  const filteredTools = tools.filter(tool => 
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTools = tools.filter(tool => {
+    if (activeUrls && !activeUrls.has(tool.path)) return false;
+    return tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -127,6 +130,22 @@ const DocumentMediaToolsPage = () => {
               <p className="text-muted-foreground text-lg">No tools found matching "{searchQuery}"</p>
             </div>
           )}
+
+          {/* SEO Content Section */}
+          <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Free Online Document Generators</h2>
+            <p className="text-muted-foreground mb-4">
+              Toolisiya provides a comprehensive suite of free document generators tailored for professionals, freelancers, and small businesses. Create polished, formal documents instantly without the need for expensive software. From GST-compliant invoices and professional receipts to legal contracts and formal letters, our utilities ensure your paperwork is always standard and well-formatted.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Secure, Client-Side Document Creation</h2>
+            <p className="text-muted-foreground mb-4">
+              We understand that business documents contain sensitive financial and personal information. That's why our document generators are designed to prioritize your privacy. The information you input to generate quotes, bills, or certificates is processed directly in your browser, meaning your data never leaves your device or gets stored on our servers.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Why Use Our Document Tools?</h2>
+            <p className="text-muted-foreground">
+              All of Toolisiya's document utilities are entirely free and require no sign-up or subscription. Download your generated documents directly as high-quality PDFs ready for printing or emailing. Save time on administrative tasks and elevate your business's professional image with our easy-to-use, accessible document solutions.
+            </p>
+          </div>
         </div>
       </main>
     </div>

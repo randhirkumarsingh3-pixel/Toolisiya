@@ -164,7 +164,21 @@ export const toolPageData = {
   "code-beautifier": createToolEntry("code-beautifier", "Code Beautifier", "Developer", "Clean up your messy HTML, CSS, or JSON code instantly."),
   "xml-formatter": createToolEntry("xml-formatter", "XML Formatter", "Developer", "Beautify, minify, and validate your XML code."),
   "markdown-to-html": createToolEntry("markdown-to-html", "Markdown to HTML", "Developer", "Convert Markdown syntax into clean HTML code instantly."),
+  "speech-to-text": createToolEntry("speech-to-text", "Speech to Text", "Developer", "Convert spoken words to text in real-time with voice dictation."),
+  "text-to-speech": createToolEntry("text-to-speech", "Text to Speech", "Developer", "Convert written text into natural-sounding spoken audio."),
+  "color-picker": createToolEntry("color-picker", "Color Picker", "Developer", "Select, inspect, and convert color codes between HEX, RGB, HSL, and CMYK formats."),
   
+  // Generator Tools
+  "random-name-generator": createToolEntry("random-name-generator", "Random Name Generator", "Generator", "Generate unique and creative names for characters, babies, or projects."),
+  "slug-generator": createToolEntry("slug-generator", "Slug Generator", "Generator", "Generate SEO-friendly and clean URL slugs from any text input."),
+  "text-case-generator": createToolEntry("text-case-generator", "Text Case Generator", "Generator", "Convert your text into UPPERCASE, lowercase, Sentence Case, title case, or camelCase."),
+  
+  // Converter Tools
+  "area-converter": createToolEntry("area-converter", "Area Converter", "Converters", "Convert between square meters, square feet, acres, hectares, and other area units."),
+  "speed-converter": createToolEntry("speed-converter", "Speed Converter", "Converters", "Convert speed values between mph, km/h, m/s, knots, and mach."),
+  "volume-converter": createToolEntry("volume-converter", "Volume Converter", "Converters", "Convert volume measurements between liters, gallons, milliliters, cubic meters, and cups."),
+  "weight-converter": createToolEntry("weight-converter", "Weight Converter", "Converters", "Convert weights between kilograms, pounds, grams, ounces, and tons."),
+
   // Utility Tools
   "word-counter": createToolEntry("word-counter", "Word Counter", "Utility", "Count words, characters, sentences, and paragraphs in real-time.")
 };

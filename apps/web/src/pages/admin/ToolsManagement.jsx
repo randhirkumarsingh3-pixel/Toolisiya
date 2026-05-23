@@ -24,8 +24,10 @@ const ICON_MAP = {
   DollarSign, Briefcase, Image: ImageIcon, FileText, 
   Code, Zap, FlaskConical, CheckCircle, RefreshCw, Home, Mail, Layers
 };
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 
 const ToolsManagement = () => {
+  const { fetchActiveTools } = useActiveTools();
   // Shared State
   const [activeTab, setActiveTab] = useState('tools');
   const [isLoading, setIsLoading] = useState(true);
@@ -102,6 +104,7 @@ const ToolsManagement = () => {
     try {
       await pb.collection('tools').update(toolId, { status: newStatus }, { $autoCancel: false });
       setTools(prev => prev.map(t => t.id === toolId ? { ...t, status: newStatus } : t));
+      if (fetchActiveTools) fetchActiveTools();
       toast.success(`Tool ${newStatus === 'active' ? 'enabled' : 'disabled'} successfully`);
     } catch (err) {
       toast.error('Failed to update tool status');
@@ -167,8 +170,9 @@ const ToolsManagement = () => {
 
   const toggleCatStatus = async (category) => {
     try {
-      await pb.collection('categories').update(category.id, { is_active: !category.is_active });
+      await pb.collection('categories').update(category.id, { is_active: !category.is_active }, { $autoCancel: false });
       setCategories(prev => prev.map(c => c.id === category.id ? { ...c, is_active: !c.is_active } : c));
+      if (fetchActiveTools) fetchActiveTools();
       toast.success(`Category ${!category.is_active ? 'enabled' : 'disabled'}`);
     } catch (err) {
       toast.error('Failed to update status');

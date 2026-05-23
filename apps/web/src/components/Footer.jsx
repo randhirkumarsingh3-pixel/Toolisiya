@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Mail, Shield, FileText, Info, LayoutGrid, Download } from 'lucide-react';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 
 const LOGO_URL = "/logo-transparent.png";
 
@@ -16,6 +17,9 @@ export default function Footer() {
     }
   }, [location.pathname]);
 
+  const { activeCategories } = useActiveTools();
+  const activeCategorySlugs = new Set(activeCategories.map(c => c.slug));
+
   const categories = [
     { name: "Developer Tools", slug: "developer" },
     { name: "Document Tools", slug: "document" },
@@ -23,7 +27,7 @@ export default function Footer() {
     { name: "Finance Tools", slug: "finance" },
     { name: "Image Tools", slug: "image" },
     { name: "Career Tools", slug: "career" }
-  ];
+  ].filter(cat => activeCategorySlugs.has(cat.slug));
 
   return (
     <footer 

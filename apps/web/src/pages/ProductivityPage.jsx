@@ -8,6 +8,7 @@ import {
 import ToolCard from '@/components/ToolCard.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 import { useSEOData } from '@/hooks/useSEOData.js';
+import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 
 const tools = [
   { name: 'Smart To-Do List', path: '/productivity/smart-todo-list', icon: CheckSquare, description: 'Manage tasks with priorities and due dates.' },
@@ -28,6 +29,7 @@ const tools = [
 
 const ProductivityPage = () => {
   const { seoData } = useSEOData('category_productivity');
+  const { activeUrls } = useActiveTools();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (
@@ -58,9 +60,25 @@ const ProductivityPage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map((tool, index) => (
+            {tools.filter(tool => !activeUrls || activeUrls.has(tool.path)).map((tool, index) => (
               <ToolCard key={tool.path} tool={tool} index={index} />
             ))}
+          </div>
+
+          {/* SEO Content Section */}
+          <div className="mt-16 bg-card p-8 rounded-2xl border border-border/50 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Free Productivity & Organization Tools</h2>
+            <p className="text-muted-foreground mb-4">
+              Toolisiya offers a robust suite of free online productivity tools to help you manage your daily tasks, track important habits, and streamline your schedule. Whether you need a smart to-do list, a Pomodoro timer for deep work sessions, or an intuitive Kanban task board for project management, our utilities are designed to keep you focused and organized.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Track Habits, Moods, and Goals</h2>
+            <p className="text-muted-foreground mb-4">
+              Building consistent routines is easier with the right tools. Use our Habit Streak tracker to maintain daily momentum, monitor your hydration with the Water Tracker, and reflect on your mental well-being with the Mood Tracker. Our comprehensive planners integrate seamlessly into your lifestyle, providing everything from meal planning to daily schedule optimization.
+            </p>
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Why Rely on Toolisiya Productivity Hub?</h2>
+            <p className="text-muted-foreground">
+              All our productivity web apps are entirely free, secure, and require no user registration. Operating directly in your browser, your personal task data, meeting notes, and habit logs remain private on your device. Enhance your workflow, reduce procrastination, and boost your daily output with our easy-to-use digital workspace tools.
+            </p>
           </div>
         </div>
       </main>
