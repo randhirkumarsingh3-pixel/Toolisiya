@@ -137,6 +137,25 @@ class AuthStore {
           this.isValid = true;
           this.token = session.access_token;
           this.model = mapUser(session.user);
+          
+          // Ensure OAuth users are synced to the public.users table
+          if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            const profileData = {
+              id: session.user.id,
+              email: session.user.email,
+              username: session.user.user_metadata?.username || session.user.email?.split('@')[0] || `user_${session.user.id.substring(0,8)}`,
+              name: session.user.user_metadata?.name || session.user.user_metadata?.username || '',
+              mobile: session.user.user_metadata?.mobile || null,
+              password: 'oauth_user_no_password',
+              tokenKey: Math.random().toString(36).substring(2, 15),
+            };
+            
+            // Upsert the user profile without waiting for it to finish to avoid blocking the UI
+            supabase.from('users').upsert(profileData, { onConflict: 'id' })
+              .then(({ error }) => {
+                if (error) console.error("Error syncing OAuth user to public.users:", error);
+              });
+          }
         } else {
           this.isValid = false;
           this.token = null;
