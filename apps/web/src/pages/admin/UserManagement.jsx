@@ -45,10 +45,12 @@ const UserManagement = () => {
     setError(null);
     try {
       if (activeTab === 'admin') {
-        const data = await apiServerClient.fetch('/admin/admin_users?limit=50');
+        const res = await apiServerClient.fetch('/admin/admin_users?limit=50');
+        const data = await res.json();
         setUsers(data.items || []);
       } else {
-        const data = await apiServerClient.fetch('/admin/users?limit=50');
+        const res = await apiServerClient.fetch('/admin/users?limit=50');
+        const data = await res.json();
         setAppUsers(data.items || []);
       }
     } catch (err) {
@@ -79,8 +81,9 @@ const UserManagement = () => {
       // Generate a temporary password for creation
       const tempPass = 'Temp' + Math.random().toString(36).slice(-8) + '!';
       
-      await apiServerClient.fetch('/admin/admin_users', {
+      const res = await apiServerClient.fetch('/admin/admin_users', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           name: formData.name,
@@ -90,6 +93,7 @@ const UserManagement = () => {
           passwordConfirm: tempPass
         })
       });
+      if (!res.ok) throw new Error(await res.text());
       
       toast.success('Admin user created successfully. Please reset their password.');
       setIsAddOpen(false);
@@ -106,8 +110,9 @@ const UserManagement = () => {
     }
 
     try {
-      await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
+      const res = await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -115,6 +120,7 @@ const UserManagement = () => {
           status: formData.status
         })
       });
+      if (!res.ok) throw new Error(await res.text());
       
       toast.success('Admin updated successfully');
       setIsEditOpen(false);
@@ -126,9 +132,10 @@ const UserManagement = () => {
 
   const handleDeleteUser = async () => {
     try {
-      await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
+      const res = await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
         method: 'DELETE'
       });
+      if (!res.ok) throw new Error(await res.text());
       toast.success('Admin user deleted successfully');
       setIsDeleteOpen(false);
       fetchUsers();
@@ -145,10 +152,12 @@ const UserManagement = () => {
   const toggleStatus = async (user) => {
     try {
       const newStatus = user.status === 'Active' ? 'Inactive' : 'Active';
-      await apiServerClient.fetch(`/admin/admin_users/${user.id}`, {
+      const res = await apiServerClient.fetch(`/admin/admin_users/${user.id}`, {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
       });
+      if (!res.ok) throw new Error(await res.text());
       toast.success(`User marked as ${newStatus}`);
       fetchUsers();
     } catch (err) {
