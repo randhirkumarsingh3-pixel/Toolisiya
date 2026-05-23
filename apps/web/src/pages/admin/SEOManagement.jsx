@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'sonner';
-import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle, Sparkles, Undo2 } from 'lucide-react';
+import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,9 +29,7 @@ const SEOManagement = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [currentDbId, setCurrentDbId] = useState(null);
-  const [undoData, setUndoData] = useState(null);
 
   // Character Counts & Metrics
   const titleLength = formData.meta_title.length;
@@ -55,7 +53,8 @@ const SEOManagement = () => {
   useEffect(() => {
     const fetchPages = async () => {
       try {
-        const records = await pb.collection('seo_settings').getFullList({ sort: 'page_name', $autoCancel: false });
+        const res = await apiServerClient.fetch('/admin/seo_settings');
+        const records = res.ok ? await res.json() : [];
         
         // Merge DB pages with JSON baseline
         const jsonPages = Object.keys(SEO_METADATA);
@@ -83,7 +82,9 @@ const SEOManagement = () => {
     setIsLoading(true);
     try {
       // Check DB first
-      const record = await pb.collection('seo_settings').getFirstListItem(`page_name="${pageName}"`, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/seo_settings/page/${pageName}`);
+      if (!res.ok) throw new Error('Not found');
+      const record = await res.json();
       setCurrentDbId(record.id);
       setFormData({
         meta_title: record.meta_title || '',
@@ -109,7 +110,6 @@ const SEOManagement = () => {
         twitter_title: staticData.twitter_title || '',
         twitter_description: staticData.twitter_description || ''
       });
-      setUndoData(null); // Reset undo data when loading a new page
     } finally {
       setIsLoading(false);
     }
@@ -131,10 +131,21 @@ const SEOManagement = () => {
       };
 
       if (currentDbId) {
-        await pb.collection('seo_settings').update(currentDbId, payload, { $autoCancel: false });
+        const res = await apiServerClient.fetch(`/admin/seo_settings/${currentDbId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Update failed');
         toast.success("SEO Metadata updated successfully!");
       } else {
-        const record = await pb.collection('seo_settings').create(payload, { $autoCancel: false });
+        const res = await apiServerClient.fetch(`/admin/seo_settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Create failed');
+        const record = await res.json();
         setCurrentDbId(record.id);
         toast.success("SEO Metadata created successfully!");
       }
@@ -142,64 +153,6 @@ const SEOManagement = () => {
       toast.error(err.message || "Failed to save metadata");
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleAutoGenerate = async () => {
-    if (!selectedPage) {
-      toast.error("Please select a page first");
-      return;
-    }
-    
-    // Warn if overriding existing data
-    if (formData.meta_title && formData.meta_description) {
-      if (!window.confirm("This will overwrite the current SEO metadata. Do you want to continue?")) {
-        return;
-      }
-    }
-
-    setIsGenerating(true);
-    try {
-      const response = await apiServerClient.fetch('/seo-ai/auto-generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          pageName: selectedPage,
-          context: 'A free online web tool on Toolisiya'
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to auto-generate SEO');
-      }
-
-      const generatedData = await response.json();
-      
-      // Save current state to allow undo
-      setUndoData({ ...formData });
-
-      setFormData(prev => ({
-        ...prev,
-        meta_title: generatedData.meta_title || prev.meta_title,
-        meta_description: generatedData.meta_description || prev.meta_description,
-        keywords: generatedData.keywords || prev.keywords,
-        h1_tag: generatedData.h1_tag || prev.h1_tag,
-      }));
-
-      toast.success("SEO Metadata auto-generated successfully!");
-    } catch (err) {
-      toast.error(err.message || "Failed to generate SEO metadata");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleUndo = () => {
-    if (undoData) {
-      setFormData({ ...undoData });
-      setUndoData(null);
-      toast.success("Reverted to previous SEO metadata");
     }
   };
 
@@ -239,32 +192,10 @@ const SEOManagement = () => {
               ))}
             </SelectContent>
           </Select>
-          <div className="flex items-center gap-2">
-            {undoData && (
-              <Button 
-                onClick={handleUndo} 
-                variant="outline"
-                className="shadow-sm font-bold"
-                title="Undo last Auto Update"
-              >
-                <Undo2 className="h-4 w-4 mr-2" />
-                Undo
-              </Button>
-            )}
-            <Button 
-              onClick={handleAutoGenerate} 
-              disabled={isGenerating || isLoading || !selectedPage} 
-              variant="secondary"
-              className="shadow-sm font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900"
-            >
-              {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-              {formData.meta_title ? "Regenerate SEO" : "Auto Update SEO"}
-            </Button>
-            <Button onClick={handleSave} disabled={isSaving || isLoading} className="shadow-sm font-bold">
-              {isSaving ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-              Save Changes
-            </Button>
-          </div>
+          <Button onClick={handleSave} disabled={isSaving || isLoading} className="shadow-sm font-bold">
+            {isSaving ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+            Save Changes
+          </Button>
         </div>
       </div>
 

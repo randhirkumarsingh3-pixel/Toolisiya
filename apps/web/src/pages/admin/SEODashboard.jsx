@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { calculateSEOScore, getSEOScoreColor, getSEOIssues } from '@/utils/seoScoringEngine.js';
 import { useIntegratedAi } from '@/hooks/use-integrated-ai.jsx';
 
@@ -37,10 +38,8 @@ export default function SEODashboard() {
   const fetchTools = async () => {
     setLoading(true);
     try {
-      const seoRecords = await pb.collection('seo_settings').getFullList({ 
-        sort: '-created',
-        $autoCancel: false 
-      });
+      const res = await apiServerClient.fetch('/admin/seo_settings');
+      const seoRecords = res.ok ? await res.json() : [];
       
       const uniqueMap = new Map();
       seoRecords.forEach(record => {
@@ -153,23 +152,31 @@ export default function SEODashboard() {
             
             if (existingRecord) {
               // Update existing record
-              await pb.collection('seo_settings').update(existingRecord.id, {
-                meta_title: parsedData.meta_title,
-                meta_description: parsedData.meta_description,
-                meta_keywords: parsedData.meta_keywords,
-                h1_tag: parsedData.h1_tag,
-                content: parsedData.content
-              }, { $autoCancel: false });
+              await apiServerClient.fetch(`/admin/seo_settings/${existingRecord.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  meta_title: parsedData.meta_title,
+                  meta_description: parsedData.meta_description,
+                  meta_keywords: parsedData.meta_keywords,
+                  h1_tag: parsedData.h1_tag,
+                  content: parsedData.content
+                })
+              });
             } else {
               // Create new record
-              await pb.collection('seo_settings').create({
-                page_name: currentGeneration.page_name,
-                meta_title: parsedData.meta_title,
-                meta_description: parsedData.meta_description,
-                meta_keywords: parsedData.meta_keywords,
-                h1_tag: parsedData.h1_tag,
-                content: parsedData.content
-              }, { $autoCancel: false });
+              await apiServerClient.fetch(`/admin/seo_settings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  page_name: currentGeneration.page_name,
+                  meta_title: parsedData.meta_title,
+                  meta_description: parsedData.meta_description,
+                  meta_keywords: parsedData.meta_keywords,
+                  h1_tag: parsedData.h1_tag,
+                  content: parsedData.content
+                })
+              });
             }
 
             setProgressPercent(100);
@@ -214,7 +221,11 @@ export default function SEODashboard() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await pb.collection('seo_settings').update(selectedTool.id, editData, { $autoCancel: false });
+      await apiServerClient.fetch(`/admin/seo_settings/${selectedTool.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editData)
+      });
       toast.success('SEO data updated');
       setSelectedTool(null);
       fetchTools();

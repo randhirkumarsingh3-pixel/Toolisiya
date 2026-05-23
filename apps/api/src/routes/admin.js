@@ -1019,4 +1019,54 @@ router.post('/update-password', adminAuthMiddleware, async (req, res) => {
   });
 });
 
+// GET /admin/seo_settings
+router.get('/seo_settings', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const settings = await pb.collection('seo_settings').getFullList();
+    res.json(settings);
+  } catch (error) {
+    logger.error(`Error fetching seo_settings: ${error.message}`);
+    res.status(500).json({ error: 'Failed to fetch seo_settings' });
+  }
+});
+
+// GET /admin/seo_settings/page/:pageName
+router.get('/seo_settings/page/:pageName', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const { pageName } = req.params;
+    const setting = await pb.collection('seo_settings').getFirstListItem(`page_name="${pageName}"`);
+    res.json(setting);
+  } catch (error) {
+    logger.error(`Error fetching seo_settings for page: ${error.message}`);
+    res.status(404).json({ error: 'Not found' });
+  }
+});
+
+// POST /admin/seo_settings
+router.post('/seo_settings', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const setting = await pb.collection('seo_settings').create(req.body);
+    res.status(201).json(setting);
+  } catch (error) {
+    logger.error(`Error creating seo_settings: ${error.message}`);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PUT /admin/seo_settings/:id
+router.put('/seo_settings/:id', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const { id } = req.params;
+    const setting = await pb.collection('seo_settings').update(id, req.body);
+    res.json(setting);
+  } catch (error) {
+    logger.error(`Error updating seo_settings: ${error.message}`);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default router;

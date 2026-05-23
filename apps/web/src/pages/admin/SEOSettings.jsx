@@ -37,7 +37,8 @@ const SEOSettings = () => {
         const toolsList = await pb.collection('tools').getFullList({ sort: 'category,name', $autoCancel: false });
         setTools(toolsList);
         
-        const seoList = await pb.collection('seo_settings').getFullList({ fields: 'page_name,meta_title', $autoCancel: false });
+        const seoRes = await apiServerClient.fetch('/admin/seo_settings');
+        const seoList = seoRes.ok ? await seoRes.json() : [];
         setSeoRecords(seoList);
         
         if (toolsList.length > 0) {
@@ -127,7 +128,8 @@ const SEOSettings = () => {
       
       toast.success('SEO settings saved successfully');
       
-      const seoList = await pb.collection('seo_settings').getFullList({ fields: 'page_name,meta_title', $autoCancel: false });
+      const seoRes = await apiServerClient.fetch('/admin/seo_settings');
+      const seoList = seoRes.ok ? await seoRes.json() : [];
       setSeoRecords(seoList);
       
     } catch (err) {

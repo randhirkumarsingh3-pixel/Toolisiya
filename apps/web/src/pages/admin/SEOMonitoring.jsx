@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { calculateSEOScore, getSEOIssues } from '@/utils/seoScoringEngine.js';
 
 export default function SEOMonitoring() {
@@ -14,7 +15,8 @@ export default function SEOMonitoring() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const records = await pb.collection('seo_settings').getFullList({ $autoCancel: false });
+      const res = await apiServerClient.fetch('/admin/seo_settings');
+      const records = res.ok ? await res.json() : [];
       let totalScore = 0;
       let complete = 0;
       const allIssues = [];
