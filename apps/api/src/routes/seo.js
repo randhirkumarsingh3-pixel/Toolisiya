@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { seoMetadata, defaultSeoMetadata } from '../constants/seoMetadata.js';
+import pb from '../utils/pocketbaseClient.js';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
@@ -9,6 +10,18 @@ const router = express.Router();
 const normalizeSlug = (slug) => {
   return slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 };
+
+// GET /seo/settings/:pageName - Retrieve dynamic SEO settings from database
+router.get('/settings/:pageName', async (req, res) => {
+  const { pageName } = req.params;
+  try {
+    const record = await pb.collection('seo_settings')
+      .getFirstListItem(`page_name="${pageName}"`, { requestKey: null });
+    res.json(record);
+  } catch (error) {
+    res.status(404).json({ error: 'SEO settings not found' });
+  }
+});
 
 // GET /seo/:toolName - Retrieve SEO settings for a tool
 router.get('/:toolName', async (req, res) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
-import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { generateSEOTemplate } from '@/utils/seoTemplateGenerator.js';
 import { getToolSeoContent } from '@/data/toolSeoContent.js';
 import { toolPageData } from '@/data/toolPageData.js';
@@ -15,9 +15,8 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
     let isMounted = true;
     const fetchSEO = async () => {
       try {
-        const record = await pb.collection('seo_settings')
-          .getFirstListItem(`page_name="${slug}"`, { $autoCancel: false })
-          .catch(() => null);
+        const res = await apiServerClient.fetch(`/seo/settings/${slug}`);
+        const record = res.ok ? await res.json() : null;
         
         if (isMounted) {
           if (record) {
