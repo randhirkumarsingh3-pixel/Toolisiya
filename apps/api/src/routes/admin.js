@@ -261,27 +261,31 @@ router.get('/users', adminAuthMiddleware, async (req, res) => {
     filter += `status = "${status}"`;
   }
 
-  const users = await pb.collection('users').getList(page, limit, {
-    filter: filter || undefined,
-    sort,
-  });
+  try {
+    const users = await pb.collection('users').getList(page, limit, {
+      filter: filter || undefined,
+      sort,
+    });
 
-  res.json({
-    items: users.items.map(user => ({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      name: user.name || null,
-      mobile: user.mobile || null,
-      status: user.status || 'active',
-      created: user.created,
-      updated: user.updated,
-    })),
-    page: users.page,
-    perPage: users.perPage,
-    totalItems: users.totalItems,
-    totalPages: users.totalPages,
-  });
+    res.json({
+      items: users.items.map(u => ({
+        id: u.id,
+        email: u.email,
+        username: u.username,
+        name: u.name,
+        status: u.status || 'Active', // 'users' table might not have status
+        created: u.created,
+        lastLogin: u.last_login
+      })),
+      page: users.page,
+      perPage: users.perPage,
+      totalItems: users.totalItems,
+      totalPages: users.totalPages,
+    });
+  } catch (err) {
+    logger.error('Error fetching app users:', err);
+    res.status(500).json({ error: 'Failed to fetch app users' });
+  }
 });
 
 // GET /admin/admin_users
@@ -289,22 +293,27 @@ router.get('/admin_users', adminAuthMiddleware, async (req, res) => {
   addSecurityHeaders(res);
   const { page = 1, limit = 50 } = req.query;
   logger.info(`Admin users list requested by admin: ${req.admin.email}`);
-  const users = await pb.collection('admin_users').getList(page, limit, { sort: '-created' });
-  res.json({
-    items: users.items.map(u => ({
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      role: u.role,
-      status: u.status,
-      created: u.created,
-      lastLogin: u.last_login
-    })),
-    page: users.page,
-    perPage: users.perPage,
-    totalItems: users.totalItems,
-    totalPages: users.totalPages,
-  });
+  try {
+    const users = await pb.collection('admin_users').getList(page, limit);
+    res.json({
+      items: users.items.map(u => ({
+        id: u.id,
+        email: u.email,
+        name: u.name,
+        role: u.role,
+        status: u.status,
+        created: u.created,
+        lastLogin: u.last_login
+      })),
+      page: users.page,
+      perPage: users.perPage,
+      totalItems: users.totalItems,
+      totalPages: users.totalPages,
+    });
+  } catch (err) {
+    logger.error('Error fetching admin users:', err);
+    res.status(500).json({ error: 'Failed to fetch admin users' });
+  }
 });
 
 // POST /admin/admin_users
