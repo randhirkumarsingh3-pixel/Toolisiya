@@ -12,13 +12,6 @@ dotenv.config({ path: path.join(__dirname, 'apps/api/.env') });
 const supabaseUrl = process.env.SUPABASE_URL || 'https://kexwtzdfkcyqjuisskrk.supabase.co';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseKey) {
-  console.error('❌ Error: SUPABASE_SERVICE_ROLE_KEY is not defined in apps/api/.env');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 const STATIC_PAGES = [
   { path: '/', changefreq: 'weekly', priority: 1.0 },
   { path: '/about', changefreq: 'monthly', priority: 0.6 },
@@ -53,6 +46,20 @@ async function main() {
   
   const domain = 'https://toolisiya.com';
   const baseUrl = domain;
+  const publicDir = path.join(__dirname, 'apps', 'web', 'public');
+  const sitemapPath = path.join(publicDir, 'sitemap.xml');
+  const robotsPath = path.join(publicDir, 'robots.txt');
+
+  // If credentials are not available, handle gracefully
+  if (!supabaseKey) {
+    console.warn('⚠️ Warning: SUPABASE_SERVICE_ROLE_KEY is not defined in apps/api/.env.');
+    if (fs.existsSync(sitemapPath) && fs.existsSync(robotsPath)) {
+      console.log('✅ Found pre-existing sitemap.xml and robots.txt in git. Keeping existing files for build.');
+      process.exit(0);
+    } else {
+      console.log('⚠️ Pre-existing sitemap/robots.txt not found. Proceeding with static fallback generation...');
+    }
+  }
 
   try {
     // Start sitemap XML
@@ -71,68 +78,92 @@ async function main() {
       xml += '  </url>\n';
     }
 
-    // Fetch active tools from tools table
-    console.log('Fetching active tools from Supabase...');
-    const { data: tools, error } = await supabase
-      .from('tools')
-      .select('id, category, updated_at')
-      .eq('status', 'active');
+    let tools = [];
+    let categories = new Set();
+    let categoryMap = {};
 
-    if (error) {
-      throw error;
-    }
+    if (supabaseKey) {
+      // Connect to Supabase
+      const supabase = createClient(supabaseUrl, supabaseKey);
 
-    console.log(`Fetched ${tools.length} active tools.`);
+      // Fetch active tools from tools table
+      console.log('Fetching active tools from Supabase...');
+      const { data, error } = await supabase
+        .from('tools')
+        .select('id, category, updated_at')
+        .eq('status', 'active');
 
-    // Extract unique categories
-    const categories = new Set();
-    const categoryMap = {};
-    tools.forEach(tool => {
-      if (tool.category) {
-        categories.add(tool.category);
-        const updated = tool.updated_at || new Date().toISOString();
-        if (!categoryMap[tool.category]) {
-          categoryMap[tool.category] = updated;
-        } else if (new Date(updated) > new Date(categoryMap[tool.category])) {
-          categoryMap[tool.category] = updated;
-        }
+      if (error) {
+        console.error('⚠️ Supabase fetch error:', error.message);
+        console.log('Falling back to static categories only.');
+      } else {
+        tools = data || [];
+        console.log(`Fetched ${tools.length} active tools.`);
       }
-    });
-
-    // Add categories to sitemap
-    console.log(`Adding ${categories.size} categories...`);
-    for (const category of categories) {
-      const lastmod = formatDate(categoryMap[category]);
-      const categorySlug = encodeURIComponent(category.toLowerCase().replace(/\s+/g, '-'));
-      xml += '  <url>\n';
-      xml += `    <loc>${escapeXml(baseUrl + '/tools/category/' + categorySlug)}</loc>\n`;
-      xml += `    <lastmod>${lastmod}</lastmod>\n`;
-      xml += '    <changefreq>weekly</changefreq>\n';
-      xml += '    <priority>0.8</priority>\n';
-      xml += '  </url>\n';
+    } else {
+      console.log('Skipping Supabase fetch (no credentials). Using fallback static categories.');
     }
 
-    // Add individual tools
-    console.log(`Adding ${tools.length} individual tools...`);
-    for (const tool of tools) {
-      const lastmod = formatDate(tool.updated_at || new Date());
-      const toolSlug = encodeURIComponent(tool.id);
-      xml += '  <url>\n';
-      xml += `    <loc>${escapeXml(baseUrl + '/tools/' + toolSlug)}</loc>\n`;
-      xml += `    <lastmod>${lastmod}</lastmod>\n`;
-      xml += '    <changefreq>monthly</changefreq>\n';
-      xml += '    <priority>0.7</priority>\n';
-      xml += '  </url>\n';
+    if (tools.length > 0) {
+      // Extract unique categories from fetched tools
+      tools.forEach(tool => {
+        if (tool.category) {
+          categories.add(tool.category);
+          const updated = tool.updated_at || new Date().toISOString();
+          if (!categoryMap[tool.category]) {
+            categoryMap[tool.category] = updated;
+          } else if (new Date(updated) > new Date(categoryMap[tool.category])) {
+            categoryMap[tool.category] = updated;
+          }
+        }
+      });
+
+      // Add categories to sitemap
+      console.log(`Adding ${categories.size} categories...`);
+      for (const category of categories) {
+        const lastmod = formatDate(categoryMap[category]);
+        const categorySlug = encodeURIComponent(category.toLowerCase().replace(/\s+/g, '-'));
+        xml += '  <url>\n';
+        xml += `    <loc>${escapeXml(baseUrl + '/tools/category/' + categorySlug)}</loc>\n`;
+        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += '    <changefreq>weekly</changefreq>\n';
+        xml += '    <priority>0.8</priority>\n';
+        xml += '  </url>\n';
+      }
+
+      // Add individual tools
+      console.log(`Adding ${tools.length} individual tools...`);
+      for (const tool of tools) {
+        const lastmod = formatDate(tool.updated_at || new Date());
+        const toolSlug = encodeURIComponent(tool.id);
+        xml += '  <url>\n';
+        xml += `    <loc>${escapeXml(baseUrl + '/tools/' + toolSlug)}</loc>\n`;
+        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += '    <changefreq>monthly</changefreq>\n';
+        xml += '    <priority>0.7</priority>\n';
+        xml += '  </url>\n';
+      }
+    } else {
+      // Fallback categories if database query was skipped or failed
+      const fallbackCategories = ['finance', 'career', 'developer', 'image', 'document', 'pdf', 'science', 'productivity'];
+      console.log(`Adding ${fallbackCategories.length} fallback categories...`);
+      for (const category of fallbackCategories) {
+        const lastmod = formatDate(new Date());
+        xml += '  <url>\n';
+        xml += `    <loc>${escapeXml(baseUrl + '/tools/category/' + category)}</loc>\n`;
+        xml += `    <lastmod>${lastmod}</lastmod>\n`;
+        xml += '    <changefreq>weekly</changefreq>\n';
+        xml += '    <priority>0.8</priority>\n';
+        xml += '  </url>\n';
+      }
     }
 
     xml += '</urlset>';
 
     // Write to apps/web/public/sitemap.xml
-    const publicDir = path.join(__dirname, 'apps', 'web', 'public');
     if (!fs.existsSync(publicDir)) {
       fs.mkdirSync(publicDir, { recursive: true });
     }
-    const sitemapPath = path.join(publicDir, 'sitemap.xml');
     fs.writeFileSync(sitemapPath, xml, 'utf8');
     console.log(`✅ Static sitemap.xml created successfully at: ${sitemapPath}`);
 
@@ -150,13 +181,17 @@ Disallow: /app
 Sitemap: ${baseUrl}/sitemap.xml
 `;
 
-    const robotsPath = path.join(publicDir, 'robots.txt');
     fs.writeFileSync(robotsPath, robotsTxt, 'utf8');
     console.log(`✅ Static robots.txt created successfully at: ${robotsPath}`);
 
   } catch (err) {
     console.error('❌ Error generating static SEO files:', err.message);
-    process.exit(1);
+    if (!fs.existsSync(sitemapPath)) {
+      // Don't crash build if sitemap files already exist
+      process.exit(1);
+    } else {
+      console.warn('⚠️ Warning: Error occurred but keeping existing sitemap.xml to prevent build crash.');
+    }
   }
 }
 
