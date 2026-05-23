@@ -66,11 +66,6 @@ export default function Footer() {
               <h4 className="font-bold text-foreground">Company</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/download" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                    <Download className="w-4 h-4" /> Download App
-                  </Link>
-                </li>
-                <li>
                   <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                     <Info className="w-4 h-4" /> About Us
                   </Link>

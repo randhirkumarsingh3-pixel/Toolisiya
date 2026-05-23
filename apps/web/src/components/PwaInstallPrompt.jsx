@@ -9,13 +9,13 @@ const PwaInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Only show if the app is installable and not already installed, and hasn't been dismissed
+    // Only show if the app is not already installed and hasn't been dismissed
     const dismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
-    if (isInstallable && !isInstalled && !dismissed) {
+    if (!isInstalled && !dismissed) {
       const timer = setTimeout(() => setShowPrompt(true), 5000);
       return () => clearTimeout(timer);
     }
-  }, [isInstallable, isInstalled]);
+  }, [isInstalled]);
 
   const handleInstallClick = () => {
     install();
@@ -31,7 +31,7 @@ const PwaInstallPrompt = () => {
 
   return (
     <AnimatePresence>
-      {showPrompt && isInstallable && (
+      {showPrompt && !isInstalled && (
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -47,10 +47,10 @@ const PwaInstallPrompt = () => {
           </div>
           <div className="flex flex-col gap-1 shrink-0">
              <Button size="sm" onClick={handleInstallClick} className="h-7 text-xs px-3 font-semibold rounded-lg">
-               Install
+                Install
              </Button>
              <Button size="sm" variant="ghost" onClick={handleDismiss} className="h-6 w-full text-[10px] text-muted-foreground hover:bg-transparent px-0">
-               Not now
+                Not now
              </Button>
           </div>
         </motion.div>

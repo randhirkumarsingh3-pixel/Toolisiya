@@ -130,17 +130,7 @@ const HomePage = () => {
                 </div>
               </div>
 
-              {!isInstalled && (
-                <div className="mb-10 flex justify-center">
-                  <Button 
-                    onClick={install} 
-                    size="lg" 
-                    className="h-12 px-6 text-sm font-bold rounded-xl shadow-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-2 flex items-center transition-all duration-300 transform hover:scale-105 active:scale-95 border border-emerald-500/20"
-                  >
-                    <Download className="w-4 h-4 animate-bounce" /> Download Toolisiya App
-                  </Button>
-                </div>
-              )}
+
               
               <div className="flex flex-wrap justify-center gap-6 text-sm font-semibold text-muted-foreground">
                 <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-500" /> Private & Secure</span>
@@ -244,48 +234,7 @@ const HomePage = () => {
         {/* AdSense Placeholder / White Space */}
         <div className="w-full h-8 md:h-16"></div>
 
-        {/* PWA Install CTA Section */}
-        <section className="relative z-10 py-20 px-4 bg-muted/20 border-t border-border">
-          <div className="container mx-auto max-w-5xl">
-            <div className="bg-card border border-border rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
-              
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-                <div className="flex-1 text-center md:text-left">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Install Toolisiya App</h2>
-                  <p className="text-muted-foreground text-lg mb-6">Get lightning-fast access, offline support, and native app performance directly from your home screen. No App Store required.</p>
-                  <ul className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center md:justify-start text-sm font-medium mb-8 text-foreground">
-                    <li className="flex items-center gap-2"><Download className="w-5 h-5 text-primary" /> 1-Click Install</li>
-                    <li className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Uses &lt;1MB Space</li>
-                  </ul>
-                  {!isInstalled ? (
-                    <Button 
-                      onClick={install} 
-                      size="lg" 
-                      className="h-14 px-8 text-base font-bold rounded-xl shadow-md bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto gap-2"
-                    >
-                      <Download className="w-5 h-5" /> Install Toolisiya App
-                    </Button>
-                  ) : (
-                    <Button 
-                      disabled 
-                      size="lg" 
-                      className="h-14 px-8 text-base font-bold rounded-xl shadow-md bg-emerald-500/20 text-emerald-700 border border-emerald-500/30 w-full sm:w-auto gap-2"
-                    >
-                      <CheckCircle2 className="w-5 h-5" /> App Installed
-                    </Button>
-                  )}
-                </div>
-                
-                <div className="shrink-0 relative hidden md:block">
-                  <div className="w-48 h-48 bg-muted rounded-3xl border-4 border-border flex items-center justify-center shadow-lg rotate-3 hover:rotate-0 transition-transform duration-500">
-                    <img src="/logo-transparent.png" alt="App Icon" className="w-24 h-24 drop-shadow-md" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+
 
       </main>
     </div>
