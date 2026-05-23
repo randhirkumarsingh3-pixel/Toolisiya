@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -76,7 +77,13 @@ const ToolsManagement = () => {
   // --- TOOLS LOGIC ---
   const handleCategoryUpdate = async (toolId, newCategoryName) => {
     try {
-      await pb.collection('tools').update(toolId, { category: newCategoryName }, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/tools/${toolId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ category: newCategoryName }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) throw new Error('Failed to update category');
+      
       setTools(prev => prev.map(t => t.id === toolId ? { ...t, category: newCategoryName } : t));
       toast.success('Category updated successfully');
     } catch (err) {
@@ -92,7 +99,13 @@ const ToolsManagement = () => {
     if (tools.some(t => t.url === newUrl && t.id !== toolId)) return toast.error('This URL is already in use');
 
     try {
-      await pb.collection('tools').update(toolId, { url: newUrl }, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/tools/${toolId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ url: newUrl }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) throw new Error('Failed to update URL');
+      
       setTools(prev => prev.map(t => t.id === toolId ? { ...t, url: newUrl } : t));
       toast.success('URL updated successfully');
     } catch (err) {
@@ -102,7 +115,13 @@ const ToolsManagement = () => {
 
   const handleStatusUpdate = async (toolId, newStatus) => {
     try {
-      await pb.collection('tools').update(toolId, { status: newStatus }, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/tools/${toolId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status: newStatus }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) throw new Error('Failed to update tool status');
+
       setTools(prev => prev.map(t => t.id === toolId ? { ...t, status: newStatus } : t));
       if (fetchActiveTools) fetchActiveTools();
       toast.success(`Tool ${newStatus === 'active' ? 'enabled' : 'disabled'} successfully`);
@@ -114,7 +133,9 @@ const ToolsManagement = () => {
   const handleDeleteTool = async (tool) => {
     if (window.confirm(`Permanently delete the tool "${tool.name}"?`)) {
       try {
-        await pb.collection('tools').delete(tool.id, { $autoCancel: false });
+        const res = await apiServerClient.fetch(`/admin/tools/${tool.id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to delete tool');
+
         setTools(prev => prev.filter(t => t.id !== tool.id));
         toast.success(`Tool deleted`);
       } catch (err) {
@@ -143,13 +164,23 @@ const ToolsManagement = () => {
   const handleSaveCat = async () => {
     if (!catFormData.name || !catFormData.slug) return toast.error('Name and Slug are required');
     try {
+      let res;
       if (selectedCategory) {
-        await pb.collection('categories').update(selectedCategory.id, catFormData);
-        toast.success('Category updated');
+        res = await apiServerClient.fetch(`/admin/categories/${selectedCategory.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(catFormData),
+          headers: { 'Content-Type': 'application/json' },
+        });
       } else {
-        await pb.collection('categories').create(catFormData);
-        toast.success('Category created');
+        res = await apiServerClient.fetch(`/admin/categories`, {
+          method: 'POST',
+          body: JSON.stringify(catFormData),
+          headers: { 'Content-Type': 'application/json' },
+        });
       }
+      if (!res.ok) throw new Error('Failed to save category');
+
+      toast.success(selectedCategory ? 'Category updated' : 'Category created');
       setIsEditCatOpen(false);
       fetchData();
     } catch (err) {
@@ -159,7 +190,9 @@ const ToolsManagement = () => {
 
   const handleDeleteCat = async () => {
     try {
-      await pb.collection('categories').delete(selectedCategory.id);
+      const res = await apiServerClient.fetch(`/admin/categories/${selectedCategory.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete category');
+
       toast.success('Category deleted');
       setIsDeleteCatOpen(false);
       fetchData();
@@ -170,7 +203,13 @@ const ToolsManagement = () => {
 
   const toggleCatStatus = async (category) => {
     try {
-      await pb.collection('categories').update(category.id, { is_active: !category.is_active }, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/categories/${category.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ is_active: !category.is_active }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+
       setCategories(prev => prev.map(c => c.id === category.id ? { ...c, is_active: !c.is_active } : c));
       if (fetchActiveTools) fetchActiveTools();
       toast.success(`Category ${!category.is_active ? 'enabled' : 'disabled'}`);

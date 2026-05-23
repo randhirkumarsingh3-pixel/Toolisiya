@@ -378,7 +378,7 @@ router.post('/tools', adminAuthMiddleware, async (req, res) => {
 router.put('/tools/:toolId', adminAuthMiddleware, async (req, res) => {
   addSecurityHeaders(res);
   const { toolId } = req.params;
-  const { name, description, category, icon, thumbnail, enabled, usageCount, popularityRank } = req.body;
+  const { name, description, category, icon, thumbnail, status, url, usageCount, popularityRank } = req.body;
 
   logger.info(`Updating tool: ${toolId} by admin: ${req.admin.email}`);
 
@@ -388,7 +388,8 @@ router.put('/tools/:toolId', adminAuthMiddleware, async (req, res) => {
   if (category !== undefined) updateData.category = category;
   if (icon !== undefined) updateData.icon = icon;
   if (thumbnail !== undefined) updateData.thumbnail = thumbnail;
-  if (enabled !== undefined) updateData.enabled = enabled;
+  if (status !== undefined) updateData.status = status;
+  if (url !== undefined) updateData.url = url;
   if (usageCount !== undefined) updateData.usage_count = usageCount;
   if (popularityRank !== undefined) updateData.popularity_rank = popularityRank;
 
@@ -446,6 +447,89 @@ router.delete('/tools/:toolId', adminAuthMiddleware, async (req, res) => {
     success: true,
     message: `Tool "${tool.name}" deleted successfully`,
   });
+});
+
+// POST /admin/categories
+router.post('/categories', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { name, slug, icon, description, is_active, order } = req.body;
+
+  if (!name || !slug) {
+    return res.status(400).json({ error: 'Name and slug are required' });
+  }
+
+  logger.info(`Creating new category: ${name} by admin: ${req.admin.email}`);
+
+  const category = await pb.collection('categories').create({
+    name,
+    slug,
+    icon: icon || 'Layers',
+    description: description || null,
+    is_active: is_active !== false,
+    order: order || 0,
+  });
+
+  // Log admin action
+  await pb.collection('admin_logs').create({
+    admin_id: req.admin.adminId,
+    action: 'create_category',
+    entity_type: 'category',
+    entity_id: category.id,
+    details: `Created category: ${name}`,
+  });
+
+  res.status(201).json(category);
+});
+
+// PUT /admin/categories/:categoryId
+router.put('/categories/:categoryId', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { categoryId } = req.params;
+  const { name, slug, icon, description, is_active, order } = req.body;
+
+  logger.info(`Updating category: ${categoryId} by admin: ${req.admin.email}`);
+
+  const updateData = {};
+  if (name !== undefined) updateData.name = name;
+  if (slug !== undefined) updateData.slug = slug;
+  if (icon !== undefined) updateData.icon = icon;
+  if (description !== undefined) updateData.description = description;
+  if (is_active !== undefined) updateData.is_active = is_active;
+  if (order !== undefined) updateData.order = order;
+
+  const category = await pb.collection('categories').update(categoryId, updateData);
+
+  // Log admin action
+  await pb.collection('admin_logs').create({
+    admin_id: req.admin.adminId,
+    action: 'update_category',
+    entity_type: 'category',
+    entity_id: categoryId,
+    details: `Updated category: ${category.name}`,
+  });
+
+  res.json(category);
+});
+
+// DELETE /admin/categories/:categoryId
+router.delete('/categories/:categoryId', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { categoryId } = req.params;
+
+  logger.info(`Deleting category: ${categoryId} by admin: ${req.admin.email}`);
+  const category = await pb.collection('categories').getOne(categoryId);
+  await pb.collection('categories').delete(categoryId);
+
+  // Log admin action
+  await pb.collection('admin_logs').create({
+    admin_id: req.admin.adminId,
+    action: 'delete_category',
+    entity_type: 'category',
+    entity_id: categoryId,
+    details: `Deleted category: ${category.name}`,
+  });
+
+  res.json({ success: true });
 });
 
 // GET /admin/settings
