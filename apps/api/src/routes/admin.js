@@ -284,7 +284,74 @@ router.get('/users', adminAuthMiddleware, async (req, res) => {
   });
 });
 
-// GET /admin/tools
+// GET /admin/admin_users
+router.get('/admin_users', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { page = 1, limit = 50 } = req.query;
+  logger.info(`Admin users list requested by admin: ${req.admin.email}`);
+  const users = await pb.collection('admin_users').getList(page, limit, { sort: '-created' });
+  res.json({
+    items: users.items.map(u => ({
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      role: u.role,
+      status: u.status,
+      created: u.created,
+      lastLogin: u.last_login
+    })),
+    page: users.page,
+    perPage: users.perPage,
+    totalItems: users.totalItems,
+    totalPages: users.totalPages,
+  });
+});
+
+// POST /admin/admin_users
+router.post('/admin_users', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { email, name, role, status, password, passwordConfirm } = req.body;
+  logger.info(`Creating admin user: ${email} by admin: ${req.admin.email}`);
+  
+  const user = await pb.collection('admin_users').create({
+    email,
+    name,
+    role,
+    status,
+    password,
+    passwordConfirm,
+    emailVisibility: true
+  });
+  res.status(201).json(user);
+});
+
+// PUT /admin/admin_users/:id
+router.put('/admin_users/:id', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { id } = req.params;
+  const { name, email, role, status } = req.body;
+  logger.info(`Updating admin user: ${id} by admin: ${req.admin.email}`);
+  
+  const updateData = {};
+  if (name !== undefined) updateData.name = name;
+  if (email !== undefined) updateData.email = email;
+  if (role !== undefined) updateData.role = role;
+  if (status !== undefined) updateData.status = status;
+
+  const user = await pb.collection('admin_users').update(id, updateData);
+  res.json(user);
+});
+
+// DELETE /admin/admin_users/:id
+router.delete('/admin_users/:id', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  const { id } = req.params;
+  logger.info(`Deleting admin user: ${id} by admin: ${req.admin.email}`);
+  await pb.collection('admin_users').delete(id);
+  res.json({ success: true });
+});
+
+// GET /admin/users
 router.get('/tools', adminAuthMiddleware, async (req, res) => {
   addSecurityHeaders(res);
   const { page = 1, limit = 10, search = '', category = '', sort = '-created' } = req.query;

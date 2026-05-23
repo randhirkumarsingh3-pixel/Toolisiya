@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { 
   Search, Users, UserPlus, Trash2, Edit, CheckCircle2, AlertTriangle, MonitorSmartphone, Key, RefreshCw
 } from 'lucide-react';
@@ -45,15 +45,11 @@ const UserManagement = () => {
     setError(null);
     try {
       if (activeTab === 'admin') {
-        const records = await pb.collection('admin_users').getList(1, 50, {
-          $autoCancel: false
-        });
-        setUsers(records.items || []);
+        const data = await apiServerClient.fetch('/admin/admin_users?limit=50');
+        setUsers(data.items || []);
       } else {
-        const records = await pb.collection('users').getList(1, 50, {
-          $autoCancel: false
-        });
-        setAppUsers(records.items || []);
+        const data = await apiServerClient.fetch('/admin/users?limit=50');
+        setAppUsers(data.items || []);
       }
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -82,15 +78,18 @@ const UserManagement = () => {
     try {
       // Generate a temporary password for creation
       const tempPass = 'Temp' + Math.random().toString(36).slice(-8) + '!';
-      await pb.collection('admin_users').create({
-        email: formData.email,
-        name: formData.name,
-        role: formData.role,
-        status: formData.status,
-        password: tempPass,
-        passwordConfirm: tempPass,
-        emailVisibility: true
-      }, { $autoCancel: false });
+      
+      await apiServerClient.fetch('/admin/admin_users', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: formData.email,
+          name: formData.name,
+          role: formData.role,
+          status: formData.status,
+          password: tempPass,
+          passwordConfirm: tempPass
+        })
+      });
       
       toast.success('Admin user created successfully. Please reset their password.');
       setIsAddOpen(false);
@@ -107,12 +106,15 @@ const UserManagement = () => {
     }
 
     try {
-      await pb.collection('admin_users').update(selectedUser.id, {
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        status: formData.status
-      }, { $autoCancel: false });
+      await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          status: formData.status
+        })
+      });
       
       toast.success('Admin updated successfully');
       setIsEditOpen(false);
@@ -124,7 +126,9 @@ const UserManagement = () => {
 
   const handleDeleteUser = async () => {
     try {
-      await pb.collection('admin_users').delete(selectedUser.id, { $autoCancel: false });
+      await apiServerClient.fetch(`/admin/admin_users/${selectedUser.id}`, {
+        method: 'DELETE'
+      });
       toast.success('Admin user deleted successfully');
       setIsDeleteOpen(false);
       fetchUsers();
@@ -141,7 +145,10 @@ const UserManagement = () => {
   const toggleStatus = async (user) => {
     try {
       const newStatus = user.status === 'Active' ? 'Inactive' : 'Active';
-      await pb.collection('admin_users').update(user.id, { status: newStatus }, { $autoCancel: false });
+      await apiServerClient.fetch(`/admin/admin_users/${user.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status: newStatus })
+      });
       toast.success(`User marked as ${newStatus}`);
       fetchUsers();
     } catch (err) {
