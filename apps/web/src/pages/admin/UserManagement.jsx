@@ -329,15 +329,9 @@ const UserManagement = () => {
                                 }}>
                                   <MonitorSmartphone className="h-4 w-4 text-primary" />
                                 </Button>
-                                <Button variant="ghost" size="icon" title="Change Password" onClick={() => openPasswordReset(user)}>
-                                  <Key className="h-4 w-4 text-blue-500" />
-                                </Button>
-                                <Button variant="ghost" size="icon" title={user.status === 'Active' ? "Deactivate" : "Activate"} onClick={() => toggleStatus(user)}>
-                                  {user.status === 'Active' ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <MonitorSmartphone className="h-4 w-4 text-muted-foreground" />}
-                                </Button>
                                 <Button variant="ghost" size="icon" title="Edit User" onClick={() => {
                                   setSelectedUser(user);
-                                  setFormData({ email: user.email, name: user.name, role: user.role, status: user.status || 'Active' });
+                                  setEditData({ name: user.name || '', email: user.email || '', mobile: user.mobile || '' });
                                   setIsEditOpen(true);
                                 }}>
                                   <Edit className="h-4 w-4 text-orange-500" />
