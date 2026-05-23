@@ -55,7 +55,7 @@ app.use(securityHeaders);
 app.use(globalRateLimit);
 app.use(cors({
 	origin: allowedOrigins.length === 1 && allowedOrigins[0] === '*'
-		? '*'
+		? true
 		: (origin, callback) => {
 			// Allow requests with no origin (curl, Postman, server-to-server)
 			if (!origin) return callback(null, true);
@@ -83,9 +83,9 @@ app.use((req, res) => {
 
 const port = process.env.PORT || 3001;
 
-app.listen(port, () => {
-	logger.info(`🚀 API Server running on http://localhost:${port}`);
-	console.log(`🚀 API Server running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+	logger.info(`🚀 API Server running on port ${port}`);
+	console.log(`🚀 API Server running on port ${port}`);
 	
 	// Initialize email scheduler
 	initializeEmailScheduler();
