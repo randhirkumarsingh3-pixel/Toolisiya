@@ -34,16 +34,20 @@ router.post('/auto-generate', async (req, res) => {
 
   try {
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-    if (!apiKey) {
-      // Fallback local generation if no API key is present
-      logger.warn('GOOGLE_GEMINI_API_KEY missing, using local fallback for SEO generation');
-      const name = pageName.trim();
-      return res.json({
+    
+    // Function to generate local fallback SEO
+    const generateLocalFallback = (name) => {
+      logger.warn('Using local fallback for SEO generation');
+      return {
         meta_title: `${name} Online - Free Tool | Toolisiya`,
         meta_description: `Use our free online ${name} for quick, accurate calculations and conversions. Safe, responsive, and completely free.`,
         keywords: `${name.toLowerCase()}, free online ${name.toLowerCase()}, ${name.toLowerCase()} tool, online calculator, converter`,
         h1_tag: name
-      });
+      };
+    };
+
+    if (!apiKey) {
+      return res.json(generateLocalFallback(pageName.trim()));
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -55,19 +59,25 @@ Additional Context: "${context || 'A free online web tool'}"
 
 Remember to return ONLY valid JSON matching the specified structure.`;
 
-    const chat = model.startChat({
-      history: [
-        { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-        { role: 'model', parts: [{ text: 'Understood. I will provide strictly valid JSON without markdown wrapping.' }] }
-      ],
-      generationConfig: {
-        maxOutputTokens: 1024,
-        temperature: 0.7,
-      },
-    });
+    let output = '';
+    try {
+      const chat = model.startChat({
+        history: [
+          { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
+          { role: 'model', parts: [{ text: 'Understood. I will provide strictly valid JSON without markdown wrapping.' }] }
+        ],
+        generationConfig: {
+          maxOutputTokens: 1024,
+          temperature: 0.7,
+        },
+      });
 
-    const result = await chat.sendMessage(prompt);
-    let output = result.response.text().trim();
+      const result = await chat.sendMessage(prompt);
+      output = result.response.text().trim();
+    } catch (apiError) {
+      logger.error('Gemini API call failed, falling back to local generation:', apiError.message);
+      return res.json(generateLocalFallback(pageName.trim()));
+    }
 
     // Clean up markdown wrapping if the LLM adds it despite instructions
     if (output.startsWith('\`\`\`json')) {
