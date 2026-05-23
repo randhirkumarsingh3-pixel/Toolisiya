@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'sonner';
-import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import SEO_METADATA from '@/data/SEO_METADATA.json';
 
 const SEOManagement = () => {
@@ -28,6 +29,7 @@ const SEOManagement = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [currentDbId, setCurrentDbId] = useState(null);
 
   // Character Counts & Metrics
@@ -141,6 +143,53 @@ const SEOManagement = () => {
     }
   };
 
+  const handleAutoGenerate = async () => {
+    if (!selectedPage) {
+      toast.error("Please select a page first");
+      return;
+    }
+    
+    // Warn if overriding existing data
+    if (formData.meta_title && formData.meta_description) {
+      if (!window.confirm("This will overwrite the current SEO metadata. Do you want to continue?")) {
+        return;
+      }
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await apiServerClient.fetch('/seo-ai/auto-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          pageName: selectedPage,
+          context: 'A free online web tool on Toolisiya'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to auto-generate SEO');
+      }
+
+      const generatedData = await response.json();
+      
+      setFormData(prev => ({
+        ...prev,
+        meta_title: generatedData.meta_title || prev.meta_title,
+        meta_description: generatedData.meta_description || prev.meta_description,
+        keywords: generatedData.keywords || prev.keywords,
+        h1_tag: generatedData.h1_tag || prev.h1_tag,
+      }));
+
+      toast.success("SEO Metadata auto-generated successfully!");
+    } catch (err) {
+      toast.error(err.message || "Failed to generate SEO metadata");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const getColorByScore = (score) => {
     if (score >= 80) return "bg-emerald-500";
     if (score >= 60) return "bg-yellow-500";
@@ -177,10 +226,21 @@ const SEOManagement = () => {
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={handleSave} disabled={isSaving || isLoading} className="shadow-sm font-bold">
-            {isSaving ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-            Save Changes
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={handleAutoGenerate} 
+              disabled={isGenerating || isLoading || !selectedPage} 
+              variant="secondary"
+              className="shadow-sm font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900"
+            >
+              {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+              {formData.meta_title ? "Regenerate SEO" : "Auto Update SEO"}
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving || isLoading} className="shadow-sm font-bold">
+              {isSaving ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+              Save Changes
+            </Button>
+          </div>
         </div>
       </div>
 
