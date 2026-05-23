@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'sonner';
-import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle, Sparkles } from 'lucide-react';
+import { Save, RefreshCw, UploadCloud, Download, Search, SearchCode, CheckCircle2, AlertTriangle, XCircle, Sparkles, Undo2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,6 +31,7 @@ const SEOManagement = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentDbId, setCurrentDbId] = useState(null);
+  const [undoData, setUndoData] = useState(null);
 
   // Character Counts & Metrics
   const titleLength = formData.meta_title.length;
@@ -108,6 +109,7 @@ const SEOManagement = () => {
         twitter_title: staticData.twitter_title || '',
         twitter_description: staticData.twitter_description || ''
       });
+      setUndoData(null); // Reset undo data when loading a new page
     } finally {
       setIsLoading(false);
     }
@@ -174,6 +176,9 @@ const SEOManagement = () => {
 
       const generatedData = await response.json();
       
+      // Save current state to allow undo
+      setUndoData({ ...formData });
+
       setFormData(prev => ({
         ...prev,
         meta_title: generatedData.meta_title || prev.meta_title,
@@ -187,6 +192,14 @@ const SEOManagement = () => {
       toast.error(err.message || "Failed to generate SEO metadata");
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleUndo = () => {
+    if (undoData) {
+      setFormData({ ...undoData });
+      setUndoData(null);
+      toast.success("Reverted to previous SEO metadata");
     }
   };
 
@@ -227,6 +240,17 @@ const SEOManagement = () => {
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
+            {undoData && (
+              <Button 
+                onClick={handleUndo} 
+                variant="outline"
+                className="shadow-sm font-bold"
+                title="Undo last Auto Update"
+              >
+                <Undo2 className="h-4 w-4 mr-2" />
+                Undo
+              </Button>
+            )}
             <Button 
               onClick={handleAutoGenerate} 
               disabled={isGenerating || isLoading || !selectedPage} 
