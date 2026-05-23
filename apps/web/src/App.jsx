@@ -261,13 +261,8 @@ const LoadingFallback = () => (
 
 const AppContent = () => {
   useAnalyticsTracker();
-  const [showSplash, setShowSplash] = useState(true);
   
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2500);
-
     // Log PWA Install Event
     const handleAppInstalled = async () => {
       try {
@@ -283,7 +278,6 @@ const AppContent = () => {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
@@ -292,11 +286,6 @@ const AppContent = () => {
   const { inactiveUrls, inactiveCategorySlugs } = useActiveTools();
 
   const isAdminRoute = location.pathname.startsWith('/admin') && location.pathname !== '/admin-login';
-
-  if (showSplash) {
-    return <SplashScreen />;
-  }
-
   // Normalize pathname: remove trailing slash for comparison
   const normalizedPath = location.pathname.endsWith('/') && location.pathname !== '/'
     ? location.pathname.slice(0, -1)
