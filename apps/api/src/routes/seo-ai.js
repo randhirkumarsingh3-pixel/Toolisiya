@@ -33,8 +33,8 @@ router.post('/auto-generate', async (req, res) => {
   }
 
   try {
-    // Fallback to the provided key if environment variable is missing on Hostinger
-    const apiKey = process.env.GOOGLE_GEMINI_API_KEY || 'AIzaSyDGoMTwW0pVA6hxtGGPb7FTQ1KluK2_SZs';
+    // Forcefully hardcode the new valid API key because the old invalid one is stuck in Hostinger's cache
+    const apiKey = 'AIzaSyDGoMTwW0pVA6hxtGGPb7FTQ1KluK2_SZs';
     if (!apiKey) {
       // Fallback local generation if no API key is present
       logger.warn('GOOGLE_GEMINI_API_KEY missing, using local fallback for SEO generation');

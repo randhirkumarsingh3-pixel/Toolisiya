@@ -139,7 +139,7 @@ export async function stream({ userId, systemPrompt, userMessage }) {
 	if (!apiUrl || apiUrl === 'undefined' || !apiUrl.startsWith('http')) {
 		logger.info('INTEGRATED_AI_API_URL missing or invalid, falling back to direct Gemini API');
 		const { GoogleGenerativeAI } = await import('@google/generative-ai');
-		const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+		const genAI = new GoogleGenerativeAI('AIzaSyDGoMTwW0pVA6hxtGGPb7FTQ1KluK2_SZs');
 		const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 		const history = await getHistory({ userId });
