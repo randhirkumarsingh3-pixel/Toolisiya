@@ -12,7 +12,6 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     autoRefreshToken: false
   },
   global: {
-    fetch: fetch.bind(globalThis),
     headers: { 'x-my-custom-header': 'toolisiya-api' }
   },
   realtime: {

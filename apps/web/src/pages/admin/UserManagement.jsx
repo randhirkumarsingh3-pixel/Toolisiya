@@ -47,10 +47,12 @@ const UserManagement = () => {
       if (activeTab === 'admin') {
         const res = await apiServerClient.fetch('/admin/admin_users?limit=50');
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch admin users');
         setUsers(data.items || []);
       } else {
         const res = await apiServerClient.fetch('/admin/users?limit=50');
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch app users');
         setAppUsers(data.items || []);
       }
     } catch (err) {
