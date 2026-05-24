@@ -96,7 +96,7 @@ const CATEGORIES = [
     ]
   },
   {
-    id: 'generator',
+    id: 'generators',
     name: 'Generators',
     icon: QrCode,
     count: 7,
@@ -204,17 +204,23 @@ const CATEGORIES = [
 ];
 
 const BrowseAllCategoriesPage = () => {
-  const { activeUrls, inactiveCategorySlugs } = useActiveTools();
+  const { activeUrls, inactiveCategorySlugs, activeTools } = useActiveTools();
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const navigate = useNavigate();
 
   const filteredCategories = CATEGORIES
     .filter(cat => !inactiveCategorySlugs.has(cat.id))
-    .map(cat => ({
-      ...cat,
-      tools: cat.tools.filter(t => activeUrls.has(t.path))
-    }))
+    .map(cat => {
+      const dbTools = activeTools
+        .filter(t => t.category === cat.name)
+        .map(t => ({ name: t.name, path: t.url }));
+      return {
+        ...cat,
+        count: dbTools.length,
+        tools: dbTools
+      };
+    })
     .filter(cat => 
       cat.name.toLowerCase().includes(search.toLowerCase()) || 
       cat.desc.toLowerCase().includes(search.toLowerCase()) ||
