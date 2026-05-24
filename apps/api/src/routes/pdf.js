@@ -357,6 +357,52 @@ router.post('/word-to-pdf', uploadWord.single('file'), async (req, res) => {
   }
 });
 
+// Function to check and install Python dependencies dynamically in Hostinger user-space if missing
+let pythonDepsChecked = false;
+const ensurePythonDeps = async () => {
+  if (pythonDepsChecked) return;
+
+  logger.info("Checking Python dependencies (pymupdf, python-docx)...");
+  try {
+    await new Promise((resolve, reject) => {
+      exec('python3 -c "import fitz, docx"', (error, stdout, stderr) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+    logger.info("Python dependencies are verified and installed.");
+    pythonDepsChecked = true;
+  } catch (err) {
+    logger.warn("Python dependencies (pymupdf/python-docx) are missing. Starting automatic user-level pip installation...");
+    try {
+      await new Promise((resolve, reject) => {
+        exec('pip3 install --user pymupdf python-docx', (error, stdout, stderr) => {
+          if (error) {
+            // Try fallback to standard pip
+            exec('pip install --user pymupdf python-docx', (error2, stdout2, stderr2) => {
+              if (error2) {
+                reject(new Error(`pip3 and pip installs failed. stderr: ${stderr}. stderr2: ${stderr2}`));
+              } else {
+                resolve();
+              }
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+      logger.info("Python dependencies installed successfully.");
+      pythonDepsChecked = true;
+    } catch (installErr) {
+      logger.error("Auto-installation of Python dependencies failed:", installErr);
+      throw new Error(`Python conversion dependencies (pymupdf, python-docx) are missing on the server, and automatic user-level installation failed: ${installErr.message}`);
+    }
+  }
+};
+
 // POST /pdf/pdf-to-word
 router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
   if (!req.file) {
@@ -365,6 +411,14 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
 
   const mode = req.body.mode || 'high'; // 'fast' or 'high'
   logger.info(`Converting PDF to Word: ${req.file.originalname} using mode: ${mode}`);
+
+  try {
+    // Ensure all backend python dependencies are installed on the server
+    await ensurePythonDeps();
+  } catch (depsErr) {
+    logger.error('Failed to satisfy python dependencies:', depsErr);
+    return res.status(500).json({ error: depsErr.message });
+  }
 
   // Create temporary files
   const tempId = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
