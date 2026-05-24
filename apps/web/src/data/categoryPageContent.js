@@ -53,7 +53,7 @@ export const categoryPageContent = [
     slug: "pdf",
     description: "Compress, merge, split, and manipulate PDF files with ease.",
     longDescription: "Manage your PDF files securely with our comprehensive suite of PDF tools. Whether you need to compress large files, merge multiple documents, or extract specific pages, our tools handle it all directly in your browser without uploading to a server.",
-    toolCount: 13,
+    toolCount: 14,
     benefits: [
       "Merge multiple PDFs into a single document instantly.",
       "Compress massive PDF files to save space.",
@@ -71,7 +71,7 @@ export const categoryPageContent = [
       { question: "Is there a file size limit?", answer: "The only limit is your device's memory, as processing happens locally." }
     ],
     relatedCategories: ["document", "image"],
-    tools: ["document-scanner", "pdf-compressor", "pdf-merger", "pdf-splitter", "pdf-page-rotator", "pdf-page-extractor", "pdf-watermark-adder", "pdf-to-image-converter", "pdf-blank-page-remover", "pdf-page-number", "pdf-header-footer-adder", "pdf-qr-code-adder", "pdf-bookmark-creator"],
+    tools: ["document-scanner", "pdf-compressor", "pdf-merger", "pdf-splitter", "pdf-page-rotator", "pdf-page-extractor", "pdf-watermark-adder", "pdf-to-image-converter", "pdf-blank-page-remover", "pdf-page-number", "pdf-header-footer-adder", "pdf-qr-code-adder", "pdf-bookmark-creator", "pdf-to-word"],
     keywords: ["pdf tools", "merge pdf", "compress pdf", "split pdf", "free pdf editor online"]
   },
   {

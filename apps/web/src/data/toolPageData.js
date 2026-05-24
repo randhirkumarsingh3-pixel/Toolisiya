@@ -73,6 +73,59 @@ export const toolPageData = {
   "pdf-splitter": createToolEntry("pdf-splitter", "PDF Splitter", "PDF", "Extract specific pages or split a PDF into a smaller file securely."),
   "pdf-compressor": createToolEntry("pdf-compressor", "PDF Compressor", "PDF", "Reduce PDF file size while maintaining acceptable quality for sharing."),
   "pdf-to-image-converter": createToolEntry("pdf-to-image-converter", "PDF to Image Converter", "PDF", "Convert PDF pages to PNG or JPG images with custom quality settings."),
+  "pdf-to-word": {
+    id: "pdf-to-word",
+    toolName: "PDF to Word Converter",
+    toolDescription: "Convert PDF documents into editable Microsoft Word (.docx) files online for free while preserving layout, fonts, columns, and tables.",
+    whatToolDoes: "Our PDF to Word Converter accurately transforms your PDF files into fully editable DOCX documents, retaining original formatting, font styles, multi-column grids, headers/footers, and images.",
+    whyUseful: [
+      "Retain original document layout, alignments, and font styling.",
+      "100% free online conversion without expensive software subscriptions.",
+      "Extract and reconstruct complex tables, bullet lists, and visual images.",
+      "Secure data handling ensures uploaded files are deleted immediately after conversion."
+    ],
+    howToUseSteps: [
+      "Select and upload the PDF file you want to convert (up to 50MB).",
+      "Review the file details (page count, size) and select the conversion mode.",
+      "Choose 'High Accuracy' for advanced layout analysis or 'Fast' for standard processing.",
+      "Click the 'Convert to Word' button and watch the progress.",
+      "Download your reconstructed, fully editable Microsoft Word (.docx) file instantly."
+    ],
+    howItWorks: "The converter utilizes an advanced layout reconstruction algorithm. It maps text paragraphs, computes spacing, reads font metadata, detects table structures by alignment patterns, and extracts visual images to rebuild a native Microsoft Word document from the source layout coordinates.",
+    features: [
+      "Advanced Font and Alignment Preservation",
+      "Horizontal Multi-Column Layout and Grid Detection",
+      "Native Word Table and Border Reconstruction",
+      "High-Fidelity Visual Image Extraction and Placement",
+      "Fast & Secure Conversion with No Signup Required"
+    ],
+    useCases: [
+      "Business professionals modifying scanned PDF contracts or invoices.",
+      "Students converting academic papers to write references and edit text.",
+      "Office administrators editing manuals, guidelines, or structured resumes.",
+      "Content creators extracting paragraphs and tables without retyping."
+    ],
+    faqs: [
+      { question: "Is this PDF to Word Converter free?", answer: "Yes, this tool is 100% free to use. There are no hidden fees, page limitations, or registrations required." },
+      { question: "Will the converted Word document keep the layout intact?", answer: "Yes, our converter is optimized to preserve the original formatting, paragraph spacing, columns, tables, headers/footers, and images as accurately as possible." },
+      { question: "Are my uploaded PDF files stored on your server?", answer: "No. We prioritize your security and privacy. Files are processed temporarily in-memory or in isolated directories and are deleted immediately once the conversion finishes." },
+      { question: "Can I convert scanned PDFs to Word?", answer: "Yes. Our high-accuracy conversion mode performs visual layout and text analysis, helping reconstruct text blocks from scanned pages." },
+      { question: "Is there a limit on the file size I can upload?", answer: "The maximum file size supported is 50MB per document, which is sufficient for almost all ebooks, reports, and manuals." },
+      { question: "Can I use this converter on my mobile phone?", answer: "Absolutely. The converter is built with a mobile-first responsive design, working seamlessly on iPhones, Android devices, and tablets." }
+    ],
+    seoContent: `
+      In today's digital workspace, Portable Document Format (PDF) files are the gold standard for sharing documents. However, editing them can be an absolute nightmare without expensive subscriptions to professional desktop software. That is why having a reliable, free, and secure PDF to Word Converter online is essential for modern workflows. Toolisiya's PDF to Word Converter is designed to provide high-fidelity reconstruction of your documents directly inside your browser.
+
+      Our conversion pipeline does not simply dump plain text from the PDF. It uses a hybrid reconstruction engine that analyzes horizontal alignments, line spacing, and font descriptors to build a native DOCX document. When it detects side-by-side text, it groups them into native tables to avoid overlapping or misaligned text columns. Furthermore, images are extracted at high resolution and embedded inline at their exact relative positions, ensuring that your manuals, invoices, and resumes look identical to the original PDF.
+
+      We understand that privacy is paramount when dealing with financial reports, legal contracts, and personal resumes. Toolisiya runs secure files handling protocols: all uploads are processed through isolated, non-persistent workspaces and are permanently purged from the system instantly upon completion of the download. No login, signup, or personal data is collected, making this a safe alternative to online portals that harvest files. Bookmark this tool today and enjoy premium SaaS-level conversion at zero cost.
+    `,
+    relatedTools: [
+      { name: "Word to PDF", url: "/pdf/word-to-pdf" },
+      { name: "Excel to PDF", url: "/pdf/excel-to-pdf" },
+      { name: "PDF Compressor", url: "/pdf/pdf-compressor" }
+    ]
+  },
   
   // Document Tools
   "excel-to-pdf": createToolEntry("excel-to-pdf", "Excel to PDF", "Document", "Convert Microsoft Excel spreadsheets to PDF format."),

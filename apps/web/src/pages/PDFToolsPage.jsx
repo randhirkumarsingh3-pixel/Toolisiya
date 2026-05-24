@@ -29,7 +29,8 @@ const PDFToolsPage = () => {
     { id: 'pdf-bookmark-creator', name: 'PDF Bookmark Creator', path: '/pdf/pdf-bookmark-creator', icon: FileDown, description: 'Create internal navigation bookmarks.' },
     { id: 'pdf-text-adder', name: 'PDF Text Adder', path: '/pdf/pdf-text-adder', icon: FileDown, description: 'Add text annotations to PDF documents.' },
     { id: 'excel-to-pdf', name: 'Excel to PDF', path: '/pdf/excel-to-pdf', icon: FileDown, description: 'Convert Excel spreadsheets to PDF.' },
-    { id: 'word-to-pdf', name: 'Word to PDF', path: '/pdf/word-to-pdf', icon: FileDown, description: 'Convert Word documents to PDF.' }
+    { id: 'word-to-pdf', name: 'Word to PDF', path: '/pdf/word-to-pdf', icon: FileDown, description: 'Convert Word documents to PDF.' },
+    { id: 'pdf-to-word', name: 'PDF to Word', path: '/pdf/pdf-to-word', icon: FileDown, description: 'Convert PDF files to editable Word documents.' }
   ];
 
   const filteredTools = tools.filter(tool => {
