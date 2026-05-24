@@ -1069,4 +1069,69 @@ router.put('/seo_settings/:id', adminAuthMiddleware, async (req, res) => {
   }
 });
 
+// GET /admin/menu-setup
+router.get('/menu-setup', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const tools = await pb.collection('tools').getFullList({
+      filter: "status = 'active'",
+      sort: 'name',
+    });
+    const categories = await pb.collection('categories').getFullList({
+      filter: "is_active = true",
+      sort: 'order',
+    });
+    const menuSettings = await pb.collection('menu_settings').getFullList();
+
+    res.json({
+      tools,
+      categories,
+      menuSettings,
+    });
+  } catch (error) {
+    logger.error(`Error in GET /admin/menu-setup: ${error.message}`);
+    res.status(500).json({ error: 'Failed to load menu setup configuration' });
+  }
+});
+
+// PUT /admin/menu-setup/tools/:toolId
+router.put('/menu-setup/tools/:toolId', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const { toolId } = req.params;
+    const { show_in_menu } = req.body;
+    
+    const updated = await pb.collection('tools').update(toolId, { show_in_menu });
+    res.json(updated);
+  } catch (error) {
+    logger.error(`Error updating tool menu status: ${error.message}`);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// POST /admin/menu-setup/settings
+router.post('/menu-setup/settings', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const newRecord = await pb.collection('menu_settings').create(req.body);
+    res.status(201).json(newRecord);
+  } catch (error) {
+    logger.error(`Error creating menu settings: ${error.message}`);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PUT /admin/menu-setup/settings/:id
+router.put('/menu-setup/settings/:id', adminAuthMiddleware, async (req, res) => {
+  addSecurityHeaders(res);
+  try {
+    const { id } = req.params;
+    const updated = await pb.collection('menu_settings').update(id, req.body);
+    res.json(updated);
+  } catch (error) {
+    logger.error(`Error updating menu settings: ${error.message}`);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default router;

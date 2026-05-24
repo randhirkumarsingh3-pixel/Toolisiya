@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { toast } from 'sonner';
 import { Save, GripVertical, Menu as MenuIcon, ChevronDown, ChevronUp, Wrench } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient.js';
+import apiServerClient from '@/lib/apiServerClient.js';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -24,18 +25,17 @@ export default function MenuSetup() {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        // Fetch active tools and unique categories
-        const toolsRecords = await pb.collection('tools').getFullList({ 
-          filter: "status = 'active'",
-          $autoCancel: false 
-        });
+        const response = await apiServerClient.fetch('/admin/menu-setup');
+        if (!response.ok) throw new Error('Failed to fetch menu configuration from server');
+        const data = await response.json();
+
+        const toolsRecords = data.tools || [];
         setTools(toolsRecords);
         
-        const catRecords = await pb.collection('categories').getFullList({ filter: "is_active = true", $autoCancel: false });
+        const catRecords = data.categories || [];
         const allUniqueCats = catRecords.map(c => c.name);
 
-        // Fetch menu_settings
-        const settingsRecords = await pb.collection('menu_settings').getFullList({ $autoCancel: false });
+        const settingsRecords = data.menuSettings || [];
 
         if (settingsRecords.length > 0) {
           const record = settingsRecords[0];
@@ -57,11 +57,18 @@ export default function MenuSetup() {
           const defaultVisibility = {};
           allUniqueCats.forEach(c => defaultVisibility[c] = true);
 
-          const newRecord = await pb.collection('menu_settings').create({
-            categories: allUniqueCats,
-            categoryOrder: allUniqueCats,
-            visibility: defaultVisibility
-          }, { $autoCancel: false });
+          // Create default menu settings on backend
+          const createRes = await apiServerClient.fetch('/admin/menu-setup/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              categories: allUniqueCats,
+              categoryOrder: allUniqueCats,
+              visibility: defaultVisibility
+            })
+          });
+          if (!createRes.ok) throw new Error('Failed to create default menu settings');
+          const newRecord = await createRes.json();
 
           setRecordId(newRecord.id);
           setCategories(allUniqueCats);
@@ -98,10 +105,17 @@ export default function MenuSetup() {
   const handleToolMenuToggle = async (toolId, currentShowStatus) => {
     try {
       const newStatus = !currentShowStatus;
-      await pb.collection('tools').update(toolId, { show_in_menu: newStatus }, { $autoCancel: false });
+      const res = await apiServerClient.fetch(`/admin/menu-setup/tools/${toolId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ show_in_menu: newStatus })
+      });
+      if (!res.ok) throw new Error('Failed to update tool status on server');
+
       setTools(prev => prev.map(t => t.id === toolId ? { ...t, show_in_menu: newStatus } : t));
       toast.success(newStatus ? 'Tool added to navigation dropdown' : 'Tool removed from dropdown');
     } catch (err) {
+      console.error('Error toggling tool visibility:', err);
       toast.error('Failed to update tool menu visibility');
     }
   };
@@ -111,13 +125,25 @@ export default function MenuSetup() {
     try {
       const payload = { categories, categoryOrder, visibility };
       if (recordId) {
-        await pb.collection('menu_settings').update(recordId, payload, { $autoCancel: false });
+        const res = await apiServerClient.fetch(`/admin/menu-setup/settings/${recordId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Failed to update menu settings');
       } else {
-        const newRec = await pb.collection('menu_settings').create(payload, { $autoCancel: false });
+        const res = await apiServerClient.fetch('/admin/menu-setup/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Failed to create menu settings');
+        const newRec = await res.json();
         setRecordId(newRec.id);
       }
       toast.success('Menu configuration saved successfully');
     } catch (error) {
+      console.error('Error saving menu config:', error);
       toast.error('Failed to save menu configuration');
     } finally {
       setIsSaving(false);

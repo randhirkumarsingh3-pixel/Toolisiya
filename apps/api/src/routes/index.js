@@ -15,7 +15,6 @@ import integratedAiRouter from './integrated-ai.js';
 import emailReportsRouter from './email-reports.js';
 import toolStatusRouter from './tool-status.js';
 import adsRoutes from './ads.js';
-import seoAiRoutes from './seo-ai.js';
 
 export default () => {
     const router = Router();
@@ -35,7 +34,6 @@ export default () => {
     router.use('/', sitemapRoutes);
     router.use('/', robotsRoutes);
     router.use('/', adsRoutes);
-    router.use('/seo-ai', seoAiRoutes);
 
     return router;
 };
