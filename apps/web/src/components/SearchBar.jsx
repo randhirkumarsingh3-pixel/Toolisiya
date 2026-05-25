@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, ArrowRight, Wrench } from 'lucide-react';
+import { Search, ArrowRight, Wrench, Command } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import pb from '@/lib/pocketbaseClient.js';
@@ -9,8 +9,24 @@ const SearchBar = ({ className = '' }) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const wrapperRef = useRef(null);
+  const inputRef = useRef(null);
   const navigate = useNavigate();
+
+  const placeholders = [
+    "Search 50+ tools instantly...",
+    "Try 'Photo Editor'...",
+    "Search PDF, OCR, Finance tools...",
+    "Try 'Background Remover'...",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const { activeTools } = useActiveTools();
 
@@ -31,8 +47,21 @@ const SearchBar = ({ className = '' }) => {
         setIsOpen(false);
       }
     };
+    
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        inputRef.current?.focus();
+        setIsOpen(true);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleGlobalKeyDown);
+    };
   }, []);
 
   const handleKeyDown = (e) => {
@@ -81,28 +110,37 @@ const SearchBar = ({ className = '' }) => {
   };
 
   return (
-    <div ref={wrapperRef} className={`relative w-full max-w-[600px] mx-auto ${className}`}>
-      <div className="relative group">
-        <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors ${isOpen && query ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
-        <Input
-          type="text"
-          placeholder="Search for tools, calculators, generators..."
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-            setSelectedIndex(-1);
-          }}
-          onFocus={() => {
-            if (query.trim().length > 0) setIsOpen(true);
-          }}
-          onKeyDown={handleKeyDown}
-          className="w-full pl-12 pr-12 py-4 text-base h-14 rounded-xl border-2 border-muted hover:border-primary/30 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 shadow-sm transition-all bg-background"
-          role="combobox"
-          aria-expanded={isOpen}
-          aria-controls="search-dropdown"
-          aria-activedescendant={selectedIndex >= 0 ? `search-item-${selectedIndex}` : undefined}
-        />
+    <div ref={wrapperRef} className={`relative w-full max-w-[640px] mx-auto ${className}`}>
+      <div className="relative group rounded-xl p-[2px] overflow-hidden transition-all duration-300 shadow-sm focus-within:shadow-md focus-within:shadow-primary/10">
+        {/* Animated Gradient Border Layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-border via-border to-border group-focus-within:from-primary group-focus-within:via-blue-500 group-focus-within:to-primary opacity-30 group-focus-within:opacity-100 transition-opacity duration-500 rounded-xl"></div>
+        
+        <div className="relative bg-background rounded-[10px] flex items-center w-full">
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors duration-300 z-10 ${isOpen && query ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
+          <Input
+            ref={inputRef}
+            type="text"
+            placeholder={placeholders[placeholderIndex]}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIsOpen(true);
+              setSelectedIndex(-1);
+            }}
+            onFocus={() => {
+              if (query.trim().length > 0) setIsOpen(true);
+            }}
+            onKeyDown={handleKeyDown}
+            className="w-full pl-12 pr-16 py-4 text-base h-[60px] rounded-[10px] border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent transition-all shadow-none relative z-10"
+            role="combobox"
+            aria-expanded={isOpen}
+            aria-controls="search-dropdown"
+            aria-activedescendant={selectedIndex >= 0 ? `search-item-${selectedIndex}` : undefined}
+          />
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[10px] font-bold text-muted-foreground/70 bg-muted/50 px-2 py-1 rounded-md border border-border/50 z-10 pointer-events-none transition-opacity group-focus-within:opacity-0">
+            <Command className="w-3 h-3" /> K
+          </div>
+        </div>
       </div>
 
       {isOpen && query.trim().length > 0 && (

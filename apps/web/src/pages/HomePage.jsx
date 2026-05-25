@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { 
   MoveRight, CheckCircle2, ShieldCheck, Zap,
-  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon, HelpCircle
+  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon, HelpCircle, LayoutTemplate, Palette, Camera, ArrowRight, Wand2, MonitorPlay
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.jsx';
@@ -198,42 +198,124 @@ const HomePage = () => {
         )}
 
         {/* Hero Section */}
-        <section className="relative z-10 pt-16 pb-24 md:pt-28 md:pb-32 px-4">
-          <div className="container mx-auto max-w-5xl text-center">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }} 
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border mb-8 backdrop-blur-sm text-xs font-medium text-foreground shadow-md">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                {isLoading ? "Loading ecosystem..." : `${activeTools.length}+ Tools Currently Online`}
-              </div>
-
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.1] text-foreground">
-                Supercharge Your <br className="hidden sm:block" />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Productivity.</span>
-              </h1>
+        <section className="relative z-10 pt-10 pb-16 md:pt-20 md:pb-24 px-4 overflow-hidden">
+          <div className="container mx-auto max-w-6xl">
+            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
               
-              <p className="text-muted-foreground mb-10 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
-                The ultimate pro toolkit right in your browser. Compress, convert, calculate, and create instantly without uploading your data to the cloud.
-              </p>
-              
-              <div className="mb-12 max-w-2xl mx-auto relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                <div className="relative">
-                  <SearchBar />
+              <motion.div 
+                className="flex-1 text-center lg:text-left z-10"
+                initial={{ opacity: 0, x: -30 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border mb-6 backdrop-blur-sm text-xs font-medium text-foreground shadow-md mx-auto lg:mx-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  {isLoading ? "Loading ecosystem..." : `${activeTools.length}+ Tools Currently Online`}
                 </div>
-              </div>
 
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-6 leading-[1.1] text-foreground">
+                  Your Browser's <br className="hidden sm:block" />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Productivity Studio.</span>
+                </h1>
+                
+                <p className="text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 text-lg md:text-xl font-medium leading-relaxed">
+                  The ultimate pro toolkit right in your browser. Edit photos, convert files, and calculate instantly without uploading data to the cloud.
+                </p>
+                
+                <div className="mb-8 w-full max-w-xl mx-auto lg:mx-0 relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                  <div className="relative">
+                    <SearchBar />
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap justify-center lg:justify-start gap-5 text-sm font-semibold text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-500" /> Private & Secure</span>
+                  <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-500" /> Lightning Fast</span>
+                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-blue-500" /> 100% Free</span>
+                </div>
+              </motion.div>
 
-              
-              <div className="flex flex-wrap justify-center gap-6 text-sm font-semibold text-muted-foreground">
-                <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-500" /> Private & Secure</span>
-                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-amber-500" /> Lightning Fast</span>
-                <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-500" /> 100% Free</span>
-              </div>
-            </motion.div>
+              {/* Floating UI Mockups - The Wow Factor */}
+              <motion.div 
+                className="flex-1 w-full max-w-lg lg:max-w-none relative h-[400px] lg:h-[500px] hidden md:block"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                {/* Background glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[80px]"></div>
+
+                {/* Dashboard Card */}
+                <motion.div 
+                  className="absolute top-10 right-10 w-64 h-72 bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl p-4 overflow-hidden z-10"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-4 bg-muted/80 rounded w-1/3"></div>
+                    <div className="h-24 bg-muted/50 rounded-xl w-full border border-border/50 flex items-center justify-center">
+                      <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
+                    </div>
+                    <div className="h-4 bg-muted/80 rounded w-1/2"></div>
+                    <div className="h-4 bg-muted/80 rounded w-full"></div>
+                  </div>
+                </motion.div>
+
+                {/* Main Editor Card */}
+                <motion.div 
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-80 h-64 bg-background border-2 border-primary/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] p-1 overflow-hidden z-20"
+                  animate={{ y: [-5, 5, -5] }}
+                  transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
+                >
+                  <div className="w-full h-full bg-card rounded-xl border border-border/50 flex flex-col">
+                    <div className="h-10 border-b border-border/50 flex items-center justify-between px-4 bg-muted/30">
+                      <div className="flex gap-2">
+                        <span className="text-xs font-bold text-foreground">Photo Studio</span>
+                      </div>
+                      <Zap className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 flex">
+                      <div className="w-16 border-r border-border/50 p-2 space-y-2 flex flex-col items-center">
+                        <div className="w-8 h-8 bg-primary/10 rounded-lg"></div>
+                        <div className="w-8 h-8 bg-muted rounded-lg"></div>
+                        <div className="w-8 h-8 bg-muted rounded-lg"></div>
+                      </div>
+                      <div className="flex-1 p-4 flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] opacity-20"></div>
+                        <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-primary rounded-full blur-md opacity-80 mix-blend-screen"></div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Stats Card */}
+                <motion.div 
+                  className="absolute bottom-10 left-10 w-48 bg-card/90 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-4 z-30"
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 2 }}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Status</div>
+                      <div className="text-sm font-bold text-foreground">Local Processing</div>
+                    </div>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-1.5 mt-3 overflow-hidden">
+                    <div className="bg-emerald-500 w-full h-full"></div>
+                  </div>
+                </motion.div>
+
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -277,20 +359,30 @@ const HomePage = () => {
                 {activeCategories.slice(0, 6).map((cat) => {
                   const Icon = categoryIcons[cat.name.toLowerCase().split(' ')[0]] || LucideIcons.Layers;
                   const url = `/${cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-')}`;
+                  const toolCount = activeTools.filter(t => t.category === cat.name).length;
                   
                   return (
                     <motion.div key={cat.id} variants={itemVariants}>
                       <Link to={url} className="block group h-full">
-                        <div className="h-full bg-card backdrop-blur-sm border border-border hover:border-primary/50 hover:bg-card/80 rounded-2xl p-6 transition-all duration-300 flex items-start gap-5 relative overflow-hidden shadow-sm hover:shadow-md">
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+                        <div className="h-full bg-card backdrop-blur-sm border border-border hover:border-primary/50 hover:bg-card/80 rounded-2xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden shadow-sm hover:shadow-md">
+                          {/* Top row: Icon and Tool count */}
+                          <div className="flex justify-between items-start mb-4 relative z-10">
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br from-primary/10 to-primary/5 text-primary group-hover:scale-110 transition-transform duration-300 shadow-inner border border-primary/10">
+                              <Icon className="w-7 h-7" />
+                            </div>
+                            <span className="text-xs font-bold px-2 py-1 bg-muted text-muted-foreground rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                              {toolCount} Tools
+                            </span>
+                          </div>
                           
-                          <div className="bg-muted w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">
-                            <Icon className="w-7 h-7" />
-                          </div>
-                          <div className="relative z-10">
+                          {/* Content */}
+                          <div className="relative z-10 flex-1 flex flex-col justify-end">
                             <h3 className="text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">{cat.name}</h3>
-                            <p className="text-muted-foreground leading-relaxed text-sm">{cat.description || `Explore ${cat.name} tools for your daily tasks.`}</p>
+                            <p className="text-muted-foreground leading-relaxed text-sm line-clamp-2">{cat.description || `Explore ${cat.name} tools for your daily tasks.`}</p>
                           </div>
+                          
+                          {/* Subtle background glow effect */}
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                         </div>
                       </Link>
                     </motion.div>
@@ -352,6 +444,194 @@ const HomePage = () => {
         {/* How It Works Section */}
         <HowItWorksSection />
 
+        {/* Creator Ecosystem Showcase Section */}
+        <section className="relative z-10 py-24 bg-card px-4 border-t border-border">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              
+              <div className="order-2 lg:order-1">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border bg-muted/20 aspect-[4/3] flex items-center justify-center">
+                  {/* Decorative mesh */}
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-50"></div>
+                  
+                  {/* Mockup layers */}
+                  <div className="relative z-10 w-[80%] h-[70%] bg-card border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                    <div className="h-8 bg-muted border-b border-border flex items-center px-3 gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <div className="flex-1 bg-[url('/grid.svg')] bg-center flex items-center justify-center p-4">
+                      <div className="w-full h-full border-2 border-dashed border-primary/30 rounded-lg flex items-center justify-center bg-background/50 backdrop-blur-sm relative">
+                        <Palette className="w-12 h-12 text-primary opacity-50 absolute" />
+                        <div className="w-3/4 h-1/2 bg-blue-500/20 rounded mix-blend-multiply blur-sm translate-x-4"></div>
+                        <div className="w-1/2 h-2/3 bg-purple-500/20 rounded mix-blend-multiply blur-sm -translate-x-4 -translate-y-4"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Floating Elements */}
+                  <div className="absolute top-1/4 -right-4 w-12 h-12 bg-card rounded-lg border border-border shadow-lg flex items-center justify-center z-20 animate-bounce" style={{ animationDuration: '3s' }}>
+                    <Wand2 className="w-6 h-6 text-purple-500" />
+                  </div>
+                  <div className="absolute bottom-1/4 -left-4 w-12 h-12 bg-card rounded-lg border border-border shadow-lg flex items-center justify-center z-20 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
+                    <LayoutTemplate className="w-6 h-6 text-emerald-500" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="order-1 lg:order-2 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                  <Star className="w-3 h-3 fill-current" /> Creator Studio
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.2]">
+                  A complete visual <br/> content ecosystem.
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Design thumbnails, remove backgrounds instantly, create wedding invitations, and edit photos like a pro. Toolisiya's advanced Photo Studio brings desktop-grade editing right into your browser.
+                </p>
+                
+                <ul className="space-y-4 mt-6">
+                  <li className="flex items-start gap-3">
+                    <div className="mt-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-foreground">Advanced Photo Editor</h4>
+                      <p className="text-sm text-muted-foreground">Layers, text engine, filters, and dynamic crop tool.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="mt-1 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-foreground">AI Background Remover</h4>
+                      <p className="text-sm text-muted-foreground">Isolate subjects from backgrounds in seconds.</p>
+                    </div>
+                  </li>
+                </ul>
+
+                <div className="pt-4">
+                  <Button asChild size="lg" className="rounded-xl shadow-md font-bold">
+                    <Link to="/image/photo-editor">Launch Photo Studio <ArrowRight className="w-4 h-4 ml-2" /></Link>
+                  </Button>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </section>
+
+        {/* Productivity Workflow Section */}
+        <section className="relative z-10 py-24 bg-muted/30 px-4">
+          <div className="container mx-auto max-w-5xl text-center">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+              Connect your workflows.
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-16">
+              Stop switching between dozens of different websites. Toolisiya connects all your essential productivity steps into one seamless ecosystem.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+              {/* Connecting Line (Desktop only) */}
+              <div className="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-transparent via-border to-transparent -translate-y-1/2 z-0"></div>
+
+              {/* Step 1 */}
+              <div className="relative z-10 bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-16 h-16 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4 border border-blue-500/20 shadow-inner">
+                  <FileText className="w-7 h-7" />
+                </div>
+                <h4 className="font-bold text-foreground mb-2">1. Scan & Extract</h4>
+                <p className="text-sm text-muted-foreground">Use OCR to extract text from images and documents.</p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="relative z-10 bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-16 h-16 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center mb-4 border border-purple-500/20 shadow-inner">
+                  <Palette className="w-7 h-7" />
+                </div>
+                <h4 className="font-bold text-foreground mb-2">2. Edit & Refine</h4>
+                <p className="text-sm text-muted-foreground">Format text, edit images, and apply filters instantly.</p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative z-10 bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 border border-amber-500/20 shadow-inner">
+                  <Zap className="w-7 h-7" />
+                </div>
+                <h4 className="font-bold text-foreground mb-2">3. Compress & Optimize</h4>
+                <p className="text-sm text-muted-foreground">Reduce file sizes without losing quality.</p>
+              </div>
+
+              {/* Step 4 */}
+              <div className="relative z-10 bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-inner">
+                  <Download className="w-7 h-7" />
+                </div>
+                <h4 className="font-bold text-foreground mb-2">4. Convert & Export</h4>
+                <p className="text-sm text-muted-foreground">Export directly to PDF, PNG, or JSON formats.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* PWA / App Showcase */}
+        <section className="relative z-10 py-24 bg-card px-4 border-t border-border">
+          <div className="container mx-auto max-w-6xl">
+            <div className="bg-gradient-to-br from-primary/5 via-blue-500/5 to-transparent rounded-3xl border border-border p-8 md:p-12 flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+              
+              <div className="flex-1 relative z-10">
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+                  Install the App. <br/> Works Offline.
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  Install Toolisiya as a Progressive Web App (PWA) directly to your desktop or mobile home screen. Access tools instantly and process files locally even without an internet connection.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Button onClick={install} size="lg" className="rounded-xl font-bold shadow-md">
+                    <Download className="w-4 h-4 mr-2" /> Install App Now
+                  </Button>
+                  <Button asChild variant="outline" size="lg" className="rounded-xl border-border">
+                    <Link to="/app/dashboard">
+                      <MonitorPlay className="w-4 h-4 mr-2" /> View Dashboard
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="flex-1 w-full max-w-sm relative z-10 hidden md:block">
+                <div className="aspect-[9/16] bg-card border-4 border-border rounded-[2.5rem] shadow-2xl overflow-hidden relative p-2">
+                  {/* Phone Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-border rounded-b-2xl z-20"></div>
+                  
+                  {/* Screen Content */}
+                  <div className="w-full h-full bg-muted/30 rounded-[2rem] border border-border overflow-hidden flex flex-col relative">
+                    <div className="h-16 bg-card border-b border-border flex items-end justify-center pb-3">
+                      <span className="font-bold text-sm">Toolisiya App</span>
+                    </div>
+                    <div className="p-4 space-y-4">
+                      <div className="h-24 bg-card rounded-xl border border-border flex items-center justify-center p-4">
+                        <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="h-20 bg-card rounded-xl border border-border flex items-center justify-center">
+                           <FileText className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                        <div className="h-20 bg-card rounded-xl border border-border flex items-center justify-center">
+                           <Calculator className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                      </div>
+                      <div className="h-12 bg-primary/20 rounded-xl w-full mx-auto mt-4"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Why Choose Toolisiya Section */}
         <WhyToolisiyaSection />
 
@@ -383,13 +663,21 @@ const HomePage = () => {
               </AccordionItem>
               <AccordionItem value="item-3" className="border border-border bg-card rounded-xl px-5 shadow-sm">
                 <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
+                  Are the Creator Studio and AI tools free?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
+                  Yes! Our advanced Creator Studio (which includes the Photo Editor, templates, text engines, and AI Background Remover) is entirely free to use. We believe in providing premium-grade creator tools without expensive subscription paywalls.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+                <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
                   Do I need to pay or create an account?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed pb-4 text-sm sm:text-base">
                   No, Toolisiya is completely free. We do not enforce paywalls, feature limits, or required accounts. You can use our entire catalog instantly. Creating an account is entirely optional and serves to enable saving personalized templates or dashboard preferences.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-4" className="border border-border bg-card rounded-xl px-5 shadow-sm">
+              <AccordionItem value="item-5" className="border border-border bg-card rounded-xl px-5 shadow-sm">
                 <AccordionTrigger className="hover:no-underline py-4 text-left font-semibold text-foreground text-base">
                   Can I use Toolisiya offline?
                 </AccordionTrigger>
