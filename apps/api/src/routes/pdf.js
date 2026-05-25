@@ -357,50 +357,83 @@ router.post('/word-to-pdf', uploadWord.single('file'), async (req, res) => {
   }
 });
 
+// Helper execution promise wrapper
+const execPromise = (cmd) => new Promise((resolve, reject) => {
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      reject({ error, stdout, stderr });
+    } else {
+      resolve({ stdout, stderr });
+    }
+  });
+});
+
 // Function to check and install Python dependencies dynamically in Hostinger user-space if missing
+let pythonCmdPrefix = 'python3';
 let pythonDepsChecked = false;
 const ensurePythonDeps = async () => {
   if (pythonDepsChecked) return;
 
   logger.info("Checking Python dependencies (pymupdf, python-docx)...");
   try {
-    await new Promise((resolve, reject) => {
-      exec('python3 -c "import fitz, docx"', (error, stdout, stderr) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
-    logger.info("Python dependencies are verified and installed.");
+    await execPromise('python3 -c "import fitz, docx"');
+    pythonCmdPrefix = 'python3';
+    logger.info("Python dependencies are verified in python3.");
     pythonDepsChecked = true;
+    return;
   } catch (err) {
-    logger.warn("Python dependencies (pymupdf/python-docx) are missing. Starting automatic user-level pip installation...");
+    logger.warn("Python dependencies (pymupdf/python-docx) are missing in python3. Checking python...");
     try {
-      await new Promise((resolve, reject) => {
-        exec('pip3 install --user pymupdf python-docx', (error, stdout, stderr) => {
-          if (error) {
-            // Try fallback to standard pip
-            exec('pip install --user pymupdf python-docx', (error2, stdout2, stderr2) => {
-              if (error2) {
-                reject(new Error(`pip3 and pip installs failed. stderr: ${stderr}. stderr2: ${stderr2}`));
-              } else {
-                resolve();
-              }
-            });
-          } else {
-            resolve();
-          }
-        });
-      });
-      logger.info("Python dependencies installed successfully.");
+      await execPromise('python -c "import fitz, docx"');
+      pythonCmdPrefix = 'python';
+      logger.info("Python dependencies are verified in python.");
       pythonDepsChecked = true;
-    } catch (installErr) {
-      logger.error("Auto-installation of Python dependencies failed:", installErr);
-      throw new Error(`Python conversion dependencies (pymupdf, python-docx) are missing on the server, and automatic user-level installation failed: ${installErr.message}`);
+      return;
+    } catch (err2) {
+      logger.warn("Python dependencies are missing on both python3 and python. Starting installation fallbacks...");
     }
   }
+
+  // Try different install commands
+  const installCommands = [
+    'pip3 install --user pymupdf python-docx',
+    'pip install --user pymupdf python-docx',
+    'python3 -m pip install --user pymupdf python-docx',
+    'python -m pip install --user pymupdf python-docx'
+  ];
+
+  let lastError = null;
+  for (const cmd of installCommands) {
+    try {
+      logger.info(`Attempting installation: ${cmd}`);
+      await execPromise(cmd);
+      logger.info(`Installation succeeded using: ${cmd}`);
+      
+      // Verify which python command now has the libraries
+      try {
+        await execPromise('python3 -c "import fitz, docx"');
+        pythonCmdPrefix = 'python3';
+        pythonDepsChecked = true;
+        logger.info("Verified dependencies in python3 after installation.");
+        return;
+      } catch (e) {
+        try {
+          await execPromise('python -c "import fitz, docx"');
+          pythonCmdPrefix = 'python';
+          pythonDepsChecked = true;
+          logger.info("Verified dependencies in python after installation.");
+          return;
+        } catch (e2) {
+          logger.warn("Installation reported success but verification import failed. Continuing fallback...");
+        }
+      }
+    } catch (err) {
+      logger.warn(`Installation failed with command "${cmd}": ${err.stderr || err.error?.message}`);
+      lastError = err;
+    }
+  }
+
+  throw new Error(`Failed to install Python conversion dependencies (pymupdf, python-docx) on the server. Tried all pip installers, but they failed. Last error: ${lastError ? (lastError.stderr || lastError.error?.message) : 'unknown'}`);
 };
 
 // POST /pdf/pdf-to-word
@@ -438,7 +471,7 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
 
     // Run Python converter script
     const pythonScriptPath = path.join(utilsDir, 'pdf_to_docx.py');
-    const pythonCmd = `python3 "${pythonScriptPath}" --input "${tempPdfPath}" --output "${tempDocxPath}" --mode "${mode}"`;
+    const pythonCmd = `${pythonCmdPrefix} "${pythonScriptPath}" --input "${tempPdfPath}" --output "${tempDocxPath}" --mode "${mode}"`;
 
     await new Promise((resolve, reject) => {
       exec(pythonCmd, (error, stdout, stderr) => {
