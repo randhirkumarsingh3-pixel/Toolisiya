@@ -21,8 +21,8 @@ export function initializeEmailScheduler() {
         logger.info(`[EMAIL SCHEDULER] Daily email report cron job triggered at ${now}`);
         console.log(`[EMAIL SCHEDULER] Daily email report cron job triggered at ${now}`);
 
-        // Call the send-daily-report endpoint
-        const response = await fetch('http://localhost:3001/hcgi/api/email-reports/send-daily-report', {
+        const port = process.env.PORT || 3001;
+        const response = await fetch(`http://localhost:${port}/email-reports/send-daily-report`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
