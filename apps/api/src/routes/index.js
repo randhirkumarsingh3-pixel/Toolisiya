@@ -15,6 +15,7 @@ import integratedAiRouter from './integrated-ai.js';
 import emailReportsRouter from './email-reports.js';
 import toolStatusRouter from './tool-status.js';
 import adsRoutes from './ads.js';
+import photoStudioRoutes from './photo-studio.js';
 
 export default () => {
     const router = Router();
@@ -31,6 +32,7 @@ export default () => {
     router.use('/integrated-ai', integratedAiRouter);
     router.use('/email-reports', emailReportsRouter);
     router.use('/tool-status', toolStatusRouter);
+    router.use('/photo-studio', photoStudioRoutes);
     router.use('/', sitemapRoutes);
     router.use('/', robotsRoutes);
     router.use('/', adsRoutes);
