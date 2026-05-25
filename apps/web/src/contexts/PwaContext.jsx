@@ -25,6 +25,15 @@ import {
 
 const PwaContext = createContext(null);
 
+let globalDeferredPrompt = null;
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    globalDeferredPrompt = e;
+    window.dispatchEvent(new Event('pwa-ready-to-install'));
+  });
+}
+
 export function PwaProvider({ children }) {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -55,17 +64,30 @@ export function PwaProvider({ children }) {
       // Prevent the mini-infobar on mobile
       e.preventDefault();
       setDeferredPrompt(e);
+      globalDeferredPrompt = e;
       setIsInstallable(true);
     };
+
+    const checkGlobalPrompt = () => {
+      if (globalDeferredPrompt) {
+        setDeferredPrompt(globalDeferredPrompt);
+        setIsInstallable(true);
+      }
+    };
+
+    // Check immediately in case it already fired
+    checkGlobalPrompt();
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
+      globalDeferredPrompt = null;
       console.log('Toolisiya app was installed successfully.');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('pwa-ready-to-install', checkGlobalPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
     // Periodic check for standalone mode in case user opens from home screen
@@ -75,6 +97,7 @@ export function PwaProvider({ children }) {
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('pwa-ready-to-install', checkGlobalPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
       clearInterval(interval);
     };
@@ -93,6 +116,7 @@ export function PwaProvider({ children }) {
         console.error('PWA installation prompt failed:', err);
       } finally {
         setDeferredPrompt(null);
+        globalDeferredPrompt = null;
       }
     } else {
       setShowInstructions(true);
