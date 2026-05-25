@@ -14,8 +14,8 @@ export function initializeEmailScheduler() {
     logger.info('[EMAIL SCHEDULER] Initializing email scheduler...');
     console.log('[EMAIL SCHEDULER] Initializing email scheduler...');
 
-    // Schedule cron job: 0 9 * * * = 9 AM every day UTC
-    dailyReportJob = cron.schedule('0 9 * * *', async () => {
+    // Schedule cron job: 5 AM Asia/Kolkata timezone every day
+    dailyReportJob = cron.schedule('0 5 * * *', async () => {
       try {
         const now = new Date().toISOString();
         logger.info(`[EMAIL SCHEDULER] Daily email report cron job triggered at ${now}`);
@@ -48,12 +48,15 @@ export function initializeEmailScheduler() {
         logger.error('[EMAIL SCHEDULER] Error in daily email cron job:', error.message);
         console.error('[EMAIL SCHEDULER] Error in daily email cron job:', error.message);
       }
+    }, {
+      scheduled: true,
+      timezone: "Asia/Kolkata"
     });
 
     logger.info('[EMAIL SCHEDULER] Email scheduler initialized successfully');
-    logger.info('[EMAIL SCHEDULER] Daily report will be sent at 9 AM UTC every day');
+    logger.info('[EMAIL SCHEDULER] Daily report will be sent at 5 AM Asia/Kolkata time every day');
     console.log('[EMAIL SCHEDULER] Email scheduler initialized successfully');
-    console.log('[EMAIL SCHEDULER] Daily report will be sent at 9 AM UTC every day');
+    console.log('[EMAIL SCHEDULER] Daily report will be sent at 5 AM Asia/Kolkata time every day');
   } catch (error) {
     logger.error('[EMAIL SCHEDULER] Failed to initialize email scheduler:', error.message);
     console.error('[EMAIL SCHEDULER] Failed to initialize email scheduler:', error.message);

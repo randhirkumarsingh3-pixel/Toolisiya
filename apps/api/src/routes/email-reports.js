@@ -789,7 +789,11 @@ Focus Areas:
         <p>Performance Summary for ${displayDate}</p>
       </div>
       <div class="body">
+        <p style="margin-top: 0; margin-bottom: 15px; color: #e2e8f0; font-size: 14.5px; line-height: 1.6; font-weight: 500;">Good Morning Team,</p>
+        <p style="margin-bottom: 25px; color: #94a3b8; font-size: 14px; line-height: 1.6;">Please find below the daily performance and business intelligence summary for Toolisiya, covering platform growth, user activity, SEO performance, tool usage, monetization, and system insights.</p>
         <pre>${textBody}</pre>
+        <p style="margin-top: 25px; margin-bottom: 5px; color: #94a3b8; font-size: 14px; line-height: 1.6;">Regards,</p>
+        <p style="margin-top: 0; margin-bottom: 0; color: #3b82f6; font-size: 14.5px; font-weight: bold; line-height: 1.6;">Toolisiya Analytics Engine</p>
       </div>
       <div class="footer">
         <p>This is an automated performance report from Toolisiya. Please do not reply directly.</p>
@@ -813,7 +817,7 @@ const sendEmailToAdmin = async (adminUser, emailHTML, reportDate) => {
     // Send email using custom emailService
     await sendEmail(
       adminUser.email,
-      `Daily Report - ${reportDate}`,
+      `Toolisiya Daily Performance Report - ${reportDate}`,
       emailHTML
     );
 
@@ -1125,7 +1129,7 @@ router.post('/test-email', async (req, res) => {
     // Send test email using custom emailService
     await sendEmail(
       testEmail,
-      'Test Email - Daily Report System',
+      `Toolisiya Daily Performance Report - ${testReportData.reportDate} (Test)`,
       emailHTML
     );
 
