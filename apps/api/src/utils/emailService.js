@@ -1,43 +1,57 @@
 import 'dotenv/config';
 import pb from './pocketbaseClient.js';
 import logger from './logger.js';
+import nodemailer from 'nodemailer';
+
+// Initialize real SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+  port: parseInt(process.env.SMTP_PORT || '465', 10),
+  secure: parseInt(process.env.SMTP_PORT || '465', 10) === 465,
+  auth: {
+    user: process.env.SMTP_USER || 'admin@toolisiya.com',
+    pass: process.env.SMTP_PASS || 'Singh@rk123',
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
 
 const sendEmail = async (to, subject, html) => {
   try {
     logger.info('[EMAIL SERVICE] ========================================');
-    logger.info(`[EMAIL SERVICE] 📧 Preparing to send email`);
+    logger.info(`[EMAIL SERVICE] 📧 Preparing to send email via SMTP`);
     logger.info(`[EMAIL SERVICE] To: ${to}`);
     logger.info(`[EMAIL SERVICE] Subject: ${subject}`);
     logger.info(`[EMAIL SERVICE] HTML content length: ${html.length} characters`);
     console.log('[EMAIL SERVICE] ========================================');
-    console.log(`[EMAIL SERVICE] 📧 Preparing to send email`);
+    console.log(`[EMAIL SERVICE] 📧 Preparing to send email via SMTP`);
     console.log(`[EMAIL SERVICE] To: ${to}`);
     console.log(`[EMAIL SERVICE] Subject: ${subject}`);
     console.log(`[EMAIL SERVICE] HTML content length: ${html.length} characters`);
     
-    // Email is sent via PocketBase hooks
-    // The email_reports collection has a hook that sends emails when records are created
-    // This function logs the email sending intent
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'admin@toolisiya.com',
+      to,
+      subject,
+      html
+    };
+
+    const info = await transporter.sendMail(mailOptions);
     
-    logger.info(`[EMAIL SERVICE] ✓ Email queued for sending via PocketBase mailer`);
-    logger.info(`[EMAIL SERVICE] From: ${process.env.SMTP_FROM || 'noreply@toolisiya.com'}`);
-    logger.info(`[EMAIL SERVICE] To: ${to}`);
-    logger.info(`[EMAIL SERVICE] Subject: ${subject}`);
+    logger.info(`[EMAIL SERVICE] ✓ Email sent successfully: ${info.messageId}`);
     logger.info('[EMAIL SERVICE] ========================================');
-    console.log(`[EMAIL SERVICE] ✓ Email queued for sending via PocketBase mailer`);
-    console.log(`[EMAIL SERVICE] From: ${process.env.SMTP_FROM || 'noreply@toolisiya.com'}`);
-    console.log(`[EMAIL SERVICE] To: ${to}`);
-    console.log(`[EMAIL SERVICE] Subject: ${subject}`);
+    console.log(`[EMAIL SERVICE] ✓ Email sent successfully: ${info.messageId}`);
     console.log('[EMAIL SERVICE] ========================================');
     
-    return { success: true, message: 'Email queued for sending' };
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    logger.error('[EMAIL SERVICE] ❌ Error sending email');
+    logger.error('[EMAIL SERVICE] ❌ Error sending email via SMTP');
     logger.error(`[EMAIL SERVICE] To: ${to}`);
     logger.error(`[EMAIL SERVICE] Error message: ${error.message}`);
     logger.error(`[EMAIL SERVICE] Error stack: ${error.stack}`);
     logger.error('[EMAIL SERVICE] ========================================');
-    console.error('[EMAIL SERVICE] ❌ Error sending email');
+    console.error('[EMAIL SERVICE] ❌ Error sending email via SMTP');
     console.error(`[EMAIL SERVICE] To: ${to}`);
     console.error(`[EMAIL SERVICE] Error message: ${error.message}`);
     console.error(`[EMAIL SERVICE] Error stack: ${error.stack}`);
