@@ -9,8 +9,8 @@ const MobileBottomNav = () => {
   const { currentUser } = useAuth();
   const isAuthenticated = pb.authStore.isValid;
 
-  // Do not show bottom nav on admin routes
-  if (location.pathname.startsWith('/admin')) {
+  // Do not show bottom nav on admin routes or full-screen creator apps
+  if (location.pathname.startsWith('/admin') || location.pathname === '/image/photo-editor') {
     return null;
   }
 

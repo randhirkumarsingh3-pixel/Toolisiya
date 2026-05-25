@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Upload, Download, RefreshCw, Sliders, Sparkles, Wand2, Eraser, ImagePlus, Crop, Image as ImageIcon, Scissors, Undo, Redo, ZoomIn, ZoomOut, Maximize, SplitSquareHorizontal, Type, Frame, Pencil, Trash2, MousePointer2, Settings2, Check, LayoutPanelLeft, Heart, Star, Circle, Square, ArrowRight, ThumbsUp, Smile, Zap, MessageCircle, Shapes, LayoutTemplate, Palette, Save, Share2, CheckCircle2 } from 'lucide-react';
+import { Upload, Download, RefreshCw, Sliders, Sparkles, Wand2, Eraser, ImagePlus, Crop, Image as ImageIcon, Scissors, Undo, Redo, ZoomIn, ZoomOut, Maximize, Minimize2, SplitSquareHorizontal, Type, Frame, Pencil, Trash2, MousePointer2, Settings2, Check, LayoutPanelLeft, Heart, Star, Circle, Square, ArrowRight, ThumbsUp, Smile, Zap, MessageCircle, Shapes, LayoutTemplate, Palette, Save, Share2, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -65,6 +65,7 @@ const PhotoEditorPage = () => {
   // UX Polish & Analytics
   const [showExportSuccess, setShowExportSuccess] = useState(false);
   const [exportStats, setExportStats] = useState({ size: '0MB', res: '0x0' });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Brand Kits & Identity
   const [brandColors, setBrandColors] = useState(() => {
@@ -402,6 +403,51 @@ const PhotoEditorPage = () => {
   }, []);
 
   useEffect(() => {
+    // 1. Check for Drag-and-Drop Image from HomePage
+    const dndImage = sessionStorage.getItem('toolisiya_dnd_image');
+    if (dndImage) {
+      setFile({ name: 'dropped_image.png', type: 'image/png' });
+      setOriginalUrl(dndImage);
+      sessionStorage.removeItem('toolisiya_dnd_image');
+      setHistory([defaultFilters]);
+      setHistoryIndex(0);
+      setCrop(null);
+      setCompletedCrop(null);
+      setTexts([]);
+      setStickers([]);
+      setCollageLayout('single');
+      setCollageImages({});
+    }
+
+    // 2. Keyboard Shortcuts for Power Users
+    const handleKeyDown = (e) => {
+      // Don't trigger if user is typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        if (selectedTextId) {
+          setTexts(prev => prev.filter(t => t.id !== selectedTextId));
+          setSelectedTextId(null);
+        }
+        if (selectedStickerId) {
+          setStickers(prev => prev.filter(s => s.id !== selectedStickerId));
+          setSelectedStickerId(null);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo, selectedTextId, selectedStickerId]);
+
+  useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Caveat:wght@400..700&family=Pacifico&family=Inter:wght@100..900&display=swap';
     link.rel = 'stylesheet';
@@ -501,7 +547,11 @@ const PhotoEditorPage = () => {
   };
 
   return (
-    <ToolPageTemplate toolData={toolPageData['photo-editor']}>
+    <div className={isFullscreen ? "fixed inset-0 z-[200] bg-background w-full h-full flex flex-col" : "w-full"}>
+    {!isFullscreen ? (
+    <ToolPageTemplate
+      title="Photo Studio"
+      toolData={toolPageData['photo-editor']}>
       <canvas ref={canvasRef} className="hidden" />
       
       <div 
@@ -564,6 +614,9 @@ const PhotoEditorPage = () => {
                 <Button variant="outline" size="sm" className="h-8 rounded-full hidden md:flex" onClick={saveProject}>
                   <Save className="w-4 h-4 mr-1.5" /> Save
                 </Button>
+                <Button variant="ghost" size="sm" className="h-8 rounded-full hidden md:flex text-muted-foreground" onClick={() => setIsFullscreen(!isFullscreen)}>
+                  {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                </Button>
                 <Button 
                   size="sm" 
                   className="h-8 rounded-full bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/20"
@@ -613,9 +666,9 @@ const PhotoEditorPage = () => {
             </button>
           </div>
 
-          {/* Properties Panel */}
-          <div className={`border-r bg-card/95 backdrop-blur overflow-y-auto custom-scrollbar shrink-0 flex flex-col z-20 transition-all duration-300 absolute md:left-16 bottom-16 md:bottom-0 top-0 shadow-xl ${file ? 'w-full md:w-72 translate-y-0 md:translate-x-0' : 'w-full md:w-0 translate-y-full md:-translate-x-full md:translate-y-0 border-r-0'}`}>
-            <div className="p-4 border-b sticky top-0 bg-card/95 backdrop-blur z-10 flex items-center justify-between">
+          {/* Properties Panel (BottomSheet on Mobile) */}
+          <div className={`border-r bg-card/95 backdrop-blur overflow-y-auto custom-scrollbar shrink-0 flex flex-col z-20 transition-all duration-300 absolute md:left-16 bottom-16 md:bottom-0 top-[auto] md:top-0 h-[60vh] md:h-auto rounded-t-3xl md:rounded-none shadow-[0_-8px_30px_rgba(0,0,0,0.12)] md:shadow-xl ${file ? 'w-full md:w-72 translate-y-0 md:translate-x-0' : 'w-full md:w-0 translate-y-full md:-translate-x-full border-r-0'}`}>
+            <div className="p-4 border-b sticky top-0 bg-card/95 backdrop-blur z-10 flex items-center justify-between rounded-t-3xl md:rounded-none">
               <h3 className="font-semibold capitalize flex items-center">
                 {activeTool === 'ai' ? 'AI Magic Tools' : activeTool === 'brandkit' ? 'Brand Kit' : activeTool}
               </h3>
@@ -993,7 +1046,7 @@ const PhotoEditorPage = () => {
           </div>
 
           {/* Main Canvas Area */}
-          <div className={`flex-1 bg-[#f8f9fa] relative overflow-hidden flex items-center justify-center bg-repeat transition-all duration-300 ${file ? 'ml-72' : 'ml-0'}`} style={{ backgroundImage: 'linear-gradient(45deg, #e9ecef 25%, transparent 25%), linear-gradient(-45deg, #e9ecef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e9ecef 75%), linear-gradient(-45deg, transparent 75%, #e9ecef 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
+          <div className={`flex-1 bg-[#f8f9fa] relative overflow-hidden flex items-center justify-center bg-repeat transition-all duration-300 touch-none ${file ? 'mb-16 md:mb-0 md:ml-72' : 'ml-0'}`} style={{ backgroundImage: 'linear-gradient(45deg, #e9ecef 25%, transparent 25%), linear-gradient(-45deg, #e9ecef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e9ecef 75%), linear-gradient(-45deg, transparent 75%, #e9ecef 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
             {!file ? (
               <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
                 <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6 border border-black/10">
@@ -1216,7 +1269,11 @@ const PhotoEditorPage = () => {
           </p>
         </div>
       </div>
+    )}
+    {!isFullscreen ? (
     </ToolPageTemplate>
+    ) : null}
+    </div>
   );
 };
 

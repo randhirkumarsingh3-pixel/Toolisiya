@@ -1,7 +1,7 @@
 /* eslint-disable import/namespace */
-import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { 
   MoveRight, CheckCircle2, ShieldCheck, Zap,
@@ -29,9 +29,47 @@ const categoryIcons = {
 };
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { activeTools, activeCategories, isLoading } = useActiveTools();
   const { recentTools } = useAppUsage();
   const { isInstalled, install } = usePWAInstall();
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    const handleDragOver = (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.types.includes('Files')) {
+        setIsDragging(true);
+      }
+    };
+    const handleDragLeave = (e) => {
+      e.preventDefault();
+      setIsDragging(false);
+    };
+    const handleDrop = (e) => {
+      e.preventDefault();
+      setIsDragging(false);
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          sessionStorage.setItem('toolisiya_dnd_image', event.target.result);
+          navigate('/image/photo-editor');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('dragleave', handleDragLeave);
+    window.addEventListener('drop', handleDrop);
+    
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('dragleave', handleDragLeave);
+      window.removeEventListener('drop', handleDrop);
+    };
+  }, [navigate]);
 
   // Sort and pick top 8 tools as "Popular" (or those marked show_in_menu)
   const popularTools = useMemo(() => {
@@ -104,6 +142,21 @@ const HomePage = () => {
       </Helmet>
       
       <main className="flex-1 w-full relative">
+        <AnimatePresence>
+          {isDragging && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center border-4 border-dashed border-primary m-4 rounded-3xl"
+            >
+              <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-6">
+                <ImageIcon className="w-12 h-12 text-primary" />
+              </div>
+              <h2 className="text-4xl font-bold mb-2">Drop Image Here</h2>
+              <p className="text-xl text-muted-foreground">Opens instantly in Photo Studio</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Dynamic Background Mesh (Light/Dark aware) */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-[40%] -left-[10%] w-[70%] h-[70%] rounded-full bg-primary/10 blur-[120px] mix-blend-normal"></div>
@@ -201,7 +254,18 @@ const HomePage = () => {
             </div>
 
             {isLoading ? (
-              <div className="flex justify-center py-12"><div className="w-8 h-8 rounded-full border-4 border-border border-t-primary animate-spin"></div></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1,2,3,4,5,6].map(i => (
+                  <div key={i} className="h-[104px] bg-card border border-border rounded-2xl p-6 flex gap-5 overflow-hidden relative">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-muted/30 to-transparent"></div>
+                    <div className="w-14 h-14 bg-muted rounded-2xl shrink-0 animate-pulse"></div>
+                    <div className="flex-1 flex flex-col justify-center gap-3">
+                      <div className="h-5 bg-muted rounded-md w-1/2 animate-pulse"></div>
+                      <div className="h-3 bg-muted rounded-md w-3/4 animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               <motion.div 
                 variants={containerVariants}
@@ -249,14 +313,25 @@ const HomePage = () => {
             </div>
 
             {isLoading ? (
-               <div className="flex justify-center py-12"><div className="w-8 h-8 rounded-full border-4 border-border border-t-primary animate-spin"></div></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {[1,2,3,4,5,6,7,8].map(i => (
+                  <div key={i} className="h-40 bg-card border border-border rounded-xl p-5 overflow-hidden relative flex flex-col justify-between">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-muted/30 to-transparent"></div>
+                    <div className="w-10 h-10 bg-muted rounded-lg animate-pulse mb-4"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-muted rounded-md w-2/3 animate-pulse"></div>
+                      <div className="h-3 bg-muted rounded-md w-full animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               <motion.div 
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-100px" }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
               >
                 {popularTools.map((tool) => (
                   <motion.div key={tool.id} variants={itemVariants} className="h-full">
