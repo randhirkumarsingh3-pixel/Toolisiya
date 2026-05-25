@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import pb from '../utils/pocketbaseClient.js';
 import logger from '../utils/logger.js';
+import { sendEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -346,12 +347,12 @@ const sendEmailToAdmin = async (adminUser, emailHTML, reportDate) => {
   try {
     logger.info(`[EMAIL REPORT] Sending email to admin: ${adminUser.email}`);
 
-    // Send email using PocketBase
-    await pb.sendEmail({
-      to: adminUser.email,
-      subject: `Daily Report - ${reportDate}`,
-      html: emailHTML
-    });
+    // Send email using custom emailService
+    await sendEmail(
+      adminUser.email,
+      `Daily Report - ${reportDate}`,
+      emailHTML
+    );
 
     logger.info(`[EMAIL REPORT] Email sent successfully to ${adminUser.email}`);
 
@@ -559,12 +560,12 @@ router.post('/test-email', async (req, res) => {
     // Generate email HTML
     const emailHTML = generateEmailHTML(testReportData, testReportData.displayDate);
 
-    // Send test email
-    await pb.sendEmail({
-      to: testEmail,
-      subject: 'Test Email - Daily Report System',
-      html: emailHTML
-    });
+    // Send test email using custom emailService
+    await sendEmail(
+      testEmail,
+      'Test Email - Daily Report System',
+      emailHTML
+    );
 
     logger.info(`[EMAIL REPORT] Test email sent successfully to ${testEmail}`);
 
