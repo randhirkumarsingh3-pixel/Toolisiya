@@ -993,14 +993,14 @@ const PhotoEditorPage = () => {
           </div>
 
           {/* Main Canvas Area */}
-          <div className={`flex-1 bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center bg-repeat transition-all duration-300 ${file ? 'ml-72' : 'ml-0'}`} style={{ backgroundImage: 'linear-gradient(45deg, #131313 25%, transparent 25%), linear-gradient(-45deg, #131313 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #131313 75%), linear-gradient(-45deg, transparent 75%, #131313 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
+          <div className={`flex-1 bg-[#f8f9fa] relative overflow-hidden flex items-center justify-center bg-repeat transition-all duration-300 ${file ? 'ml-72' : 'ml-0'}`} style={{ backgroundImage: 'linear-gradient(45deg, #e9ecef 25%, transparent 25%), linear-gradient(-45deg, #e9ecef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e9ecef 75%), linear-gradient(-45deg, transparent 75%, #e9ecef 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
             {!file ? (
               <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
-                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10">
-                  <ImagePlus className="w-10 h-10 text-white/30" />
+                <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6 border border-black/10">
+                  <ImagePlus className="w-10 h-10 text-gray-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">Creator Studio</h2>
-                <p className="text-white/50 text-sm mb-8">Upload an image to start editing in your professional browser workspace.</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Creator Studio</h2>
+                <p className="text-gray-500 text-sm mb-8">Upload an image to start editing in your professional browser workspace.</p>
                 <div className="relative">
                   <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" onChange={handleFileChange} />
                   <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-8 rounded-full shadow-lg shadow-blue-500/20">
