@@ -168,14 +168,6 @@ const generateYesterdayReport = async (startDate, endDate) => {
       }
     });
 
-    // Heuristic fallback distribution if referrer is not populated
-    if (events.length > 0 && organicTraffic === 0 && directTraffic === events.length) {
-      organicTraffic = Math.round(events.length * 0.45);
-      socialTraffic = Math.round(events.length * 0.15);
-      referralTraffic = Math.round(events.length * 0.10);
-      directTraffic = events.length - (organicTraffic + socialTraffic + referralTraffic);
-    }
-
     // Countries
     const countryMap = {};
     events.forEach(e => {
@@ -185,9 +177,9 @@ const generateYesterdayReport = async (startDate, endDate) => {
     const sortedCountries = Object.entries(countryMap)
       .filter(([c]) => c !== 'Unknown' && c !== 'undefined' && c !== '')
       .sort((a, b) => b[1] - a[1]);
-    const country_1 = sortedCountries[0] ? `• ${sortedCountries[0][0]}: ${sortedCountries[0][1]} visitors` : '• United States: 15 visitors';
-    const country_2 = sortedCountries[1] ? `• ${sortedCountries[1][0]}: ${sortedCountries[1][1]} visitors` : '• India: 10 visitors';
-    const country_3 = sortedCountries[2] ? `• ${sortedCountries[2][0]}: ${sortedCountries[2][1]} visitors` : '• United Kingdom: 5 visitors';
+    const country_1 = sortedCountries[0] ? `• ${sortedCountries[0][0]}: ${sortedCountries[0][1]} visitors` : '• N/A';
+    const country_2 = sortedCountries[1] ? `• ${sortedCountries[1][0]}: ${sortedCountries[1][1]} visitors` : '• N/A';
+    const country_3 = sortedCountries[2] ? `• ${sortedCountries[2][0]}: ${sortedCountries[2][1]} visitors` : '• N/A';
 
     // Cities
     const cityMap = {};
@@ -198,9 +190,9 @@ const generateYesterdayReport = async (startDate, endDate) => {
     const sortedCities = Object.entries(cityMap)
       .filter(([c]) => c !== 'Unknown' && c !== 'undefined' && c !== '')
       .sort((a, b) => b[1] - a[1]);
-    const city_1 = sortedCities[0] ? `${sortedCities[0][0]}: ${sortedCities[0][1]} visitors` : 'New York: 8 visitors';
-    const city_2 = sortedCities[1] ? `${sortedCities[1][0]}: ${sortedCities[1][1]} visitors` : 'New Delhi: 6 visitors';
-    const city_3 = sortedCities[2] ? `${sortedCities[2][0]}: ${sortedCities[2][1]} visitors` : 'London: 4 visitors';
+    const city_1 = sortedCities[0] ? `• ${sortedCities[0][0]}: ${sortedCities[0][1]} visitors` : '• N/A';
+    const city_2 = sortedCities[1] ? `• ${sortedCities[1][0]}: ${sortedCities[1][1]} visitors` : '• N/A';
+    const city_3 = sortedCities[2] ? `• ${sortedCities[2][0]}: ${sortedCities[2][1]} visitors` : '• N/A';
 
     // Devices
     let mobileCount = 0, desktopCount = 0, tabletCount = 0;
@@ -211,25 +203,20 @@ const generateYesterdayReport = async (startDate, endDate) => {
       else desktopCount++;
     });
     const totalDeviceEvents = events.length || 1;
-    let mobile_users = Math.round((mobileCount / totalDeviceEvents) * 100);
-    let tablet_users = Math.round((tabletCount / totalDeviceEvents) * 100);
-    let desktop_users = 100 - (mobile_users + tablet_users);
-    if (events.length === 0) {
-      mobile_users = 52;
-      desktop_users = 43;
-      tablet_users = 5;
-    }
+    let mobile_users = Math.round((mobileCount / totalDeviceEvents) * 100) || 0;
+    let tablet_users = Math.round((tabletCount / totalDeviceEvents) * 100) || 0;
+    let desktop_users = events.length > 0 ? (100 - (mobile_users + tablet_users)) : 0;
 
     // 3. SEO PERFORMANCE
-    const indexed_pages = seoSettings.length || 42;
+    const indexed_pages = seoSettings.length || 0;
     const new_indexed_pages = seoSettings.filter(s => {
       const createdDate = new Date(s.created);
       return createdDate >= startDate && createdDate <= endDate;
     }).length || 0;
 
-    const organic_clicks = organicTraffic > 0 ? Math.round(organicTraffic * 0.85) : 34;
-    const search_impressions = organic_clicks > 0 ? Math.round(organic_clicks * 14.8) : 512;
-    const avg_ctr = search_impressions > 0 ? ((organic_clicks / search_impressions) * 100).toFixed(1) : '6.6';
+    const organic_clicks = 'N/A (Google Search Console Not Connected)';
+    const search_impressions = 'N/A';
+    const avg_ctr = 'N/A';
 
     const pageMap = {};
     events.forEach(e => {
@@ -238,13 +225,13 @@ const generateYesterdayReport = async (startDate, endDate) => {
       }
     });
     const sortedPages = Object.entries(pageMap).sort((a, b) => b[1] - a[1]);
-    const top_page_1 = sortedPages[0] ? `• ${sortedPages[0][0]} — ${sortedPages[0][1]} views` : '• /pdf/pdf-to-word — 18 views';
-    const top_page_2 = sortedPages[1] ? `• ${sortedPages[1][0]} — ${sortedPages[1][1]} views` : '• /utilities/word-counter — 12 views';
-    const top_page_3 = sortedPages[2] ? `• ${sortedPages[2][0]} — ${sortedPages[2][1]} views` : '• /finance/salary-calculator — 9 views';
+    const top_page_1 = sortedPages[0] ? `• ${sortedPages[0][0]} — ${sortedPages[0][1]} views` : '• N/A';
+    const top_page_2 = sortedPages[1] ? `• ${sortedPages[1][0]} — ${sortedPages[1][1]} views` : '• N/A';
+    const top_page_3 = sortedPages[2] ? `• ${sortedPages[2][0]} — ${sortedPages[2][1]} views` : '• N/A';
 
-    const seo_alert_1 = "No indexation issues or duplicate content detected.";
-    const seo_alert_2 = "Schema markup coverage is high at 88%.";
-    const seo_alert_3 = "All core tool pages are properly optimized.";
+    const seo_alert_1 = "Google Search Console API not configured.";
+    const seo_alert_2 = `Database has ${seoSettings.length} SEO metadata configurations.`;
+    const seo_alert_3 = "";
 
     // 4. TOOL USAGE ANALYTICS
     let compressor_usage = 0;
@@ -260,13 +247,6 @@ const generateYesterdayReport = async (startDate, endDate) => {
       else if (name.includes('ocr') || name.includes('ocr-scanner')) ocr_usage++;
     });
 
-    if (toolRuns === 0) {
-      compressor_usage = 12;
-      salary_usage = 8;
-      pdf_usage = 15;
-      ocr_usage = 5;
-    }
-
     const toolUsageMap = {};
     tools.forEach(t => {
       toolUsageMap[t.name] = 0;
@@ -277,15 +257,15 @@ const generateYesterdayReport = async (startDate, endDate) => {
       }
     });
     const sortedToolUsage = Object.entries(toolUsageMap).sort((a, b) => a[1] - b[1]);
-    const low_tool_1 = sortedToolUsage[0] ? `${sortedToolUsage[0][0]} — ${sortedToolUsage[0][1]} runs` : 'Password Generator — 1 run';
-    const low_tool_2 = sortedToolUsage[1] ? `${sortedToolUsage[1][0]} — ${sortedToolUsage[1][1]} runs` : 'JSON Validator — 2 runs';
+    const low_tool_1 = sortedToolUsage[0] ? `${sortedToolUsage[0][0]} — ${sortedToolUsage[0][1]} runs` : 'N/A';
+    const low_tool_2 = sortedToolUsage[1] ? `${sortedToolUsage[1][0]} — ${sortedToolUsage[1][1]} runs` : 'N/A';
 
     const failed_jobs = events.filter(e => e.eventType === 'tool_failure').length || 0;
     const api_errors = events.filter(e => e.eventType === 'error' || e.eventType === 'api_error').length || 0;
 
     // 5. MONETIZATION REPORT
-    const ad_impressions = Math.round(totalVisitors * 3.2) || 120;
-    const ad_revenue = '$' + ((ad_impressions * 0.0028)).toFixed(2);
+    const ad_impressions = 'N/A';
+    const ad_revenue = 'N/A';
     const upgrade_clicks = events.filter(e => e.eventType === 'upgrade_click' || e.page === '/upgrade').length || 0;
     const pro_conversions = events.filter(e => e.eventType === 'pro_conversion').length || 0;
 
@@ -297,17 +277,15 @@ const generateYesterdayReport = async (startDate, endDate) => {
       }
     });
     const sortedLimits = Object.entries(limitMap).sort((a, b) => b[1] - a[1]);
-    const limit_tool_1 = sortedLimits[0] ? `• ${sortedLimits[0][0]} — ${sortedLimits[0][1]} times` : '• PDF to Word Converter — 2 times';
-    const limit_tool_2 = sortedLimits[1] ? `• ${sortedLimits[1][0]} — ${sortedLimits[1][1]} times` : '• OCR Scanner — 1 time';
-    const high_revenue_tool = sortedLimits[0] ? sortedLimits[0][0] : 'PDF to Word Converter';
+    const limit_tool_1 = sortedLimits[0] ? `• ${sortedLimits[0][0]} — ${sortedLimits[0][1]} times` : '• N/A';
+    const limit_tool_2 = sortedLimits[1] ? `• ${sortedLimits[1][0]} — ${sortedLimits[1][1]} times` : '• N/A';
+    const high_revenue_tool = sortedLimits[0] ? sortedLimits[0][0] : 'N/A';
 
     // 6. USER ENGAGEMENT
     const sessionDurations = events.map(e => e.sessionDuration || e.session_duration).filter(Boolean);
     let avgDuration = 0;
     if (sessionDurations.length > 0) {
       avgDuration = Math.round(sessionDurations.reduce((sum, d) => sum + d, 0) / sessionDurations.length);
-    } else {
-      avgDuration = 142;
     }
     const session_duration = `${Math.floor(avgDuration / 60)}m ${avgDuration % 60}s`;
 
@@ -320,29 +298,28 @@ const generateYesterdayReport = async (startDate, endDate) => {
       }
     });
     const bouncedSessions = Object.values(sessionEventCountMap).filter(count => count === 1).length;
-    const bounce_rate = totalSessions > 0 ? Math.round((bouncedSessions / totalSessions) * 100) : 42;
-    const returning_percentage = totalVisitors > 0 ? ((returningUsers / totalVisitors) * 100).toFixed(1) : '32.0';
-    const daily_active_users = activeUsers || 15;
+    const bounce_rate = totalSessions > 0 ? Math.round((bouncedSessions / totalSessions) * 100) : 0;
+    const returning_percentage = totalVisitors > 0 ? ((returningUsers / totalVisitors) * 100).toFixed(1) : '0.0';
+    const daily_active_users = activeUsers || 0;
 
     // 7. FILE PROCESSING REPORT
-    const files_processed = toolRuns || 24;
-    const ocr_jobs = ocr_usage || 5;
-    const pdf_merges = pdf_usage || 15;
-    const image_compressions = compressor_usage || 12;
+    const files_processed = toolRuns || 0;
+    const ocr_jobs = ocr_usage || 0;
+    const pdf_merges = pdf_usage || 0;
+    const image_compressions = compressor_usage || 0;
 
     let voice_conversions = 0;
     yesterdayToolRuns.forEach(e => {
       const name = (e.toolName || '').toLowerCase();
       if (name.includes('voice') || name.includes('audio') || name.includes('speech')) voice_conversions++;
     });
-    if (toolRuns === 0) voice_conversions = 3;
 
     // 8. ERROR & SYSTEM REPORT
-    const system_alert_1 = "No critical database or server alerts recorded.";
-    const system_alert_2 = "All backups completed successfully.";
-    const slow_tool_1 = "PDF to Word Converter (avg 3.2s)";
-    const slow_tool_2 = "OCR Scanner (avg 2.1s)";
-    const api_response_time = "185ms";
+    const system_alert_1 = api_errors > 0 ? `${api_errors} API errors recorded.` : "No critical database or server alerts recorded.";
+    const system_alert_2 = "Backups logic not connected to email reports yet.";
+    const slow_tool_1 = "N/A (Latency tracking not enabled)";
+    const slow_tool_2 = "N/A";
+    const api_response_time = "N/A";
 
     // 9. SECURITY REPORT
     const failed_logins = failedLogins.length || 0;
@@ -351,16 +328,16 @@ const generateYesterdayReport = async (startDate, endDate) => {
     const rate_limit_triggers = rateLimitEvents.length || 0;
 
     // 10. AI BUSINESS INSIGHTS
-    const ai_insight_1 = `PDF tools saw the highest traffic growth yesterday, up ${toolGrowth > 0 ? toolGrowth : 14}%.`;
-    const ai_insight_2 = `Estimated monetization increased by $${(toolRuns * 0.05).toFixed(2)} based on increased conversion rates.`;
-    const ai_insight_3 = `Mobile visitors account for ${mobile_users}% of total traffic, indicating a mobile-first focus is key.`;
-    const recommendation_1 = "Add Schema markup and optimize SEO tags for the new PDF to Word Converter page to capitalize on organic growth.";
-    const recommendation_2 = "Review mobile CSS styling for Salary Calculator to reduce the bounce rate which is currently at 42%.";
+    const ai_insight_1 = `Traffic grew by ${trafficGrowth > 0 ? trafficGrowth : 0}% compared to the previous day.`;
+    const ai_insight_2 = `Top category usage was ${topTools[0] ? topTools[0].name : 'N/A'}.`;
+    const ai_insight_3 = `Mobile visitors account for ${mobile_users}% of total traffic.`;
+    const recommendation_1 = "Monitor tool usage trends for high-demand areas.";
+    const recommendation_2 = "Ensure offline capabilities are functioning effectively.";
 
     // 11. FINAL SUMMARY
-    const overall_status = `HEALTHY — Overall platform traffic is stable. Estimated revenue is up, and API errors remain minimal at ${api_errors} errors.`;
-    const focus_area_1 = "Optimize PDF to Word conversion performance.";
-    const focus_area_2 = "Improve mobile UI bounce rates on calculators.";
+    const overall_status = `Traffic is ${totalVisitors > prevVisitors ? 'UP' : 'DOWN'} compared to yesterday. API errors remain at ${api_errors}.`;
+    const focus_area_1 = "Optimize highly requested tools based on today's analytics.";
+    const focus_area_2 = "Improve mobile UI bounce rates if traffic is predominantly mobile.";
     const focus_area_3 = "Expand SEO content for low-performing tools.";
 
     // Group events by category (for API compatibility)
