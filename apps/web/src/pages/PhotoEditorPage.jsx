@@ -80,7 +80,6 @@ const PhotoEditorPage = () => {
   // Workspace State
   const [zoom, setZoom] = useState(1);
   const [isComparing, setIsComparing] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTool, setActiveTool] = useState('adjust');
   
   const canvasRef = useRef(null);
@@ -546,12 +545,13 @@ const PhotoEditorPage = () => {
     }
   };
 
+  const Wrapper = isFullscreen ? 'div' : ToolPageTemplate;
+  const wrapperProps = isFullscreen 
+    ? { className: "fixed inset-0 z-[200] bg-background w-full h-full flex flex-col" }
+    : { title: "Photo Studio", toolData: toolPageData['photo-editor'] };
+
   return (
-    <div className={isFullscreen ? "fixed inset-0 z-[200] bg-background w-full h-full flex flex-col" : "w-full"}>
-    {!isFullscreen ? (
-    <ToolPageTemplate
-      title="Photo Studio"
-      toolData={toolPageData['photo-editor']}>
+    <Wrapper {...wrapperProps}>
       <canvas ref={canvasRef} className="hidden" />
       
       <div 
@@ -1269,11 +1269,7 @@ const PhotoEditorPage = () => {
           </p>
         </div>
       </div>
-    )}
-    {!isFullscreen ? (
-    </ToolPageTemplate>
-    ) : null}
-    </div>
+    </Wrapper>
   );
 };
 
