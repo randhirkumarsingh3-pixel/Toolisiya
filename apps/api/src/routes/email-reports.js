@@ -327,19 +327,6 @@ const generateYesterdayReport = async (startDate, endDate) => {
     const rateLimitEvents = events.filter(e => e.eventType === 'rate_limit' || e.eventType === 'rate_limit_trigger');
     const rate_limit_triggers = rateLimitEvents.length || 0;
 
-    // 10. AI BUSINESS INSIGHTS
-    const ai_insight_1 = `Traffic grew by ${trafficGrowth > 0 ? trafficGrowth : 0}% compared to the previous day.`;
-    const ai_insight_2 = `Top category usage was ${topTools[0] ? topTools[0].name : 'N/A'}.`;
-    const ai_insight_3 = `Mobile visitors account for ${mobile_users}% of total traffic.`;
-    const recommendation_1 = "Monitor tool usage trends for high-demand areas.";
-    const recommendation_2 = "Ensure offline capabilities are functioning effectively.";
-
-    // 11. FINAL SUMMARY
-    const overall_status = `Traffic is ${totalVisitors > prevVisitors ? 'UP' : 'DOWN'} compared to yesterday. API errors remain at ${api_errors}.`;
-    const focus_area_1 = "Optimize highly requested tools based on today's analytics.";
-    const focus_area_2 = "Improve mobile UI bounce rates if traffic is predominantly mobile.";
-    const focus_area_3 = "Expand SEO content for low-performing tools.";
-
     // Group events by category (for API compatibility)
     const eventsByCategory = {};
     events.forEach(event => {
@@ -362,6 +349,19 @@ const generateYesterdayReport = async (startDate, endDate) => {
         name,
         count
       }));
+
+    // 10. AI BUSINESS INSIGHTS
+    const ai_insight_1 = `Traffic grew by ${trafficGrowth > 0 ? trafficGrowth : 0}% compared to the previous day.`;
+    const ai_insight_2 = `Top category usage was ${topTools[0] ? topTools[0].name : 'N/A'}.`;
+    const ai_insight_3 = `Mobile visitors account for ${mobile_users}% of total traffic.`;
+    const recommendation_1 = "Monitor tool usage trends for high-demand areas.";
+    const recommendation_2 = "Ensure offline capabilities are functioning effectively.";
+
+    // 11. FINAL SUMMARY
+    const overall_status = `Traffic is ${totalVisitors > prevVisitors ? 'UP' : 'DOWN'} compared to yesterday. API errors remain at ${api_errors}.`;
+    const focus_area_1 = "Optimize highly requested tools based on today's analytics.";
+    const focus_area_2 = "Improve mobile UI bounce rates if traffic is predominantly mobile.";
+    const focus_area_3 = "Expand SEO content for low-performing tools.";
 
     logger.info('[EMAIL REPORT] Report data calculated successfully');
 
