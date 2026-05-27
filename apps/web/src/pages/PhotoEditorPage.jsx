@@ -556,7 +556,7 @@ const PhotoEditorPage = () => {
       
       <div 
         ref={workspaceRef}
-        className={`flex flex-col bg-background border rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen w-screen' : 'h-[800px] mb-8'}`}
+        className={`flex flex-col bg-background border rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen w-screen' : 'h-[75vh] min-h-[500px] max-h-[900px] mb-8'}`}
       >
         {/* Top Sticky Toolbar */}
         <div className="h-14 border-b bg-card/80 backdrop-blur-md flex items-center justify-between px-4 z-20 shrink-0">
@@ -1046,7 +1046,7 @@ const PhotoEditorPage = () => {
           </div>
 
           {/* Main Canvas Area */}
-          <div className={`flex-1 bg-[#f8f9fa] relative overflow-hidden flex items-center justify-center bg-repeat transition-all duration-300 touch-none ${file ? 'mb-16 md:mb-0 md:ml-72' : 'ml-0'}`} style={{ backgroundImage: 'linear-gradient(45deg, #e9ecef 25%, transparent 25%), linear-gradient(-45deg, #e9ecef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e9ecef 75%), linear-gradient(-45deg, transparent 75%, #e9ecef 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
+          <div className={`flex-1 bg-white relative overflow-hidden flex items-center justify-center transition-all duration-300 touch-none ${file ? 'mb-16 md:mb-0 md:ml-72' : 'ml-0'}`}>
             {!file ? (
               <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
                 <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6 border border-black/10">
