@@ -879,10 +879,10 @@ const sendDailyReportToAllAdmins = async (reportData, emailHTML, reportDate) => 
 };
 
 /**
- * ENDPOINT 1: POST /send-daily-report
+ * ENDPOINT 1: POST/GET /send-daily-report
  * Generates and sends daily report to all admins
  */
-router.post('/send-daily-report', async (req, res) => {
+router.all('/send-daily-report', async (req, res) => {
   logger.info('[EMAIL REPORT] POST /send-daily-report - Starting daily report generation');
 
   try {
