@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wrench, Star, ArrowRight, Zap, Sparkles, TrendingUp } from 'lucide-react';
+import { Star, ArrowRight, Zap, Sparkles, TrendingUp } from 'lucide-react';
 import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
+import DynamicIcon from '@/components/DynamicIcon.jsx';
 
 const ToolCard = ({ tool, index = 0 }) => {
   const { activeUrls, isLoading } = useActiveTools();
@@ -12,7 +13,6 @@ const ToolCard = ({ tool, index = 0 }) => {
 
   if (!tool) return null;
 
-  const Icon = tool.icon || Wrench;
   const name = tool.name || tool.title || 'Unknown Tool';
   const description = tool.description || 'No description available';
   
@@ -70,7 +70,7 @@ const ToolCard = ({ tool, index = 0 }) => {
           <CardHeader className="flex-1 pb-4 relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-blue-500/10 flex items-center justify-center shadow-inner border border-primary/10 group-hover:scale-110 transition-transform duration-300">
-                <Icon className="h-6 w-6 text-primary" />
+                <DynamicIcon name={tool.iconName || tool.icon} className="h-6 w-6 text-primary" />
               </div>
               
               <div className="flex gap-1.5 pr-8">

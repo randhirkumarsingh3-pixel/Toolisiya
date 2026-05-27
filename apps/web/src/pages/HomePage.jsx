@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { 
   MoveRight, CheckCircle2, ShieldCheck, Zap,
-  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon, HelpCircle, LayoutTemplate, Palette, Camera, ArrowRight, Wand2, MonitorPlay
+  Smartphone, Lock, Download, Star, Clock, FileText, Calculator, QrCode, Code2, Image as ImageIcon, HelpCircle, LayoutTemplate, Palette, Camera, ArrowRight, Wand2, MonitorPlay, Layers
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.jsx';
@@ -356,7 +356,7 @@ const HomePage = () => {
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
               >
                 {activeCategories.slice(0, 6).map((cat) => {
-                  const Icon = categoryIcons[cat.name.toLowerCase().split(' ')[0]] || LucideIcons.Layers;
+                  const Icon = categoryIcons[cat.name.toLowerCase().split(' ')[0]] || Layers;
                   const url = `/${cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-')}`;
                   const toolCount = activeTools.filter(t => t.category === cat.name).length;
                   
@@ -430,8 +430,7 @@ const HomePage = () => {
                     <ToolCard tool={{
                       ...tool,
                       path: tool.url,
-                      iconName: tool.icon,
-                      icon: LucideIcons[tool.icon] || LucideIcons.Wrench
+                      iconName: tool.icon || tool.iconName
                     }} />
                   </motion.div>
                 ))}
