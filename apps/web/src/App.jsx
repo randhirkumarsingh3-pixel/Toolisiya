@@ -1,6 +1,6 @@
 
 import React, { Suspense, lazy, useState, useEffect } from 'react';
-import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation, useParams } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
 import { ActiveToolsProvider, useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
@@ -18,8 +18,19 @@ import SplashScreen from '@/components/SplashScreen.jsx';
 import GoogleScriptsInjector from '@/components/GoogleScriptsInjector.jsx';
 import StickyNavigation from '@/components/StickyNavigation.jsx';
 import { useAnalyticsTracker } from '@/hooks/useAnalyticsTracker.js';
+import { toolPaths } from '@/data/toolPaths.js';
 // import AIAssistant from '@/components/AIAssistant.jsx';
 import pb from '@/lib/pocketbaseClient.js';
+
+const ToolRedirectHandler = () => {
+  const { toolId } = useParams();
+  const targetPath = toolPaths[toolId?.toLowerCase()];
+  
+  if (targetPath) {
+    return <Navigate to={targetPath} replace />;
+  }
+  return <Navigate to="/browse-categories" replace />;
+};
 
 // Core Pages
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -397,6 +408,8 @@ const AppContent = () => {
             <Route path="/image-tools" element={<Navigate to="/image" replace />} />
             
             {/* Category routing */}
+            <Route path="/tools/:toolId" element={<ToolRedirectHandler />} />
+            <Route path="/tool/:toolId" element={<ToolRedirectHandler />} />
             <Route path="/document" element={<DocumentMediaToolsPage />} />
             <Route path="/document-tools" element={<Navigate to="/document" replace />} />
             <Route path="/documents" element={<Navigate to="/document" replace />} />

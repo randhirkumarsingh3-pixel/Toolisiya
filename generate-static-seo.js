@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { blogPosts } from './apps/web/src/data/blogPosts.js';
+import { toolPaths } from './apps/web/src/data/toolPaths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -136,9 +137,9 @@ async function main() {
       console.log(`Adding ${tools.length} individual tools...`);
       for (const tool of tools) {
         const lastmod = formatDate(tool.updated_at || new Date());
-        const toolSlug = encodeURIComponent(tool.id);
+        const relativePath = toolPaths[tool.id] || ('/tools/' + encodeURIComponent(tool.id));
         xml += '  <url>\n';
-        xml += `    <loc>${escapeXml(baseUrl + '/tools/' + toolSlug)}</loc>\n`;
+        xml += `    <loc>${escapeXml(baseUrl + relativePath)}</loc>\n`;
         xml += `    <lastmod>${lastmod}</lastmod>\n`;
         xml += '    <changefreq>monthly</changefreq>\n';
         xml += '    <priority>0.7</priority>\n';
