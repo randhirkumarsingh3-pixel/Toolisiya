@@ -11,7 +11,7 @@ import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import pb from '@/lib/pocketbaseClient.js';
-import * as LucideIcons from 'lucide-react';
+import DynamicIcon from '@/components/DynamicIcon.jsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -135,13 +135,12 @@ export default function PwaDashboardPage() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
         {tools.map((tool, idx) => {
-          const Icon = LucideIcons[tool.iconName] || LucideIcons.Wrench;
           return (
             <Link key={`${tool.path}-${idx}`} to={tool.path} className="group block">
               <div className="bg-card hover:bg-muted/30 border border-border/50 shadow-sm hover:shadow-md rounded-2xl p-5 transition-all duration-300 flex items-center gap-4 relative overflow-hidden group-hover:-translate-y-0.5">
                 <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40 group-hover:bg-primary transition-colors"></div>
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Icon className="h-6 w-6 text-primary" />
+                  <DynamicIcon name={tool.iconName} className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-base truncate group-hover:text-primary transition-colors text-foreground">{tool.name}</h3>

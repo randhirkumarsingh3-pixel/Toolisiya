@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.jsx';
 import { useActiveTools } from '@/contexts/ActiveToolsContext.jsx';
 import { useAppUsage } from '@/contexts/AppUsageContext.jsx';
-import * as LucideIcons from 'lucide-react';
+import DynamicIcon from '@/components/DynamicIcon.jsx';
 import ToolCard from '@/components/ToolCard.jsx';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import WhyToolisiyaSection from '@/components/WhyToolisiyaSection.jsx';
@@ -183,10 +183,9 @@ const HomePage = () => {
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
                   {recentTools.slice(0, 3).map((tool, idx) => {
-                    const Icon = LucideIcons[tool.iconName] || LucideIcons.Wrench;
                     return (
                       <Link key={idx} to={tool.path} className="flex items-center gap-2 bg-muted hover:bg-muted/80 text-foreground transition-colors px-3 py-2 rounded-xl border border-border whitespace-nowrap shrink-0 shadow-sm">
-                        <Icon className="w-4 h-4 text-primary" />
+                        <DynamicIcon name={tool.iconName} className="w-4 h-4 text-primary" />
                         <span className="text-xs font-medium">{tool.name}</span>
                       </Link>
                     );

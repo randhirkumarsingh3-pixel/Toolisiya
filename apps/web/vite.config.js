@@ -6,6 +6,7 @@ import editModeDevPlugin from './plugins/visual-editor/vite-plugin-edit-mode.js'
 import selectionModePlugin from './plugins/selection-mode/vite-plugin-selection-mode.js';
 import iframeRouteRestorationPlugin from './plugins/vite-plugin-iframe-route-restoration.js';
 import pocketbaseAuthPlugin from './plugins/vite-plugin-pocketbase-auth.js';
+import viteCompression from 'vite-plugin-compression';
 
 import { readFileSync } from 'node:fs';
 
@@ -292,6 +293,8 @@ export default defineConfig({
 	plugins: [
 		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), selectionModePlugin(), iframeRouteRestorationPlugin(), pocketbaseAuthPlugin()] : []),
 		react(),
+		viteCompression({ algorithm: 'gzip', ext: '.gz' }),
+		viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
 		addTransformIndexHtml
 	],
 	server: {
@@ -350,7 +353,16 @@ export default defineConfig({
 				'@babel/traverse',
 				'@babel/generator',
 				'@babel/types'
-			]
+			],
+			output: {
+				manualChunks: {
+					'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+					'framer-motion': ['framer-motion'],
+					'ui-components': ['@radix-ui/react-dialog', '@radix-ui/react-slot', 'lucide-react', 'sonner'],
+					'pdf-tools': ['pdfjs-dist', 'pdf-lib', 'jspdf', 'html2pdf.js'],
+					'image-tools': ['react-image-crop', 'html2canvas', 'qrcode', 'jsqr', 'jsbarcode']
+				}
+			}
 		}
 	}
 });
