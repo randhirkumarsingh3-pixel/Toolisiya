@@ -202,12 +202,12 @@ const HomePage = () => {
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
               
               <motion.div 
-                className="flex-1 text-center lg:text-left z-10"
-                initial={{ opacity: 0, x: -30 }} 
-                animate={{ opacity: 1, x: 0 }} 
+                className="flex-1 text-center z-10 mx-auto max-w-3xl"
+                initial={{ opacity: 0, y: -30 }} 
+                animate={{ opacity: 1, y: 0 }} 
                 transition={{ duration: 0.6, ease: "easeOut" }}
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border mb-6 backdrop-blur-sm text-xs font-medium text-foreground shadow-md mx-auto lg:mx-0">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border mb-6 backdrop-blur-sm text-xs font-medium text-foreground shadow-md mx-auto">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   {isLoading ? "Loading ecosystem..." : `${activeTools.length}+ Tools Currently Online`}
                 </div>
@@ -217,103 +217,25 @@ const HomePage = () => {
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Productivity Studio.</span>
                 </h1>
                 
-                <p className="text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 text-lg md:text-xl font-medium leading-relaxed">
+                <p className="text-muted-foreground mb-8 text-lg md:text-xl font-medium leading-relaxed">
                   The ultimate pro toolkit right in your browser. Edit photos, convert files, and calculate instantly without uploading data to the cloud.
                 </p>
                 
-                <div className="mb-8 w-full max-w-xl mx-auto lg:mx-0 relative group">
+                <div className="mb-8 w-full relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
                   <div className="relative">
                     <SearchBar />
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap justify-center lg:justify-start gap-5 text-sm font-semibold text-muted-foreground">
+                <div className="flex flex-wrap justify-center gap-5 text-sm font-semibold text-muted-foreground">
                   <span className="flex items-center gap-1.5"><Lock className="w-4 h-4 text-emerald-500" /> Private & Secure</span>
                   <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-500" /> Lightning Fast</span>
                   <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-blue-500" /> 100% Free</span>
                 </div>
               </motion.div>
 
-              {/* Floating UI Mockups - The Wow Factor */}
-              <motion.div 
-                className="flex-1 w-full max-w-lg lg:max-w-none relative h-[400px] lg:h-[500px] hidden md:block"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                {/* Background glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[80px]"></div>
 
-                {/* Dashboard Card */}
-                <motion.div 
-                  className="absolute top-10 right-10 w-64 h-72 bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl p-4 overflow-hidden z-10"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="h-4 bg-muted/80 rounded w-1/3"></div>
-                    <div className="h-24 bg-muted/50 rounded-xl w-full border border-border/50 flex items-center justify-center">
-                      <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
-                    </div>
-                    <div className="h-4 bg-muted/80 rounded w-1/2"></div>
-                    <div className="h-4 bg-muted/80 rounded w-full"></div>
-                  </div>
-                </motion.div>
-
-                {/* Main Editor Card */}
-                <motion.div 
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-80 h-64 bg-background border-2 border-primary/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] p-1 overflow-hidden z-20"
-                  animate={{ y: [-5, 5, -5] }}
-                  transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-                >
-                  <div className="w-full h-full bg-card rounded-xl border border-border/50 flex flex-col">
-                    <div className="h-10 border-b border-border/50 flex items-center justify-between px-4 bg-muted/30">
-                      <div className="flex gap-2">
-                        <span className="text-xs font-bold text-foreground">Photo Studio</span>
-                      </div>
-                      <Zap className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="flex-1 flex">
-                      <div className="w-16 border-r border-border/50 p-2 space-y-2 flex flex-col items-center">
-                        <div className="w-8 h-8 bg-primary/10 rounded-lg"></div>
-                        <div className="w-8 h-8 bg-muted rounded-lg"></div>
-                        <div className="w-8 h-8 bg-muted rounded-lg"></div>
-                      </div>
-                      <div className="flex-1 p-4 flex items-center justify-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] opacity-20"></div>
-                        <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-primary rounded-full blur-md opacity-80 mix-blend-screen"></div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Stats Card */}
-                <motion.div 
-                  className="absolute bottom-10 left-10 w-48 bg-card/90 backdrop-blur-md border border-border/50 rounded-xl shadow-xl p-4 z-30"
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 2 }}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
-                      <CheckCircle2 className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Status</div>
-                      <div className="text-sm font-bold text-foreground">Local Processing</div>
-                    </div>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-1.5 mt-3 overflow-hidden">
-                    <div className="bg-emerald-500 w-full h-full"></div>
-                  </div>
-                </motion.div>
-
-              </motion.div>
             </div>
           </div>
         </section>
