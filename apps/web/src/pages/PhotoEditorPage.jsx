@@ -556,7 +556,7 @@ const PhotoEditorPage = () => {
       
       <div 
         ref={workspaceRef}
-        className={`flex flex-col bg-background border rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen w-screen' : 'h-[400px] mb-8'}`}
+        className={`flex flex-col bg-background border rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen w-screen' : 'h-[800px] mb-8'}`}
       >
         {/* Top Sticky Toolbar */}
         <div className="h-14 border-b bg-card/80 backdrop-blur-md flex items-center justify-between px-4 z-20 shrink-0">
