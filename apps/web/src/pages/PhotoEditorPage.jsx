@@ -426,9 +426,9 @@ const PhotoEditorPage = () => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
         e.preventDefault();
         if (e.shiftKey) {
-          handleRedo();
+          redo();
         } else {
-          handleUndo();
+          undo();
         }
       } else if (e.key === 'Backspace' || e.key === 'Delete') {
         if (selectedTextId) {
@@ -444,7 +444,7 @@ const PhotoEditorPage = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, selectedTextId, selectedStickerId]);
+  }, [undo, redo, selectedTextId, selectedStickerId]);
 
   useEffect(() => {
     const link = document.createElement('link');
