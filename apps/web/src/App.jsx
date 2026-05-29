@@ -22,6 +22,11 @@ import { toolPaths } from '@/data/toolPaths.js';
 // import AIAssistant from '@/components/AIAssistant.jsx';
 import pb from '@/lib/pocketbaseClient.js';
 
+const validCategories = [
+  'finance', 'career', 'developer', 'image', 'document', 'pdf', 
+  'science', 'productivity', 'converters', 'utilities', 'generators', 'real-estate'
+];
+
 const ToolRedirectHandler = () => {
   const { toolId } = useParams();
   const normalizedToolId = toolId?.toLowerCase().replace(/[\s_]+/g, '-');
@@ -30,18 +35,29 @@ const ToolRedirectHandler = () => {
   if (targetPath) {
     return <Navigate to={targetPath} replace />;
   }
+  
+  if (validCategories.includes(normalizedToolId)) {
+    return <Navigate to={`/${normalizedToolId}`} replace />;
+  }
+  
   return <Navigate to="/browse-categories" replace />;
 };
 
 const RootToolRedirectHandler = () => {
   const { toolId } = useParams();
-  // Check if the path matches a known tool
   const normalizedToolId = toolId?.toLowerCase().replace(/[\s_]+/g, '-');
-  const targetPath = toolPaths[normalizedToolId];
   
+  // First check if it matches a known tool
+  const targetPath = toolPaths[normalizedToolId];
   if (targetPath) {
     return <Navigate to={targetPath} replace />;
   }
+  
+  // Then check if it matches a category that might have been hit via /CategoryName
+  if (validCategories.includes(normalizedToolId)) {
+    return <Navigate to={`/${normalizedToolId}`} replace />;
+  }
+  
   // Otherwise, it's a real 404
   return <NotFoundPage />;
 };
