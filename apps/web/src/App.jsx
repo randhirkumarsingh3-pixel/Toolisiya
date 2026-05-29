@@ -24,12 +24,26 @@ import pb from '@/lib/pocketbaseClient.js';
 
 const ToolRedirectHandler = () => {
   const { toolId } = useParams();
-  const targetPath = toolPaths[toolId?.toLowerCase()];
+  const normalizedToolId = toolId?.toLowerCase().replace(/[\s_]+/g, '-');
+  const targetPath = toolPaths[normalizedToolId];
   
   if (targetPath) {
     return <Navigate to={targetPath} replace />;
   }
   return <Navigate to="/browse-categories" replace />;
+};
+
+const RootToolRedirectHandler = () => {
+  const { toolId } = useParams();
+  // Check if the path matches a known tool
+  const normalizedToolId = toolId?.toLowerCase().replace(/[\s_]+/g, '-');
+  const targetPath = toolPaths[normalizedToolId];
+  
+  if (targetPath) {
+    return <Navigate to={targetPath} replace />;
+  }
+  // Otherwise, it's a real 404
+  return <NotFoundPage />;
 };
 
 // Core Pages
@@ -578,6 +592,9 @@ const AppContent = () => {
             {/* Invitations */}
             <Route path="/invitations/birthday-invitations" element={<BirthdayInvitationsPage />} />
             <Route path="/invitations/wedding-invitations" element={<WeddingInvitationsPage />} />
+
+            {/* Catch-all for legacy root tool URLs (e.g. /gst-calculator) */}
+            <Route path="/:toolId" element={<RootToolRedirectHandler />} />
 
             {/* Catch-all 404 Route */}
             <Route path="*" element={<NotFoundPage />} />
