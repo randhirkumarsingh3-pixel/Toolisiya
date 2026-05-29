@@ -365,6 +365,7 @@ const AppContent = () => {
             <Route path="/verification" element={<VerificationTestPage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/app" element={<PwaDashboardPage />} />
+            <Route path="/app/dashboard" element={<Navigate to="/app" replace />} />
             <Route path="/settings" element={<PwaSettingsPage />} />
             <Route path="/download" element={<PwaDownloadPage />} />
             <Route path="/download-app" element={<Navigate to="/download" replace />} />

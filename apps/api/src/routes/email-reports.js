@@ -11,7 +11,9 @@ const router = express.Router();
  * Returns start and end timestamps for yesterday
  */
 const getYesterdayDateRange = () => {
-  const today = new Date();
+  // Determine "today" based on IST timezone to prevent off-by-one errors when server is in UTC
+  const todayStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
+  const today = new Date(todayStr);
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
