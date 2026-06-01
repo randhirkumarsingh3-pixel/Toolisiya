@@ -62,6 +62,19 @@ const RootToolRedirectHandler = () => {
   return <NotFoundPage />;
 };
 
+const CategoryToolRedirectHandler = () => {
+  const { toolId } = useParams();
+  const normalizedToolId = toolId?.toLowerCase().replace(/[\s_]+/g, '-');
+  
+  // Check if it matches a known tool regardless of the wrong category in URL
+  const targetPath = toolPaths[normalizedToolId];
+  if (targetPath) {
+    return <Navigate to={targetPath} replace />;
+  }
+  
+  return <NotFoundPage />;
+};
+
 // Core Pages
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage.jsx'));
@@ -611,6 +624,9 @@ const AppContent = () => {
 
             {/* Catch-all for legacy root tool URLs (e.g. /gst-calculator) */}
             <Route path="/:toolId" element={<RootToolRedirectHandler />} />
+
+            {/* Catch-all for legacy category/tool URLs with incorrect categories */}
+            <Route path="/:oldCategory/:toolId" element={<CategoryToolRedirectHandler />} />
 
             {/* Catch-all 404 Route */}
             <Route path="*" element={<NotFoundPage />} />
