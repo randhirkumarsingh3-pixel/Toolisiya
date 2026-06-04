@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently --kill-others --raw \"npm run dev --prefix apps/web\" \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/pocketbase\"",
-    "build": "node generate-static-seo.js && npm run build --prefix apps/web && mkdir -p build/apps && cp -r dist/apps/web/* dist/ && cp -r dist/apps/web/* build/ && cp -r src package.json package-lock.json node_modules dist/ && cp -r src package.json package-lock.json node_modules build/ && cp -r apps/api dist/apps/ && cp -r apps/api build/apps/ && cp -r dist/apps/web build/apps/",
+    "build": "node generate-static-seo.js && npm run build --prefix apps/web && mkdir -p build && cp -r dist/apps/web/* build/",
     "start": "npm run start --prefix apps/api",
     "lint": "concurrently --raw \"npm run lint --prefix apps/web\" \"npm run lint --prefix apps/api\""
   },
