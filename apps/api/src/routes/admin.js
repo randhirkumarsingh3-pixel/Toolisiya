@@ -1113,7 +1113,13 @@ router.put('/menu-setup/tools/:toolId', adminAuthMiddleware, async (req, res) =>
 router.post('/menu-setup/settings', adminAuthMiddleware, async (req, res) => {
   addSecurityHeaders(res);
   try {
-    const newRecord = await pb.collection('menu_settings').create(req.body);
+    const payload = { ...req.body };
+    if (payload.toolOrder !== undefined) {
+      payload.menuItems = payload.toolOrder;
+      delete payload.toolOrder;
+    }
+
+    const newRecord = await pb.collection('menu_settings').create(payload);
     res.status(201).json(newRecord);
   } catch (error) {
     logger.error(`Error creating menu settings: ${error.message}`);
@@ -1126,7 +1132,16 @@ router.put('/menu-setup/settings/:id', adminAuthMiddleware, async (req, res) => 
   addSecurityHeaders(res);
   try {
     const { id } = req.params;
-    const updated = await pb.collection('menu_settings').update(id, req.body);
+    
+    // Intercept and rewrite payload to fix schema cache errors
+    // even if the user's browser is caching the old frontend code
+    const payload = { ...req.body };
+    if (payload.toolOrder !== undefined) {
+      payload.menuItems = payload.toolOrder;
+      delete payload.toolOrder;
+    }
+
+    const updated = await pb.collection('menu_settings').update(id, payload);
     res.json(updated);
   } catch (error) {
     logger.error(`Error updating menu settings: ${error.message}`);
