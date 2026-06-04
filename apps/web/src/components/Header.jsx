@@ -50,7 +50,7 @@ export default function Header() {
         if (settingsRes.length > 0) {
           orderedCats = settingsRes[0].categoryOrder || [];
           visibleCats = settingsRes[0].visibility || {};
-          toolOrder = settingsRes[0].toolOrder || {};
+          toolOrder = settingsRes[0].menuItems || {};
         }
 
         const activeCategoryNames = new Set(activeCategories.map(c => c.name));

@@ -44,7 +44,7 @@ export default function MenuSetup() {
 
           const savedOrder = record.categoryOrder || [];
           const savedVisibility = record.visibility || {};
-          const savedToolOrder = record.toolOrder || {};
+          const savedToolOrder = record.menuItems || {};
 
           const missing = allUniqueCats.filter(c => !savedOrder.includes(c));
           const combinedOrder = [...savedOrder, ...missing];
@@ -68,7 +68,7 @@ export default function MenuSetup() {
               categories: allUniqueCats,
               categoryOrder: allUniqueCats,
               visibility: defaultVisibility,
-              toolOrder: {}
+              menuItems: {}
             })
           });
           if (!createRes.ok) throw new Error('Failed to create default menu settings');
@@ -151,7 +151,7 @@ export default function MenuSetup() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const payload = { categories, categoryOrder, visibility, toolOrder };
+      const payload = { categories, categoryOrder, visibility, menuItems: toolOrder };
       if (recordId) {
         const res = await apiServerClient.fetch(`/admin/menu-setup/settings/${recordId}`, {
           method: 'PUT',
