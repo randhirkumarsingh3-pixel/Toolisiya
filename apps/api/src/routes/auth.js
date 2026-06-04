@@ -316,6 +316,12 @@ router.post('/admin/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    // Block inactive admins
+    if (admin.status && admin.status.toLowerCase() !== 'active') {
+      logger.warn(`Admin login blocked: account is inactive for ${email}`);
+      return res.status(403).json({ error: 'Account is inactive. Please contact a super admin.' });
+    }
+
     // Update last_login timestamp
     await (await import('../utils/supabaseClient.js')).supabase
       .from('admin_users')
