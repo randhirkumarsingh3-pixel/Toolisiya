@@ -146,6 +146,11 @@ export default function Header() {
                   About
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/blog" className={({ isActive }) => `text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}>
+                  Blog
+                </NavLink>
+              </li>
             </ul>
           </nav>
 
@@ -210,6 +215,7 @@ export default function Header() {
             })}
             
             <NavLink to="/about" className={({ isActive }) => `px-4 py-3.5 text-base font-bold rounded-xl transition-colors ${isActive ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}`}>About</NavLink>
+            <NavLink to="/blog" className={({ isActive }) => `px-4 py-3.5 text-base font-bold rounded-xl transition-colors ${isActive ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}`}>Blog</NavLink>
             
             <div className="pt-6 mt-4 border-t border-border flex flex-col gap-3">
               {isAuthenticated ? (

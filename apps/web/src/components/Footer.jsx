@@ -59,25 +59,31 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Top Tools */}
+          {/* Top Utilities */}
           <div className="lg:col-span-2 space-y-5">
-            <h4 className="font-bold text-foreground">Top Tools</h4>
+            <h4 className="font-bold text-foreground">Top Utilities</h4>
             <ul className="space-y-3">
-              <li><Link to="/image/photo-editor" className="text-sm text-muted-foreground hover:text-primary transition-colors">Photo Studio</Link></li>
+              <li><Link to="/image/photo-editor" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><ImageIcon className="w-3.5 h-3.5"/> Photo Studio</Link></li>
               <li><Link to="/pdf/pdf-merger" className="text-sm text-muted-foreground hover:text-primary transition-colors">PDF Merger</Link></li>
-              <li><Link to="/finance/gst-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">GST Calculator</Link></li>
               <li><Link to="/pdf/document-scanner" className="text-sm text-muted-foreground hover:text-primary transition-colors">OCR Scanner</Link></li>
               <li><Link to="/image/image-compressor" className="text-sm text-muted-foreground hover:text-primary transition-colors">Image Compressor</Link></li>
+              <li><Link to="/document/word-to-pdf" className="text-sm text-muted-foreground hover:text-primary transition-colors">Word to PDF</Link></li>
+              <li><Link to="/developer/uuid-generator" className="text-sm text-muted-foreground hover:text-primary transition-colors">UUID Generator</Link></li>
+              <li><Link to="/pdf/pdf-splitter" className="text-sm text-muted-foreground hover:text-primary transition-colors">PDF Splitter</Link></li>
             </ul>
           </div>
 
-          {/* Creator Ecosystem */}
+          {/* Popular Calculators */}
           <div className="lg:col-span-2 space-y-5">
-            <h4 className="font-bold text-foreground">Creator Studio</h4>
+            <h4 className="font-bold text-foreground">Popular Calculators</h4>
             <ul className="space-y-3">
-              <li><Link to="/image/photo-editor" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><ImageIcon className="w-3.5 h-3.5"/> Editor</Link></li>
-              <li><Link to="/image/watermark-remover" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><FileCheck2 className="w-3.5 h-3.5"/> Background Removal</Link></li>
-              <li><Link to="/invitations/wedding-invitations" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><Camera className="w-3.5 h-3.5"/> Invitations</Link></li>
+              <li><Link to="/finance/gst-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><Calculator className="w-3.5 h-3.5"/> GST Calculator</Link></li>
+              <li><Link to="/finance/emi-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">EMI Calculator</Link></li>
+              <li><Link to="/finance/loan-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">Loan Calculator</Link></li>
+              <li><Link to="/finance/percentage-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">Percentage Calc</Link></li>
+              <li><Link to="/finance/discount-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">Discount Calc</Link></li>
+              <li><Link to="/science/potential-energy-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">Energy Calculator</Link></li>
+              <li><Link to="/utilities/age-calculator" className="text-sm text-muted-foreground hover:text-primary transition-colors">Age Calculator</Link></li>
             </ul>
           </div>
 
@@ -102,6 +108,7 @@ export default function Footer() {
             <h4 className="font-bold text-foreground">Company</h4>
             <ul className="space-y-3">
               <li><Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Blog & Guides</Link></li>
               <li><Link to="/contact-us" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
               <li><Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>

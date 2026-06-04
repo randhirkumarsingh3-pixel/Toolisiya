@@ -38,7 +38,6 @@ export default function ToolPageTemplate({ toolData, children }) {
         toolName={toolName}
         category={category}
         defaultSlug={toolId}
-        defaultTitle={`${toolName} - Free Online Tool | Toolisiya`}
         defaultDescription={toolDescription}
       />
 

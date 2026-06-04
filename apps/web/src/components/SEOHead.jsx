@@ -56,8 +56,30 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
     location.pathname.startsWith('/verification');
   const robotsContent = isNoIndex ? "noindex, nofollow" : "index, follow";
 
+  // Generate richer long-tail default titles based on category
+  let enhancedDefaultTitle = defaultTitle;
+  if (!seoData.meta_title && !defaultTitle && derivedToolName) {
+    switch (derivedCategory?.toLowerCase()) {
+      case 'finance':
+        enhancedDefaultTitle = `Free ${derivedToolName} Online: Fast & Accurate Calculator (2026) | Toolisiya`;
+        break;
+      case 'pdf':
+        enhancedDefaultTitle = `Free Online ${derivedToolName}: Fast, Secure & No Limits | Toolisiya`;
+        break;
+      case 'image':
+        enhancedDefaultTitle = `${derivedToolName}: Free Online Image Editor & Converter | Toolisiya`;
+        break;
+      case 'developer':
+      case 'utilities':
+        enhancedDefaultTitle = `Free ${derivedToolName} - Online Developer Utility | Toolisiya`;
+        break;
+      default:
+        enhancedDefaultTitle = `${derivedToolName} - Free Online Tool | Toolisiya`;
+    }
+  }
+
   // Resolve meta variables with robust, action-oriented CTR fallbacks
-  const title = seoData.meta_title || defaultTitle || (derivedToolName ? `${derivedToolName} - Free Online Tool | Toolisiya` : 'Toolisiya - Free Online Utilities & Productivity Tools');
+  const title = seoData.meta_title || enhancedDefaultTitle || 'Toolisiya - Free Online Utilities & Productivity Tools';
   const description = seoData.meta_description || defaultDescription || (derivedToolName 
     ? `Use our free online ${derivedToolName} to easily process your tasks. Fast, secure, and client-side. Try it now!` 
     : 'Use our free online tools for PDF processing, image editing, developer utilities, financial calculations, and productivity. Fast, secure, and client-side. Start using our free tools now!');
