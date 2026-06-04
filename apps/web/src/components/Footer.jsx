@@ -65,7 +65,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link to="/image/photo-editor" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"><ImageIcon className="w-3.5 h-3.5"/> Photo Studio</Link></li>
               <li><Link to="/pdf/pdf-merger" className="text-sm text-muted-foreground hover:text-primary transition-colors">PDF Merger</Link></li>
-              <li><Link to="/pdf/document-scanner" className="text-sm text-muted-foreground hover:text-primary transition-colors">OCR Scanner</Link></li>
+              <li><Link to="/pdf/document-scanner" className="text-sm text-muted-foreground hover:text-primary transition-colors">Document Scanner</Link></li>
               <li><Link to="/image/image-compressor" className="text-sm text-muted-foreground hover:text-primary transition-colors">Image Compressor</Link></li>
               <li><Link to="/document/word-to-pdf" className="text-sm text-muted-foreground hover:text-primary transition-colors">Word to PDF</Link></li>
               <li><Link to="/developer/uuid-generator" className="text-sm text-muted-foreground hover:text-primary transition-colors">UUID Generator</Link></li>
