@@ -8,7 +8,7 @@ export const blogPosts = [
     author: "Toolisiya Editorial",
     date: "May 20, 2026",
     readTime: "5 min read",
-    coverImage: "https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&w=800&q=80",
+    coverImage: "/blog/image_compression_cover.png",
     content: `
       Image compression is one of the most critical aspects of modern web development and digital asset management. A single unoptimized image can slow down your website page speed, directly hurting your SEO rankings and user retention. In this comprehensive guide, we will break down the differences between PNG, JPG, and WebP, and show you how to choose the right format for your project.
 
