@@ -169,6 +169,7 @@ const JobApplicationTrackerPage = lazy(() => import('./pages/JobApplicationTrack
 const PhotoEditorPage = lazy(() => import('./pages/PhotoEditorPage.jsx'));
 const ImageMetadataViewerPage = lazy(() => import('./pages/ImageMetadataViewerPage.jsx'));
 const QRCodeScannerPage = lazy(() => import('./pages/QRCodeScannerPage.jsx'));
+const OCRDocumentReaderPage = lazy(() => import('./pages/tools/OCRDocumentReaderPage.jsx'));
 const ImageCompressorPage = lazy(() => import('./pages/ImageCompressorPage.jsx'));
 const ImageConverterPage = lazy(() => import('./pages/ImageConverterPage.jsx'));
 const ImageResizerPage = lazy(() => import('./pages/ImageResizerPage.jsx'));
@@ -540,6 +541,7 @@ const AppContent = () => {
 
             {/* PDF Tools */}
             <Route path="/pdf/document-scanner" element={<DocumentScannerPage />} />
+            <Route path="/pdf/ocr-document-reader" element={<OCRDocumentReaderPage />} />
             <Route path="/document/document-scanner" element={<Navigate to="/pdf/document-scanner" replace />} />
             <Route path="/pdf/pdf-compressor" element={<PDFCompressorPage />} />
             <Route path="/pdf/pdf-merger" element={<PDFMergerPage />} />
