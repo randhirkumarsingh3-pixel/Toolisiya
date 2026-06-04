@@ -41,11 +41,18 @@ const adminAuthMiddleware = async (req, res, next) => {
   // Fallback to userId for backwards compatibility with older tokens
   const adminId = decoded.adminId || decoded.userId;
   const pb = (await import('../utils/pocketbaseClient.js')).default;
-  const admin = await pb.collection('admin_users').getOne(adminId, { requestKey: null }).catch(() => null);
+  
+  let admin = null;
+  try {
+    admin = await pb.collection('admin_users').getOne(adminId, { requestKey: null });
+  } catch (err) {
+    logger.error(`[adminAuthMiddleware] getOne failed for adminId ${adminId}: ${err.message}`);
+    console.error(`[adminAuthMiddleware] getOne failed for adminId ${adminId}:`, err);
+  }
 
   if (!admin || (admin.status && admin.status.toLowerCase() !== 'active')) {
-    logger.warn(`Unauthorized admin access attempt - admin ID: ${adminId}`);
-    return res.status(403).json({ error: 'Admin access denied' });
+    logger.warn(`Unauthorized admin access attempt - admin ID: ${adminId}, Status: ${admin?.status}`);
+    return res.status(403).json({ error: 'Admin access denied', details: !admin ? 'Admin not found' : 'Status inactive' });
   }
 
   req.admin = decoded;
