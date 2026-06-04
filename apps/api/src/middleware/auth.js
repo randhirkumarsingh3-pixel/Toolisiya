@@ -38,12 +38,13 @@ const adminAuthMiddleware = async (req, res, next) => {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
-  // Verify admin exists and is active
+  // Fallback to userId for backwards compatibility with older tokens
+  const adminId = decoded.adminId || decoded.userId;
   const pb = (await import('../utils/pocketbaseClient.js')).default;
-  const admin = await pb.collection('admin_users').getOne(decoded.adminId, { requestKey: null }).catch(() => null);
+  const admin = await pb.collection('admin_users').getOne(adminId, { requestKey: null }).catch(() => null);
 
   if (!admin || (admin.status && admin.status.toLowerCase() !== 'active')) {
-    logger.warn(`Unauthorized admin access attempt - admin ID: ${decoded.adminId}`);
+    logger.warn(`Unauthorized admin access attempt - admin ID: ${adminId}`);
     return res.status(403).json({ error: 'Admin access denied' });
   }
 
