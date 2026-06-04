@@ -293,8 +293,6 @@ export default defineConfig({
 	plugins: [
 		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), selectionModePlugin(), iframeRouteRestorationPlugin(), pocketbaseAuthPlugin()] : []),
 		react(),
-		viteCompression({ algorithm: 'gzip', ext: '.gz' }),
-		viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
 		addTransformIndexHtml
 	],
 	server: {
