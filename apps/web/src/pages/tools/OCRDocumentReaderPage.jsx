@@ -9,13 +9,11 @@ import {
 import { createWorker } from 'tesseract.js';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Components
-import ToolLayout from '../../components/ToolLayout';
-import { Button } from '../../components/ui/button';
-import { Progress } from '../../components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { apiServerClient } from '../../lib/apiServerClient';
+import { apiServerClient } from '@/lib/apiServerClient';
 
 // Configure PDF.js Worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -260,10 +258,7 @@ export default function OCRDocumentReaderPage() {
   };
 
   return (
-    <ToolLayout
-      title="OCR Document Reader"
-      description="Extract, translate, and listen to text from scanned documents, receipts, and images securely."
-    >
+    <div className="min-h-screen bg-gray-50 dark:bg-[#09090b] py-8">
       <Helmet>
         <title>OCR Document Reader - Extract Text from Images & PDFs Online | Toolisiya</title>
         <meta name="description" content="Free online OCR workspace. Extract editable text from scanned documents, PDFs, handwritten notes, and images. Translate, edit, and convert to speech instantly." />
@@ -527,6 +522,6 @@ export default function OCRDocumentReaderPage() {
         </div>
 
       </div>
-    </ToolLayout>
+    </div>
   );
 }
