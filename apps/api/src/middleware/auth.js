@@ -42,7 +42,7 @@ const adminAuthMiddleware = async (req, res, next) => {
   const pb = (await import('../utils/pocketbaseClient.js')).default;
   const admin = await pb.collection('admin_users').getOne(decoded.adminId, { requestKey: null }).catch(() => null);
 
-  if (!admin || (admin.status !== 'Active' && admin.status !== '')) {
+  if (!admin || (admin.status && admin.status.toLowerCase() !== 'active')) {
     logger.warn(`Unauthorized admin access attempt - admin ID: ${decoded.adminId}`);
     return res.status(403).json({ error: 'Admin access denied' });
   }

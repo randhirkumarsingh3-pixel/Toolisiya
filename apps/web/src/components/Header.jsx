@@ -45,10 +45,12 @@ export default function Header() {
 
         let orderedCats = [];
         let visibleCats = {};
+        let toolOrder = {};
         
         if (settingsRes.length > 0) {
           orderedCats = settingsRes[0].categoryOrder || [];
           visibleCats = settingsRes[0].visibility || {};
+          toolOrder = settingsRes[0].toolOrder || {};
         }
 
         const activeCategoryNames = new Set(activeCategories.map(c => c.name));
@@ -63,6 +65,19 @@ export default function Header() {
             if (!toolsByCat[t.category]) toolsByCat[t.category] = [];
             toolsByCat[t.category].push(t);
           }
+        });
+
+        // Sort tools within each category according to toolOrder
+        Object.keys(toolsByCat).forEach(cat => {
+          const catToolOrder = toolOrder[cat] || [];
+          toolsByCat[cat].sort((a, b) => {
+            const idxA = catToolOrder.indexOf(a.id);
+            const idxB = catToolOrder.indexOf(b.id);
+            if (idxA === -1 && idxB === -1) return 0;
+            if (idxA === -1) return 1;
+            if (idxB === -1) return -1;
+            return idxA - idxB;
+          });
         });
 
         setNavCategories(finalCats);

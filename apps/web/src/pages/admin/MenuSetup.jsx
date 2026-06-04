@@ -19,6 +19,7 @@ export default function MenuSetup() {
   const [categories, setCategories] = useState([]);
   const [categoryOrder, setCategoryOrder] = useState([]);
   const [visibility, setVisibility] = useState({});
+  const [toolOrder, setToolOrder] = useState({});
   const [tools, setTools] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState({});
 
@@ -43,6 +44,7 @@ export default function MenuSetup() {
 
           const savedOrder = record.categoryOrder || [];
           const savedVisibility = record.visibility || {};
+          const savedToolOrder = record.toolOrder || {};
 
           const missing = allUniqueCats.filter(c => !savedOrder.includes(c));
           const combinedOrder = [...savedOrder, ...missing];
@@ -53,6 +55,7 @@ export default function MenuSetup() {
           const finalVisibility = { ...savedVisibility };
           missing.forEach(m => finalVisibility[m] = true);
           setVisibility(finalVisibility);
+          setToolOrder(savedToolOrder);
         } else {
           const defaultVisibility = {};
           allUniqueCats.forEach(c => defaultVisibility[c] = true);
@@ -64,7 +67,8 @@ export default function MenuSetup() {
             body: JSON.stringify({
               categories: allUniqueCats,
               categoryOrder: allUniqueCats,
-              visibility: defaultVisibility
+              visibility: defaultVisibility,
+              toolOrder: {}
             })
           });
           if (!createRes.ok) throw new Error('Failed to create default menu settings');
@@ -74,6 +78,7 @@ export default function MenuSetup() {
           setCategories(allUniqueCats);
           setCategoryOrder(allUniqueCats);
           setVisibility(defaultVisibility);
+          setToolOrder({});
         }
       } catch (error) {
         console.error('Error fetching menu config:', error);
@@ -88,10 +93,33 @@ export default function MenuSetup() {
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
-    const items = Array.from(categoryOrder);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setCategoryOrder(items);
+    
+    if (result.type === 'category') {
+      const items = Array.from(categoryOrder);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      setCategoryOrder(items);
+    } else if (result.type === 'tool') {
+      const cat = result.source.droppableId;
+      if (cat !== result.destination.droppableId) return; // Cannot drag across categories
+      
+      const categoryToolsRaw = tools.filter(t => t.category === cat);
+      // Generate current tool order list if it doesn't exist
+      let currentCatOrder = toolOrder[cat];
+      if (!currentCatOrder || currentCatOrder.length === 0) {
+        currentCatOrder = categoryToolsRaw.map(t => t.id);
+      } else {
+        // Ensure all current tools are in the list
+        const missingToolIds = categoryToolsRaw.filter(t => !currentCatOrder.includes(t.id)).map(t => t.id);
+        currentCatOrder = [...currentCatOrder, ...missingToolIds];
+      }
+      
+      const items = Array.from(currentCatOrder);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      setToolOrder(prev => ({ ...prev, [cat]: items }));
+    }
   };
 
   const handleVisibilityToggle = (cat, checked) => {
@@ -123,7 +151,7 @@ export default function MenuSetup() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const payload = { categories, categoryOrder, visibility };
+      const payload = { categories, categoryOrder, visibility, toolOrder };
       if (recordId) {
         const res = await apiServerClient.fetch(`/admin/menu-setup/settings/${recordId}`, {
           method: 'PUT',
@@ -178,11 +206,23 @@ export default function MenuSetup() {
         </CardHeader>
         <CardContent>
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="categories">
+            <Droppable droppableId="categories" type="category">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
                   {categoryOrder.map((cat, index) => {
-                    const categoryTools = tools.filter(t => t.category === cat);
+                    const categoryToolsRaw = tools.filter(t => t.category === cat);
+                    
+                    // Sort tools based on toolOrder
+                    const catToolOrder = toolOrder[cat] || [];
+                    const categoryTools = [...categoryToolsRaw].sort((a, b) => {
+                      const idxA = catToolOrder.indexOf(a.id);
+                      const idxB = catToolOrder.indexOf(b.id);
+                      if (idxA === -1 && idxB === -1) return 0;
+                      if (idxA === -1) return 1;
+                      if (idxB === -1) return -1;
+                      return idxA - idxB;
+                    });
+
                     const toolsInMenuCount = categoryTools.filter(t => t.show_in_menu).length;
                     const isExpanded = expandedCategories[cat];
 
@@ -221,28 +261,48 @@ export default function MenuSetup() {
                             </div>
                             
                             {isExpanded && (
-                              <div className="p-3 bg-background divide-y">
-                                {categoryTools.length === 0 ? (
-                                  <p className="text-sm text-muted-foreground p-2 text-center">No active tools in this category.</p>
-                                ) : (
-                                  categoryTools.map(tool => (
-                                    <div key={tool.id} className="flex items-center justify-between py-2 px-2 hover:bg-muted/20">
-                                      <div className="flex items-center gap-2">
-                                        <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
-                                        <span className="text-sm font-medium">{tool.name}</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-xs text-muted-foreground">In Dropdown</span>
-                                        <Switch 
-                                          checked={tool.show_in_menu || false}
-                                          onCheckedChange={() => handleToolMenuToggle(tool.id, tool.show_in_menu)}
-                                          className="scale-75 data-[state=checked]:bg-primary"
-                                        />
-                                      </div>
-                                    </div>
-                                  ))
+                              <Droppable droppableId={cat} type="tool">
+                                {(provided) => (
+                                  <div 
+                                    className="p-3 bg-background divide-y"
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                  >
+                                    {categoryTools.length === 0 ? (
+                                      <p className="text-sm text-muted-foreground p-2 text-center">No active tools in this category.</p>
+                                    ) : (
+                                      categoryTools.map((tool, tIndex) => (
+                                        <Draggable key={tool.id} draggableId={tool.id} index={tIndex}>
+                                          {(provided) => (
+                                            <div 
+                                              ref={provided.innerRef}
+                                              {...provided.draggableProps}
+                                              className="flex items-center justify-between py-2 px-2 hover:bg-muted/20 bg-background"
+                                            >
+                                              <div className="flex items-center gap-3">
+                                                <div {...provided.dragHandleProps} className="text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing p-1">
+                                                  <GripVertical className="h-4 w-4" />
+                                                </div>
+                                                <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
+                                                <span className="text-sm font-medium">{tool.name}</span>
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-xs text-muted-foreground">In Dropdown</span>
+                                                <Switch 
+                                                  checked={tool.show_in_menu || false}
+                                                  onCheckedChange={() => handleToolMenuToggle(tool.id, tool.show_in_menu)}
+                                                  className="scale-75 data-[state=checked]:bg-primary"
+                                                />
+                                              </div>
+                                            </div>
+                                          )}
+                                        </Draggable>
+                                      ))
+                                    )}
+                                    {provided.placeholder}
+                                  </div>
                                 )}
-                              </div>
+                              </Droppable>
                             )}
                           </div>
                         )}
