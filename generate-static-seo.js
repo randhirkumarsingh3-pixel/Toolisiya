@@ -199,13 +199,13 @@ Sitemap: ${baseUrl}/sitemap.xml
     console.log(`✅ Static robots.txt created successfully at: ${robotsPath}`);
 
     // Generate static ads.txt
-    let adsenseId = '';
+    let adsenseId = 'pub-8044537001934396'; // Hardcoded fallback to prevent empty overwrite
     try {
       if (supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
         const { data: records, error: dbErr } = await supabase.from('website_settings').select('adsense_publisher_id').limit(1);
-        if (!dbErr && records && records.length > 0) {
-          adsenseId = records[0].adsense_publisher_id || '';
+        if (!dbErr && records && records.length > 0 && records[0].adsense_publisher_id) {
+          adsenseId = records[0].adsense_publisher_id;
         }
       }
     } catch (e) {
@@ -213,9 +213,7 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
 
     const adsTxtPath = path.join(publicDir, 'ads.txt');
-    const adsTxtContent = adsenseId 
-      ? `google.com, ${adsenseId}, DIRECT, f08c47fec0942fa0\n`
-      : `# Google AdSense not configured yet.\n`;
+    const adsTxtContent = `google.com, ${adsenseId}, DIRECT, f08c47fec0942fa0\n`;
     fs.writeFileSync(adsTxtPath, adsTxtContent, 'utf8');
     console.log(`✅ Static ads.txt created successfully at: ${adsTxtPath}`);
 
