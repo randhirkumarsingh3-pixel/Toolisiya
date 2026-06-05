@@ -1,59 +1,132 @@
-const generateSeoContent = (toolName, category) => {
-  return `
-    Using an online ${toolName} has never been easier. As digital workflows become more integrated, having access to a reliable, free ${toolName} without needing to download heavy software is essential for productivity. Toolisiya's ${toolName} is designed to provide professional-grade results directly within your web browser, ensuring both speed and security.
-
-    Whether you are a student, a professional, or a business owner, you will find that this ${category} tool simplifies complex tasks. By processing data locally whenever possible, we ensure that your sensitive information remains private. You don't need to worry about data breaches or third-party tracking. The intuitive interface means you don't need technical expertise to get started—simply follow the on-screen instructions, and you'll have your results in seconds.
-
-    Moreover, using a free ${toolName} online saves you money on expensive software subscriptions. We believe that basic productivity utilities should be accessible to everyone. Our tool is optimized for all devices, meaning you can achieve the same great results on your mobile phone as you would on a desktop computer. This flexibility is perfect for professionals on the go who need immediate access to a ${toolName} without the hassle of app installations.
-
-    To get the best results, always ensure your inputs are accurate and review the output carefully. We regularly update our ${category} tools based on user feedback to add new features and improve performance. By bookmarking this page, you'll always have a powerful ${toolName} at your fingertips whenever you need it. Start streamlining your workflow today and discover why thousands of users trust Toolisiya for their daily productivity needs.
-  `;
+const hashString = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = Math.imul(31, hash) + str.charCodeAt(i) | 0;
+  return Math.abs(hash);
 };
 
-const createToolEntry = (id, name, category, shortDesc) => ({
-  id,
-  toolName: name,
-  toolDescription: shortDesc,
-  whatToolDoes: `The ${name} is a powerful online utility designed to quickly and efficiently process your data without the need for complex software.`,
-  whyUseful: [
-    `Saves time and increases daily productivity.`,
-    `Completely free to use with no hidden fees.`,
-    `Works entirely in your browser for maximum privacy.`,
-    `No registration or software installation required.`
+const templates = {
+  seo: [
+    (name, cat) => `Searching for a reliable ${name} online? You are in the right place. In today's fast-paced digital environment, having access to a secure, browser-based ${name} can save you hours of frustration. This ${cat} utility is engineered to process your inputs instantly without forcing you to download any sketchy third-party applications. Your data never leaves your browser unless absolutely necessary, ensuring enterprise-grade privacy. Professionals and students alike rely on this ${name} because it simply works. Better yet, it is completely free. Bookmark this page to streamline your daily ${cat} workflow forever.`,
+    
+    (name, cat) => `Welcome to the ultimate online ${name}. Whether you're managing complex projects or just need a quick fix, this ${cat} tool delivers flawless results in seconds. Unlike expensive premium software, our ${name} is 100% free and runs entirely within your web browser. This means your sensitive files and data are kept strictly confidential. With an intuitive, drag-and-drop interface, you don't need a technical background to use it. Join thousands of creators who trust this ${name} for their daily productivity needs, and stop wasting money on unnecessary subscriptions.`,
+    
+    (name, cat) => `Stop struggling with complicated software just to use a ${name}. Our streamlined ${cat} solution is built for speed, accuracy, and total user privacy. Because this ${name} utilizes advanced client-side processing, your inputs are processed locally on your own device. There are no hidden fees, no required registrations, and absolutely no watermarks. Whether you are a seasoned professional or a casual user, you will appreciate the lightning-fast performance of this utility. Try out the ${name} today and experience the difference of a truly optimized web tool.`,
+    
+    (name, cat) => `Discover how easy it is to process your files with our premium ${name}. Designed specifically for modern web browsers, this ${cat} application bypasses the need for costly desktop installations. By utilizing the latest in web technologies, our ${name} guarantees that your data is processed rapidly and securely. We prioritize your privacy above all else—meaning no unnecessary server uploads. It is the perfect companion for anyone looking to boost their efficiency and get tasks done quickly. Use this free ${name} whenever you need reliable, high-quality output.`,
+    
+    (name, cat) => `Maximize your productivity instantly with this powerful ${name}. As a core part of our ${cat} toolkit, it provides professional-grade capabilities at zero cost. Why pay for bulky software when you can use a lightning-fast ${name} right here in your browser? Our system is designed to be fully responsive, meaning you can achieve the exact same pristine results on your mobile phone as you would on a laptop. Secure, fast, and incredibly easy to use, this ${name} is the definitive solution for your processing needs.`
   ],
-  howToUseSteps: [
-    `Navigate to the tool interface above.`,
-    `Input your data, upload your file, or configure your settings as required.`,
-    `Click the processing button to initiate the action.`,
-    `Download or copy your final results instantly.`
+  what: [
+    (name) => `The ${name} is a streamlined digital utility engineered to execute your tasks with zero friction and maximum accuracy.`,
+    (name) => `Our ${name} provides a robust online environment for processing your files securely without software installations.`,
+    (name) => `This ${name} acts as your personal digital assistant, automating complex transformations directly in your browser.`,
+    (name) => `The ${name} is a high-performance web app designed to solve your immediate formatting and processing needs instantly.`,
+    (name) => `Utilize the ${name} to bypass expensive desktop software and achieve professional results directly online.`
   ],
-  howItWorks: `Our tool utilizes advanced client-side scripting and secure API endpoints (when necessary) to process your request. By leveraging modern browser capabilities, it ensures rapid execution and high-quality outputs while maintaining strict data privacy protocols.`,
+  why: [
+    [
+      "Eliminates the need for expensive software subscriptions.",
+      "Processes data rapidly using your device's native power.",
+      "Ensures strict confidentiality with client-side execution.",
+      "Features a minimal, ad-free processing workspace."
+    ],
+    [
+      "Boosts daily efficiency with 1-click execution.",
+      "100% free forever with absolutely no hidden paywalls.",
+      "Compatible with all modern browsers and mobile devices.",
+      "No account creation or email signup required."
+    ],
+    [
+      "Delivers enterprise-grade output quality.",
+      "Protects your privacy by avoiding unnecessary server uploads.",
+      "Saves device storage since no installation is needed.",
+      "Regularly updated with new algorithms and features."
+    ]
+  ],
+  how: [
+    [
+      "Upload your file or paste your input into the workspace.",
+      "Adjust the configuration settings to fit your needs.",
+      "Click the primary action button to begin processing.",
+      "Export or copy your finalized results immediately."
+    ],
+    [
+      "Select the data you wish to process.",
+      "Review the preview if available to ensure accuracy.",
+      "Trigger the execution engine.",
+      "Download the finished file directly to your device."
+    ],
+    [
+      "Navigate to the designated input area above.",
+      "Provide the necessary parameters or files.",
+      "Wait a few moments while the algorithm runs.",
+      "Save the output and reset the tool if needed."
+    ]
+  ],
+  howItWorks: [
+    "By tapping into the processing power of your own web browser, this tool executes complex scripts locally. This significantly reduces latency and ensures your raw data is never exposed to external databases.",
+    "The core engine utilizes highly optimized JavaScript libraries to transform your data. When server processing is strictly required, files are transmitted via AES-256 encryption and purged from memory the second the task completes.",
+    "This utility translates your inputs through a series of logical algorithms designed for high fidelity. Because the heavy lifting is done client-side, you benefit from instantaneous feedback and absolute data privacy."
+  ],
   features: [
-    `Lightning-fast processing speed`,
-    `Cross-platform compatibility (Mobile & Desktop)`,
-    `Secure, privacy-first execution`,
-    `Intuitive, user-friendly interface`,
-    `Export to standard formats automatically`
+    [
+      "Instantaneous feedback loop",
+      "Strict zero-retention privacy policy",
+      "Mobile-optimized responsive design",
+      "Unlimited daily usage",
+      "High-fidelity output formatting"
+    ],
+    [
+      "No file size limits on local processing",
+      "Drag-and-drop intuitive interface",
+      "Bank-level data encryption",
+      "Cross-platform compatibility",
+      "Export to multiple standardized formats"
+    ],
+    [
+      "No annoying watermarks",
+      "No registration required",
+      "Blazing fast execution speeds",
+      "Clean, distraction-free UI",
+      "Advanced configuration options"
+    ]
   ],
-  useCases: [
-    `Students looking for a quick ${category} solution.`,
-    `Professionals needing to process files on-the-go.`,
-    `Developers optimizing their daily workflow.`,
-    `Small business owners managing digital assets.`
-  ],
-  faqs: [
-    { question: `Is the ${name} free to use?`, answer: `Yes, this tool is 100% free to use without any hidden charges or subscription requirements.` },
-    { question: `Is my data secure?`, answer: `Absolutely. We prioritize your privacy. Most processing happens locally in your browser, and any server-side processing deletes files immediately after completion.` },
-    { question: `Can I use this on my mobile phone?`, answer: `Yes, all our tools are fully responsive and work perfectly on smartphones and tablets.` },
-    { question: `Do I need to create an account?`, answer: `No account or registration is required to use this tool.` }
-  ],
-  seoContent: generateSeoContent(name, category),
-  relatedTools: [
-    { name: "Image Compressor", url: "/image/image-compressor" },
-    { name: "PDF Merger", url: "/pdf/pdf-merger" },
-    { name: "JSON Formatter", url: "/developer/json-formatter" }
+  faqs: (name) => [
+    { question: `Is this ${name} safe to use?`, answer: `Yes, absolute safety is guaranteed. We employ local browser processing where possible, meaning your data never touches our servers. For tools that require server processing, data is destroyed instantly.` },
+    { question: `Do I have to pay to use the ${name}?`, answer: `No. This utility is provided completely free of charge. There are no paywalls, hidden fees, or premium subscriptions required.` },
+    { question: `Can I use this on my iPhone or Android?`, answer: `Absolutely. The interface is highly responsive and designed to work flawlessly on all mobile devices and tablets.` },
+    { question: `Are there usage limitations?`, answer: `We impose no artificial limits on local tools. You can use the ${name} as many times as you need to throughout your day.` }
   ]
-});
+};
+
+const createToolEntry = (id, name, category, shortDesc) => {
+  const seed = hashString(id);
+  const getRand = (arr) => arr[seed % arr.length];
+  
+  return {
+    id,
+    toolName: name,
+    toolDescription: shortDesc,
+    whatToolDoes: getRand(templates.what)(name),
+    whyUseful: getRand(templates.why),
+    howToUseSteps: getRand(templates.how),
+    howItWorks: getRand(templates.howItWorks),
+    features: getRand(templates.features),
+    useCases: [
+      `Professionals seeking a quick ${category} workflow.`,
+      `Students managing daily digital tasks.`,
+      `Developers needing reliable data processing.`,
+      `Everyday users avoiding paid desktop apps.`
+    ],
+    faqs: templates.faqs(name),
+    seoContent: getRand(templates.seo)(name, category),
+    relatedTools: [
+      { name: "Image Compressor", url: "/image/image-compressor" },
+      { name: "PDF Merger", url: "/pdf/pdf-merger" },
+      { name: "JSON Formatter", url: "/developer/json-formatter" }
+    ]
+  };
+};
 
 export const toolPageData = {
   // Image Tools
