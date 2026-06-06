@@ -90,7 +90,9 @@ export const useAnalyticsTracker = () => {
         
       } catch (err) {
         // Silently fail to not interrupt user experience if analytics tracking fails or collection is missing
-        console.error('Analytics tracking error:', err.message);
+        if (import.meta.env.DEV) {
+          console.error('Analytics tracking failed silently:', err.message);
+        }
       }
     };
 

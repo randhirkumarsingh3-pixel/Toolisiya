@@ -102,7 +102,7 @@ export default function OCRDocumentReaderPage() {
   });
 
   const extractTextFromImage = async (imageUrl) => {
-    const worker = await createWorker({
+    const worker = await createWorker(selectedLanguage, 1, {
       logger: m => {
         if (m.status === 'recognizing text') {
           setProgress(Math.round(m.progress * 100));
@@ -113,8 +113,6 @@ export default function OCRDocumentReaderPage() {
       }
     });
 
-    await worker.loadLanguage(selectedLanguage);
-    await worker.initialize(selectedLanguage);
     const { data: { text, confidence } } = await worker.recognize(imageUrl);
     await worker.terminate();
     

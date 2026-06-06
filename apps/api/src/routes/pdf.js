@@ -9,6 +9,7 @@ import logger from '../utils/logger.js';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { exec } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

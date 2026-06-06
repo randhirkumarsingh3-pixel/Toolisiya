@@ -19,7 +19,8 @@ router.get('/settings/:pageName', async (req, res) => {
       .getFirstListItem(`page_name="${pageName}"`, { requestKey: null });
     res.json(record);
   } catch (error) {
-    res.status(404).json({ error: 'SEO settings not found' });
+    // Return 200 OK with success: false to prevent browser from spamming 404 console errors
+    res.json({ success: false, data: null, error: 'SEO settings not found' });
   }
 });
 
