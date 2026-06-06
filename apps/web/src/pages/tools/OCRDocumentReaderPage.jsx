@@ -40,7 +40,7 @@ export default function OCRDocumentReaderPage() {
   const [statusText, setStatusText] = useState('');
   const [confidence, setConfidence] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState('eng');
-  
+  const [accuracyMode, setAccuracyMode] = useState('standard');
   // Translation
   const [targetLang, setTargetLang] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
@@ -119,6 +119,21 @@ export default function OCRDocumentReaderPage() {
     return { text, confidence };
   };
 
+  const extractTextCloudMode = async (fileObj) => {
+    setStatusText('Uploading to Cloud AI...');
+    const formData = new FormData();
+    formData.append('file', fileObj);
+
+    const response = await apiServerClient.fetch('/ocr/extract-text', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Cloud extraction failed');
+    return { text: data.text, confidence: data.confidence };
+  };
+
   const processOCR = async () => {
     if (!file && !previewUrl) return;
     
@@ -128,40 +143,45 @@ export default function OCRDocumentReaderPage() {
     setConfidence(0);
     
     try {
-      let finalImageUrl = previewUrl;
-      
-      // If PDF with multiple pages, we might need a more complex extraction, 
-      // but for V1 we extract the preview canvas (Page 1) or full document if image.
-      if (file && file.type === 'application/pdf') {
-        setStatusText('Reading PDF Document...');
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        
-        let fullText = '';
-        let totalConfidence = 0;
-        
-        for (let i = 1; i <= pdf.numPages; i++) {
-           setStatusText(`Processing PDF Page ${i} of ${pdf.numPages}...`);
-           const page = await pdf.getPage(i);
-           const viewport = page.getViewport({ scale: 2.0 }); // higher scale for OCR
-           const canvas = document.createElement('canvas');
-           const context = canvas.getContext('2d');
-           canvas.height = viewport.height;
-           canvas.width = viewport.width;
-           await page.render({ canvasContext: context, viewport }).promise;
-           const imgUrl = canvas.toDataURL('image/jpeg');
-           
-           const { text, confidence: conf } = await extractTextFromImage(imgUrl);
-           fullText += text + '\n\n';
-           totalConfidence += conf;
-        }
-        
-        setExtractedText(fullText.trim());
-        setConfidence(Math.round(totalConfidence / pdf.numPages));
-      } else {
-        const { text, confidence: conf } = await extractTextFromImage(previewUrl);
+      if (accuracyMode === 'high') {
+        setStatusText('Processing with High-Accuracy Cloud AI...');
+        setProgress(40);
+        const { text, confidence: conf } = await extractTextCloudMode(file);
         setExtractedText(text);
-        setConfidence(Math.round(conf));
+        setConfidence(conf);
+        setProgress(100);
+      } else {
+        if (file && file.type === 'application/pdf') {
+          setStatusText('Reading PDF Document...');
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          
+          let fullText = '';
+          let totalConfidence = 0;
+          
+          for (let i = 1; i <= pdf.numPages; i++) {
+             setStatusText(`Processing PDF Page ${i} of ${pdf.numPages}...`);
+             const page = await pdf.getPage(i);
+             const viewport = page.getViewport({ scale: 2.0 }); // higher scale for OCR
+             const canvas = document.createElement('canvas');
+             const context = canvas.getContext('2d');
+             canvas.height = viewport.height;
+             canvas.width = viewport.width;
+             await page.render({ canvasContext: context, viewport }).promise;
+             const imgUrl = canvas.toDataURL('image/jpeg');
+             
+             const { text, confidence: conf } = await extractTextFromImage(imgUrl);
+             fullText += text + '\n\n';
+             totalConfidence += conf;
+          }
+          
+          setExtractedText(fullText.trim());
+          setConfidence(Math.round(totalConfidence / pdf.numPages));
+        } else {
+          const { text, confidence: conf } = await extractTextFromImage(previewUrl);
+          setExtractedText(text);
+          setConfidence(Math.round(conf));
+        }
       }
       
       setStatusText('Extraction Complete');
@@ -324,7 +344,7 @@ export default function OCRDocumentReaderPage() {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Language:</span>
-                    <Select value={selectedLanguage} onValueChange={setSelectedLanguage} disabled={isProcessing}>
+                    <Select value={selectedLanguage} onValueChange={setSelectedLanguage} disabled={isProcessing || accuracyMode === 'high'}>
                       <SelectTrigger className="w-[140px] bg-white dark:bg-gray-800">
                         <SelectValue placeholder="Language" />
                       </SelectTrigger>
@@ -332,6 +352,19 @@ export default function OCRDocumentReaderPage() {
                         {SUPPORTED_LANGUAGES.map(l => (
                           <SelectItem key={l.code} value={l.code}>{l.name}</SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Accuracy:</span>
+                    <Select value={accuracyMode} onValueChange={setAccuracyMode} disabled={isProcessing}>
+                      <SelectTrigger className="w-[160px] bg-white dark:bg-gray-800">
+                        <SelectValue placeholder="Mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="standard">Standard (Fast)</SelectItem>
+                        <SelectItem value="high">High (Cloud AI)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

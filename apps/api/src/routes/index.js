@@ -17,6 +17,7 @@ import toolStatusRouter from './tool-status.js';
 import adsRoutes from './ads.js';
 import photoStudioRoutes from './photo-studio.js';
 import translateRoutes from './translate.js';
+import ocrRoutes from './ocr.js';
 
 export default () => {
     const router = Router();
@@ -35,6 +36,7 @@ export default () => {
     router.use('/tool-status', toolStatusRouter);
     router.use('/photo-studio', photoStudioRoutes);
     router.use('/translate', translateRoutes);
+    router.use('/ocr', ocrRoutes);
     router.use('/', sitemapRoutes);
     router.use('/', robotsRoutes);
     router.use('/', adsRoutes);
