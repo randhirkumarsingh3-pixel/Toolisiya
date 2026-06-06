@@ -10,8 +10,8 @@ import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { exec } from 'child_process';
-
+import pdfParse from 'pdf-parse';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
@@ -357,108 +357,13 @@ router.post('/word-to-pdf', uploadWord.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Failed to convert Word to PDF: ' + error.message });
   }
 });
-
-// Helper execution promise wrapper
-const execPromise = (cmd) => new Promise((resolve, reject) => {
-  exec(cmd, (error, stdout, stderr) => {
-    if (error) {
-      reject({ error, stdout, stderr });
-    } else {
-      resolve({ stdout, stderr });
-    }
-  });
-});
-
-// Function to check and install Python dependencies dynamically in Hostinger user-space if missing
-let pythonCmdPrefix = 'python3';
-let pythonDepsChecked = false;
-const ensurePythonDeps = async () => {
-  if (pythonDepsChecked) return;
-
-  logger.info("Checking Python dependencies (pymupdf, python-docx)...");
-  try {
-    await execPromise('python3 -c "import fitz, docx"');
-    pythonCmdPrefix = 'python3';
-    logger.info("Python dependencies are verified in python3.");
-    pythonDepsChecked = true;
-    return;
-  } catch (err) {
-    logger.warn("Python dependencies (pymupdf/python-docx) are missing in python3. Checking python...");
-    try {
-      await execPromise('python -c "import fitz, docx"');
-      pythonCmdPrefix = 'python';
-      logger.info("Python dependencies are verified in python.");
-      pythonDepsChecked = true;
-      return;
-    } catch (err2) {
-      logger.warn("Python dependencies are missing on both python3 and python. Starting installation fallbacks...");
-    }
-  }
-
-  // Try different install commands
-  const installCommands = [
-    'pip3 install --user pymupdf python-docx',
-    'pip install --user pymupdf python-docx',
-    'python3 -m pip install --user pymupdf python-docx',
-    'python -m pip install --user pymupdf python-docx'
-  ];
-
-  let lastError = null;
-  for (const cmd of installCommands) {
-    try {
-      logger.info(`Attempting installation: ${cmd}`);
-      await execPromise(cmd);
-      logger.info(`Installation succeeded using: ${cmd}`);
-      
-      // Verify which python command now has the libraries
-      try {
-        await execPromise('python3 -c "import fitz, docx"');
-        pythonCmdPrefix = 'python3';
-        pythonDepsChecked = true;
-        logger.info("Verified dependencies in python3 after installation.");
-        return;
-      } catch (e) {
-        try {
-          await execPromise('python -c "import fitz, docx"');
-          pythonCmdPrefix = 'python';
-          pythonDepsChecked = true;
-          logger.info("Verified dependencies in python after installation.");
-          return;
-        } catch (e2) {
-          logger.warn("Installation reported success but verification import failed. Continuing fallback...");
-        }
-      }
-    } catch (err) {
-      logger.warn(`Installation failed with command "${cmd}": ${err.stderr || err.error?.message}`);
-      lastError = err;
-    }
-  }
-
-  throw new Error(`Failed to install Python conversion dependencies (pymupdf, python-docx) on the server. Tried all pip installers, but they failed. Last error: ${lastError ? (lastError.stderr || lastError.error?.message) : 'unknown'}`);
-};
-
 // POST /pdf/pdf-to-word
 router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'PDF file is required' });
   }
 
-  const mode = req.body.mode || 'high'; // 'fast' or 'high'
-  logger.info(`Converting PDF to Word: ${req.file.originalname} using mode: ${mode}`);
-
-  try {
-    // Ensure all backend python dependencies are installed on the server
-    await ensurePythonDeps();
-  } catch (depsErr) {
-    logger.error('Failed to satisfy python dependencies:', depsErr);
-    return res.status(500).json({ error: depsErr.message });
-  }
-
-  // Create temporary files
-  const tempId = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-  const utilsDir = path.join(__dirname, '../utils');
-  const tempPdfPath = path.join(utilsDir, `temp_${tempId}.pdf`);
-  const tempDocxPath = path.join(utilsDir, `temp_${tempId}.docx`);
+  logger.info(`Converting PDF to Word (Node native): ${req.file.originalname}`);
 
   try {
     // Validate PDF
@@ -467,36 +372,47 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    // Write file to disk temporarily
-    await fs.promises.writeFile(tempPdfPath, req.file.buffer);
+    // 1. Extract text using pdf-parse
+    const pdfData = await pdfParse(req.file.buffer);
+    const extractedText = pdfData.text || '';
 
-    // Run Python converter script
-    const pythonScriptPath = path.join(utilsDir, 'pdf_to_docx.py');
-    const pythonCmd = `${pythonCmdPrefix} "${pythonScriptPath}" --input "${tempPdfPath}" --output "${tempDocxPath}" --mode "${mode}"`;
+    if (!extractedText.trim()) {
+      return res.status(400).json({ error: 'No text could be extracted from this PDF. It might be a scanned image.' });
+    }
 
-    await new Promise((resolve, reject) => {
-      exec(pythonCmd, (error, stdout, stderr) => {
-        if (error) {
-          logger.error(`Python script error: ${error.message}`);
-          logger.error(`Python stderr: ${stderr}`);
-          logger.info(`Python stdout: ${stdout}`);
-          reject(new Error(`Failed to convert document: ${stderr || error.message}`));
-        } else {
-          logger.info(`Python stdout: ${stdout}`);
-          resolve(stdout);
+    // 2. Split text into paragraphs (double line breaks or multiple newlines)
+    const paragraphs = extractedText.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+
+    // 3. Build Word document
+    const docChildren = paragraphs.map(text => {
+      // Handle single line breaks within paragraphs
+      const lines = text.split('\n');
+      const runs = lines.map((line, index) => {
+        return new TextRun({
+          text: line.trim(),
+          break: index > 0 ? 1 : 0
+        });
+      });
+
+      return new Paragraph({
+        children: runs,
+        spacing: {
+          after: 200, // Twip value (200 twips = 10 pt spacing after paragraph)
         }
       });
     });
 
-    // Check if output DOCX exists
-    if (!fs.existsSync(tempDocxPath)) {
-      throw new Error('Converted Word document was not generated by script.');
-    }
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: docChildren,
+      }],
+    });
 
-    // Read the converted file into a buffer
-    const docxBuffer = await fs.promises.readFile(tempDocxPath);
+    // 4. Generate DOCX Buffer
+    const docxBuffer = await Packer.toBuffer(doc);
 
-    logger.info(`Successfully converted PDF to Word: ${req.file.originalname}`);
+    logger.info(`Successfully converted PDF to Word natively: ${req.file.originalname}`);
 
     const baseName = req.file.originalname.replace(/\.[^/.]+$/, "");
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -504,24 +420,8 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
     res.send(docxBuffer);
 
   } catch (error) {
-    logger.error('PDF to Word conversion failed:', error);
+    logger.error('PDF to Word conversion failed natively:', error);
     res.status(500).json({ error: 'Failed to convert PDF to Word: ' + error.message });
-  } finally {
-    // Ensure temporary files are cleaned up
-    try {
-      if (fs.existsSync(tempPdfPath)) {
-        await fs.promises.unlink(tempPdfPath);
-      }
-    } catch (err) {
-      logger.error('Failed to clean up temp PDF:', err);
-    }
-    try {
-      if (fs.existsSync(tempDocxPath)) {
-        await fs.promises.unlink(tempDocxPath);
-      }
-    } catch (err) {
-      logger.error('Failed to clean up temp DOCX:', err);
-    }
   }
 });
 
