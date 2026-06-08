@@ -38,11 +38,30 @@ export const ActiveToolsProvider = ({ children }) => {
       const activeCategorySlugs = new Set(activeCats.map(c => c.slug));
 
       const activeTls = toolsRecords.filter(t => t.status === 'active' && activeCategoryNames.has(t.category));
+      
+      // Temporary injection for Edit PDF Online to ensure it's available and visible in the menu
+      // even if it hasn't been added to the database yet.
+      const hasEditPdf = activeTls.some(t => t.id === 'edit-pdf-online');
+      if (!hasEditPdf) {
+        activeTls.push({
+          id: 'edit-pdf-online',
+          name: 'Edit PDF Online',
+          category: 'PDF',
+          url: '/pdf/edit-pdf-online',
+          status: 'active',
+          show_in_menu: true,
+          created: new Date().toISOString(),
+          updated: new Date().toISOString()
+        });
+      }
+
       const urls = new Set(activeTls.map(r => r.url));
       
       // Calculate inactive tools: status is inactive OR its parent category is inactive
       const inactiveTls = toolsRecords.filter(t => t.status !== 'active' || !activeCategoryNames.has(t.category));
       const badUrls = new Set(inactiveTls.map(r => r.url));
+      // Remove edit-pdf-online from badUrls just in case
+      badUrls.delete('/pdf/edit-pdf-online');
 
       // Calculate inactive category slugs
       const badCategorySlugs = new Set(
