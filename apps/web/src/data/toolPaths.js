@@ -72,6 +72,8 @@ export const toolPaths = {
   "excel-to-pdf": "/pdf/excel-to-pdf",
   "word-to-pdf": "/pdf/word-to-pdf",
   "pdf-to-word": "/pdf/pdf-to-word",
+  "edit-pdf-online": "/pdf/edit-pdf-online",
+
   "barcode-generator": "/generator/barcode-generator",
   "qr-code-generator": "/generator/qr-code-generator",
   "password-generator": "/generator/password-generator",

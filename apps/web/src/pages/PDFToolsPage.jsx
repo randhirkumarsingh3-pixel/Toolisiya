@@ -30,7 +30,8 @@ const PDFToolsPage = () => {
     { id: 'pdf-text-adder', name: 'PDF Text Adder', path: '/pdf/pdf-text-adder', icon: FileDown, description: 'Add text annotations to PDF documents.' },
     { id: 'excel-to-pdf', name: 'Excel to PDF', path: '/pdf/excel-to-pdf', icon: FileDown, description: 'Convert Excel spreadsheets to PDF.' },
     { id: 'word-to-pdf', name: 'Word to PDF', path: '/pdf/word-to-pdf', icon: FileDown, description: 'Convert Word documents to PDF.' },
-    { id: 'pdf-to-word', name: 'PDF to Word', path: '/pdf/pdf-to-word', icon: FileDown, description: 'Convert PDF files to editable Word documents.' }
+    { id: 'pdf-to-word', name: 'PDF to Word', path: '/pdf/pdf-to-word', icon: FileDown, description: 'Convert PDF files to editable Word documents.' },
+    { id: 'edit-pdf-online', name: 'Edit PDF Online', path: '/pdf/edit-pdf-online', icon: FileDown, description: 'Add text, signatures, stamps, highlights and more to any PDF.' }
   ];
 
   const filteredTools = tools.filter(tool => {

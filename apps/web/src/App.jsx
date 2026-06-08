@@ -205,6 +205,7 @@ const PDFHeaderFooterAdderPage = lazy(() => import('./pages/PDFHeaderFooterAdder
 const PDFQRCodeAdderPage = lazy(() => import('./pages/PDFQRCodeAdderPage.jsx'));
 const PDFBookmarkCreatorPage = lazy(() => import('./pages/PDFBookmarkCreatorPage.jsx'));
 const PdfToWordPage = lazy(() => import('./pages/PdfToWordPage.jsx'));
+const EditPdfOnlinePage = lazy(() => import('./pages/EditPdfOnlinePage.jsx'));
 
 // Generator Tools
 const BarcodeGeneratorPage = lazy(() => import('./pages/BarcodeGeneratorPage.jsx'));
@@ -559,6 +560,7 @@ const AppContent = () => {
             <Route path="/pdf/excel-to-pdf" element={<ExcelToPDFPage />} />
             <Route path="/pdf/word-to-pdf" element={<WordToPDFPage />} />
             <Route path="/pdf/pdf-to-word" element={<PdfToWordPage />} />
+            <Route path="/pdf/edit-pdf-online" element={<EditPdfOnlinePage />} />
             
             {/* Generator Tools */}
             <Route path="/generator/barcode-generator" element={<BarcodeGeneratorPage />} />

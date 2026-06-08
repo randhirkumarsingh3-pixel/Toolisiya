@@ -199,8 +199,79 @@ export const toolPageData = {
       { name: "PDF Compressor", url: "/pdf/pdf-compressor" }
     ]
   },
-  
+
+  "edit-pdf-online": {
+    id: "edit-pdf-online",
+    toolName: "Edit PDF Online",
+    toolDescription: "Edit PDF files directly in your browser — add text, signatures, highlights, shapes, stamps, comments and images, then download a flattened PDF.",
+    whatToolDoes: "The Edit PDF Online tool is a full-featured browser-based PDF workspace that lets you visually annotate and edit any PDF without installing software. Overlay text, signatures, whiteouts, highlights, shapes, stamps and images on any page, then export a flattened PDF with all edits baked in.",
+    whyUseful: [
+      "Edit any PDF without Adobe Acrobat or expensive subscriptions.",
+      "100% browser-based — files never leave your device unnecessarily.",
+      "Add professional stamps: APPROVED, DRAFT, PAID, CONFIDENTIAL, RECEIVED.",
+      "Sign PDFs instantly by drawing, typing or uploading your signature.",
+      "Full undo/redo history up to 50 steps.",
+      "Mobile-friendly with touch drawing and pinch zoom support."
+    ],
+    howToUseSteps: [
+      "Upload your PDF by dragging and dropping or clicking the upload area.",
+      "Select a tool from the toolbar: Text, Highlight, Signature, Stamp, Draw, etc.",
+      "Click anywhere on the PDF to place or draw your annotation.",
+      "Drag elements to reposition them; use corner handles to resize.",
+      "Adjust properties (font, color, opacity) in the right panel.",
+      "Click Download to export your fully edited PDF."
+    ],
+    howItWorks: "The editor uses pdf.js to render each PDF page to an HTML canvas. Interactive annotation elements (text boxes, highlights, images, stamps) are rendered as absolute-positioned React elements on top. On export, pdf-lib reloads the original PDF bytes and precisely draws each annotation at its stored coordinates — flattening everything into a single, standards-compliant PDF file.",
+    features: [
+      "Text boxes with custom font, size, color, bold, italic and underline",
+      "Whiteout tool to redact and cover content",
+      "Freehand drawing with color and stroke width controls",
+      "Signature: draw, type or upload — place anywhere",
+      "Professional PDF stamps (APPROVED, DRAFT, PAID, CONFIDENTIAL, RECEIVED)",
+      "Shapes: rectangle, circle, line and arrow",
+      "Image insertion with drag-resize",
+      "Highlight in 6 colors with adjustable opacity",
+      "Comment pins with expandable sticky note display",
+      "Date & time stamp with auto-formatting",
+      "Links: URL overlays with display text",
+      "Layer ordering (bring forward / send backward)",
+      "50-step undo/redo history",
+      "Virtual rendering for large PDFs",
+      "Mobile-first sticky bottom toolbar"
+    ],
+    useCases: [
+      "Business professionals signing contracts and agreements digitally.",
+      "HR teams stamping and approving employee documents.",
+      "Teachers annotating student assignments with comments and highlights.",
+      "Finance teams marking invoices as PAID or RECEIVED.",
+      "Designers adding notes, callouts and image overlays to PDF presentations.",
+      "Anyone who needs to edit a PDF without installing desktop software."
+    ],
+    faqs: [
+      { question: "Is the Edit PDF Online tool free?", answer: "Yes, completely free. No account, no subscription, no watermarks." },
+      { question: "Does my PDF get uploaded to a server?", answer: "No. All rendering and editing happens locally in your browser using pdf.js and pdf-lib. Your files never leave your device." },
+      { question: "Can I edit existing text in a PDF?", answer: "For existing text, the recommended approach is to use the Whiteout tool to cover existing text, then add a new Text Box on top with your corrected content. True in-stream text editing requires specialized parsing beyond browser-based tools." },
+      { question: "What file size can I upload?", answer: "Files up to 150MB are supported. A performance warning is shown for files over 50MB. Virtual rendering ensures only visible pages are rendered at any time." },
+      { question: "How does the signature tool work?", answer: "Open the signature panel, then draw your signature with mouse or touch, type it in a cursive font, or upload a PNG/JPG signature image. Click Place Signature, then click on the PDF to place it at your chosen position." },
+      { question: "Will the edits survive when I open the PDF in another viewer?", answer: "Yes. The download button uses pdf-lib to embed all your annotations directly into the PDF binary. The exported file is a standard, flattened PDF that opens correctly in Adobe Reader, Preview, and all other PDF viewers." }
+    ],
+    seoContent: `Looking for the best free online PDF editor? Toolisiya's Edit PDF Online tool delivers a professional-grade editing workspace directly in your browser — no downloads, no Adobe Acrobat license, and no subscription fees required.
+
+Our editor uses a proven dual-layer architecture: pdf.js renders each page as a pixel-perfect canvas, while an interactive overlay layer hosts your editable annotations — text boxes, highlights, signatures, shapes, stamps and more. When you click Download, pdf-lib reconstructs a native PDF file with all edits permanently flattened in. The result is a standards-compliant PDF that opens correctly in every PDF viewer worldwide.
+
+Privacy is built in from the ground up. Unlike cloud-based editors that upload your documents to remote servers, Toolisiya's editor processes everything locally inside your browser. Your sensitive contracts, invoices, and medical reports never leave your device.
+
+Whether you are a business professional who needs to stamp an invoice as PAID, an HR manager marking a document CONFIDENTIAL, a student annotating a research paper, or a developer testing PDF pipelines — our free PDF editor delivers exactly what you need in seconds.`,
+    relatedTools: [
+      { name: "PDF to Word", url: "/pdf/pdf-to-word" },
+      { name: "PDF Merger", url: "/pdf/pdf-merger" },
+      { name: "PDF Compressor", url: "/pdf/pdf-compressor" },
+      { name: "PDF Splitter", url: "/pdf/pdf-splitter" }
+    ]
+  },
+
   // Document Tools
+
   "excel-to-pdf": createToolEntry("excel-to-pdf", "Excel to PDF", "Document", "Convert Microsoft Excel spreadsheets to PDF format."),
   "word-to-pdf": createToolEntry("word-to-pdf", "Word to PDF", "Document", "Convert Microsoft Word documents to PDF format seamlessly."),
   "receipt-generator": createToolEntry("receipt-generator", "Receipt Generator", "Document", "Create professional payment receipts instantly."),
