@@ -10,8 +10,10 @@ import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import pdfParse from 'pdf-parse';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
