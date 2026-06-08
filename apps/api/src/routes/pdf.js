@@ -11,9 +11,7 @@ import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+import { PDFParse } from 'pdf-parse';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
@@ -374,8 +372,8 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    // 1. Extract text using pdf-parse
-    const pdfData = await pdfParse(req.file.buffer);
+    // 1. Use PDFParse
+    const pdfData = await PDFParse(req.file.buffer);
     const extractedText = pdfData.text || '';
 
     if (!extractedText.trim()) {
