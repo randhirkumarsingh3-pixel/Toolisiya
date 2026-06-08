@@ -372,9 +372,11 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    // 1. Use PDFParse
-    const pdfData = await PDFParse(req.file.buffer);
-    const extractedText = pdfData.text || '';
+    // 1. Extract text using PDFParse class
+    const parser = new PDFParse({ data: new Uint8Array(req.file.buffer) });
+    await parser.load();
+    const textResult = await parser.getText();
+    const extractedText = textResult.text || '';
 
     if (!extractedText.trim()) {
       return res.status(400).json({ error: 'No text could be extracted from this PDF. It might be a scanned image.' });
