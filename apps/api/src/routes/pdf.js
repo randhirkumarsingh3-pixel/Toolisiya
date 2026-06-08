@@ -363,7 +363,7 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
     return res.status(400).json({ error: 'PDF file is required' });
   }
 
-  logger.info(`Converting PDF to Word (Node native): ${req.file.originalname}`);
+  logger.info(`Converting PDF to Word using ConvertAPI: ${req.file.originalname}`);
 
   try {
     // Validate PDF
@@ -372,49 +372,35 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    // 1. Extract text using PDFParse class
-    const parser = new PDFParse({ data: new Uint8Array(req.file.buffer) });
-    await parser.load();
-    const textResult = await parser.getText();
-    const extractedText = textResult.text || '';
-
-    if (!extractedText.trim()) {
-      return res.status(400).json({ error: 'No text could be extracted from this PDF. It might be a scanned image.' });
+    const secret = process.env.CONVERT_API_SECRET;
+    if (!secret) {
+      throw new Error('ConvertAPI secret is missing in environment variables.');
     }
 
-    // 2. Split text into paragraphs (double line breaks or multiple newlines)
-    const paragraphs = extractedText.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-
-    // 3. Build Word document
-    const docChildren = paragraphs.map(text => {
-      // Handle single line breaks within paragraphs
-      const lines = text.split('\n');
-      const runs = lines.map((line, index) => {
-        return new TextRun({
-          text: line.trim(),
-          break: index > 0 ? 1 : 0
-        });
-      });
-
-      return new Paragraph({
-        children: runs,
-        spacing: {
-          after: 200, // Twip value (200 twips = 10 pt spacing after paragraph)
-        }
-      });
+    // Call ConvertAPI
+    const formData = new FormData();
+    const blob = new Blob([req.file.buffer], { type: 'application/pdf' });
+    formData.append('File', blob, req.file.originalname);
+    
+    const response = await fetch(`https://v2.convertapi.com/convert/pdf/to/docx?Secret=${secret}`, {
+        method: 'POST',
+        body: formData
     });
+    
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${await response.text()}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.Files || data.Files.length === 0) {
+      throw new Error('No files returned from ConvertAPI.');
+    }
 
-    const doc = new Document({
-      sections: [{
-        properties: {},
-        children: docChildren,
-      }],
-    });
+    const fileData = data.Files[0].FileData;
+    const docxBuffer = Buffer.from(fileData, 'base64');
 
-    // 4. Generate DOCX Buffer
-    const docxBuffer = await Packer.toBuffer(doc);
-
-    logger.info(`Successfully converted PDF to Word natively: ${req.file.originalname}`);
+    logger.info(`Successfully converted PDF to Word using ConvertAPI: ${req.file.originalname}`);
 
     const baseName = req.file.originalname.replace(/\.[^/.]+$/, "");
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
