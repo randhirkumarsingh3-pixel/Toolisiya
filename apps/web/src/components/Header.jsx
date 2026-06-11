@@ -139,7 +139,7 @@ export default function Header() {
                     
                     {tools.length > 0 && (
                       <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                        <div className="bg-background border border-border shadow-lg rounded-xl p-2 w-56 flex flex-col animate-in slide-in-from-top-2">
+                        <div className="bg-background border border-border shadow-lg rounded-xl p-2 w-56 flex flex-col animate-in slide-in-from-top-2 max-h-[80vh] overflow-y-auto custom-scrollbar">
                           {tools.map(tool => (
                             <Link 
                               key={tool.id} 

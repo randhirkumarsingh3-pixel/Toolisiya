@@ -60,28 +60,22 @@ export default function PdfToWordPage() {
 
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
-      let pdfDoc;
+      let pagesCount = 'Unknown';
       try {
-        pdfDoc = await PDFDocument.load(arrayBuffer);
+        // We do a fast load just to try and get page count
+        const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        pagesCount = pdfDoc.getPageCount();
       } catch (err) {
-        if (err.message && (err.message.includes('encrypted') || err.message.includes('password'))) {
-          toast.error('Encrypted PDFs are not supported in the current version.');
-        } else {
-          toast.error('Corrupted PDF file. Please upload a valid document.');
-        }
-        return;
+        console.warn('pdf-lib failed to load document for metadata, proceeding anyway.', err);
       }
 
-      const pagesCount = pdfDoc.getPageCount();
-      const isScanned = false; // standard text block layout check heuristic
-      
       setFile(selectedFile);
       setFileDetails({
         name: selectedFile.name,
         size: selectedFile.size,
         pages: pagesCount,
-        isScanned: isScanned,
-        quality: isScanned ? 'Medium (Requires OCR)' : 'Excellent (High Text Accuracy)'
+        isScanned: false,
+        quality: 'Excellent (High Text Accuracy)'
       });
 
       setStep(STEPS.OPTIONS);
@@ -217,7 +211,7 @@ export default function PdfToWordPage() {
               <div className="border-2 border-dashed border-primary/30 rounded-2xl p-12 text-center hover:bg-primary/5 transition-all cursor-pointer relative group duration-300">
                 <input 
                   type="file" 
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                   accept="application/pdf"
                   onChange={handleFileChange}
                 />
