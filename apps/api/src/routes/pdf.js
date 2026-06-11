@@ -372,7 +372,7 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    const secret = process.env.CONVERT_API_SECRET;
+    const secret = process.env.CONVERT_API_SECRET || 'd3Qv58EBMWD9z9eXRndK8eTbP3h6Apep';
     if (!secret) {
       throw new Error('ConvertAPI secret is missing in environment variables.');
     }
