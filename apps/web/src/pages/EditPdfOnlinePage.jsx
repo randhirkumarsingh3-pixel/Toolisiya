@@ -1348,7 +1348,7 @@ export default function EditPdfOnlinePage() {
       <input ref={imageInputRef} type="file" className="hidden" accept="image/*" onChange={insertImage} />
 
       {/* ── EDITOR SHELL ── */}
-      <div className="fixed inset-0 flex flex-col bg-slate-900 text-white z-40" style={{ top: 0 }}>
+      <div className="fixed inset-0 top-16 md:top-20 flex flex-col bg-slate-900 text-white z-40">
 
         {/* ── TOP TOOLBAR ── */}
         <div className="pdf-editor-toolbar flex items-center gap-1 px-3 py-2 bg-slate-800 border-b border-slate-700 shrink-0 overflow-x-auto">
