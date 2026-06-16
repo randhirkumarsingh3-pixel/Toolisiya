@@ -344,6 +344,84 @@ const AnnItem = ({ ann, zoom, isSelected, onSelect, onUpdate, onDelete, onBringF
   );
 };
 
+// ── Editable PDF Text Item ───────────────────────────────────────────────────
+// Renders an invisible overlay over real PDF text; click to edit in-place
+const EditableTextItem = ({ item, pageIdx, existingEdit, onCommit, zoom }) => {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState(existingEdit ?? item.str);
+  const [hovered, setHovered] = useState(false);
+  const inputRef = useRef(null);
+
+  // sync if edit cleared externally
+  useEffect(() => { if (!existingEdit) setVal(item.str); }, [existingEdit, item.str]);
+
+  const open = (e) => {
+    e.stopPropagation();
+    setEditing(true);
+    setTimeout(() => { inputRef.current?.focus(); inputRef.current?.select(); }, 30);
+  };
+
+  const commit = () => {
+    setEditing(false);
+    onCommit(pageIdx, item, val);
+  };
+
+  const fontSize = Math.max(8, item.fontHeight);
+  const changed = val !== item.str;
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: item.x,
+        top: item.y,
+        width: Math.max(item.width + 4, 20),
+        height: Math.max(item.fontHeight * 1.35, 12),
+        zIndex: editing ? 18 : 8,
+        cursor: 'text',
+        borderRadius: 2,
+        background: editing ? 'rgba(255,255,255,0.95)'
+          : hovered ? 'rgba(59,130,246,0.12)'
+          : changed ? 'rgba(234,179,8,0.15)'
+          : 'transparent',
+        border: editing ? '2px solid #3b82f6'
+          : hovered ? '1px solid rgba(59,130,246,0.5)'
+          : changed ? '1px dashed #ca8a04'
+          : 'none',
+        boxSizing: 'border-box',
+        transition: 'background 0.1s, border 0.1s',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={open}
+    >
+      {editing ? (
+        <input
+          ref={inputRef}
+          value={val}
+          onChange={e => setVal(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } if (e.key === 'Escape') { setVal(existingEdit ?? item.str); setEditing(false); } }}
+          style={{
+            position: 'absolute', inset: 0, width: '100%', minWidth: 40,
+            fontSize, fontFamily: 'Arial, sans-serif',
+            color: '#000', background: 'transparent',
+            border: 'none', outline: 'none', padding: '0 2px',
+            lineHeight: 1, whiteSpace: 'nowrap',
+          }}
+          onClick={e => e.stopPropagation()}
+        />
+      ) : (
+        hovered && (
+          <div style={{ position: 'absolute', top: -20, left: 0, background: '#1e293b', color: '#94a3b8', fontSize: 9, borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 30 }}>
+            {changed ? '✏️ Edited — click to change' : 'Click to edit text'}
+          </div>
+        )
+      )}
+    </div>
+  );
+};
+
 // ── Page Canvas ──────────────────────────────────────────────────────────────
 const CURSOR_MAP = { [TOOLS.TEXT]:'text', [TOOLS.DRAW]:'crosshair', [TOOLS.ERASER]:'cell', [TOOLS.HIGHLIGHT]:'crosshair', [TOOLS.STRIKETHROUGH]:'crosshair', [TOOLS.SELECT]:'default' };
 
@@ -352,6 +430,7 @@ const PageCanvas = React.memo(({
   selectedId, onSelect, onAnnUpdate, onAnnDelete, onBringFwd, onSendBwd,
   onPageClick, onDrawPath, onErase, drawColor, drawWidth,
   isVisible, onDimsLoaded, dims, activeStampType, onDeselect,
+  textEdits, onTextEdit,
 }) => {
   const canvasRef = useRef(null);
   const drawCvsRef = useRef(null);
@@ -359,6 +438,7 @@ const PageCanvas = React.memo(({
   const drawing = useRef(false);
   const path = useRef([]);
   const [rendered, setRendered] = useState(false);
+  const [pdfTextItems, setPdfTextItems] = useState([]);
 
   useEffect(() => {
     if (!isVisible || !pdfJsDoc || !canvasRef.current) return;
@@ -374,7 +454,35 @@ const PageCanvas = React.memo(({
         if (!dims) onDimsLoaded(pageIdx,{w:css.width,h:css.height,pdfW:css.width/zoom,pdfH:css.height/zoom});
         const task = page.render({canvasContext:c.getContext('2d'),viewport:vp});
         taskRef.current = task; await task.promise;
-        if (!cancelled) setRendered(true);
+        if (cancelled) return;
+        setRendered(true);
+        // ── Extract PDF text items for direct editing ──
+        try {
+          const cssVp = page.getViewport({ scale: zoom }); // CSS-scale viewport for position math
+          const content = await page.getTextContent({ includeMarkedContent: false });
+          const items = content.items
+            .filter(it => it.str && it.str.trim())
+            .map((it, idx) => {
+              // Apply viewport transform to get CSS pixel coords
+              const tx = pdfjsLib.Util.transform(cssVp.transform, it.transform);
+              const fontHeight = Math.abs(tx[3]);  // height in CSS px
+              return {
+                id: `${pageIdx}_${idx}`,
+                str: it.str,
+                x: tx[4],
+                y: tx[5] - fontHeight,             // baseline → top-left
+                width: Math.max((it.width || 0) * zoom, 8),
+                fontHeight: Math.max(fontHeight, 6),
+                // Store PDF-space coords for export (divide by zoom)
+                xPdf: tx[4] / zoom,
+                yPdf: (tx[5] - fontHeight) / zoom,
+                wPdf: Math.max((it.width || 0), 4),
+                hPdf: Math.max(fontHeight / zoom, 4),
+                fontSizePdf: Math.max(fontHeight / zoom, 4),
+              };
+            });
+          if (!cancelled) setPdfTextItems(items);
+        } catch(te) { console.warn('Text extract failed:', te); }
       } catch(e) { if(e.name!=='RenderingCancelledException') console.error(e); }
     };
     run();
@@ -445,6 +553,17 @@ const PageCanvas = React.memo(({
         {isDrawLike && <canvas ref={drawCvsRef} width={W} height={H} style={{position:'absolute',top:0,left:0,pointerEvents:'none',width:W,height:H}}/>}
         <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',pointerEvents:isDrawLike?'none':'auto',cursor}}
           onPointerDown={!isDrawLike?onPD:undefined}>
+          {/* Editable PDF text overlay — always shown, click to edit existing text */}
+          {pdfTextItems.map(item => (
+            <EditableTextItem
+              key={item.id}
+              item={item}
+              pageIdx={pageIdx}
+              existingEdit={textEdits?.[item.id]}
+              onCommit={onTextEdit}
+              zoom={zoom}
+            />
+          ))}
           {pageAnns.map(ann=>(
             <AnnItem key={ann.id} ann={ann} zoom={zoom} isSelected={selectedId===ann.id}
               onSelect={onSelect} onUpdate={onAnnUpdate} onDelete={onAnnDelete} onBringFwd={onBringFwd} onSendBwd={onSendBwd}/>
@@ -643,6 +762,7 @@ export default function EditPdfOnlinePage() {
   const [shapeStroke, setShapeStroke] = useState('#000000');
   const [shapeStrokeW, setShapeStrokeW] = useState(2);
   const [annotations, setAnnotations] = useState({});
+  const [textEdits, setTextEdits]     = useState({});
   const [selectedId, setSelectedId]   = useState(null);
   const [history, setHistory]         = useState([{}]);
   const [histIdx, setHistIdx]         = useState(0);
@@ -678,6 +798,15 @@ export default function EditPdfOnlinePage() {
 
   const undo = useCallback(() => { if(histIdx===0) return; const i=histIdx-1; setHistIdx(i); setAnnotations(history[i]); setSelectedId(null); }, [histIdx,history]);
   const redo = useCallback(() => { if(histIdx>=history.length-1) return; const i=histIdx+1; setHistIdx(i); setAnnotations(history[i]); setSelectedId(null); }, [histIdx,history]);
+
+  const handleTextEdit = useCallback((pageIdx, item, newVal) => {
+    setTextEdits(prev => {
+      const next = { ...prev };
+      if (newVal === item.str) delete next[item.id];
+      else next[item.id] = { val: newVal, item };
+      return next;
+    });
+  }, []);
 
   const addAnn = useCallback((pageIdx,ann) => {
     setAnnotations(prev=>{const next={...prev,[pageIdx]:[...(prev[pageIdx]||[]),ann]};pushHistory(next);return next;});
@@ -746,7 +875,7 @@ export default function EditPdfOnlinePage() {
       const bytes=new Uint8Array(await file.arrayBuffer());
       const doc=await pdfjsLib.getDocument({data:bytes}).promise;
       setPdfFile(file); setPdfBytes(bytes); setPdfJsDoc(doc); setPageCount(doc.numPages);
-      setAnnotations({}); setHistory([{}]); setHistIdx(0); setSelectedId(null);
+      setAnnotations({}); setTextEdits({}); setHistory([{}]); setHistIdx(0); setSelectedId(null);
       setZoom(1.0); setCurrentPage(0); setPageRotations({}); setVisiblePages(new Set([0,1,2]));
       setTimeout(()=>scrollRef.current?.scrollTo(0,0),50);
       toast.success(`Loaded: ${file.name} (${doc.numPages} pages)`);
@@ -804,6 +933,17 @@ export default function EditPdfOnlinePage() {
       for(const [pidxStr,anns] of Object.entries(annotations)){
         const pidx=parseInt(pidxStr), page=pages[pidx]; if(!page) continue;
         const pH=page.getHeight();
+
+        // ── Process text edits for this page ──
+        for (const [id, edit] of Object.entries(textEdits)) {
+          if (!id.startsWith(`${pidx}_`)) continue;
+          const { val, item } = edit;
+          const x = item.xPdf, y = pH - item.yPdf - item.hPdf;
+          page.drawRectangle({ x: x - 1, y: y - 1, width: item.wPdf + 2, height: item.hPdf + 2, color: rgb(1,1,1) });
+          // approximate y-baseline for pdf-lib which uses bottom-left origin
+          page.drawText(val, { x, y: y + (item.hPdf - item.fontSizePdf)*0.5, size: item.fontSizePdf, font, color: rgb(0,0,0) });
+        }
+
         for(const ann of anns){
           const x=ann.xPt,y=pH-ann.yPt-ann.hPt,w=ann.wPt,h=ann.hPt;
           try{
@@ -834,7 +974,7 @@ export default function EditPdfOnlinePage() {
       toast.success('PDF exported successfully!');
     }catch(err){console.error(err);toast.error('Export failed: '+err.message);}
     finally{setExporting(false);}
-  },[pdfBytes,annotations,dims,pdfFile,pageRotations]);
+  },[pdfBytes,annotations,textEdits,dims,pdfFile,pageRotations]);
 
   // ── Upload screen ──
   if (!pdfJsDoc) return (
@@ -950,7 +1090,8 @@ export default function EditPdfOnlinePage() {
                     onPageClick={onPageClick} onDrawPath={onDrawPath} onErase={eraseAt}
                     drawColor={drawColor} drawWidth={drawWidth}
                     isVisible={visiblePages.has(i)} onDimsLoaded={onDimsLoaded} dims={dims[i]}
-                    activeStampType={activeStamp} onDeselect={()=>setSelectedId(null)}/>
+                    activeStampType={activeStamp} onDeselect={()=>setSelectedId(null)}
+                    textEdits={textEdits} onTextEdit={handleTextEdit}/>
                 </div>
               ))}
             </div>
