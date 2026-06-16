@@ -9,7 +9,8 @@ import { toolPageData } from '@/data/toolPageData.js';
 export default function SEOHead({ toolName, category, defaultSlug, defaultTitle, defaultDescription, defaultKeywords }) {
   const location = useLocation();
   const slug = defaultSlug || location.pathname.replace(/^\//, '') || 'home';
-  const [seoData, setSeoData] = useState(null);
+  // Initialize synchronously with a fallback template so Googlebot sees SEO tags immediately!
+  const [seoData, setSeoData] = useState(() => generateSEOTemplate(toolName, category, slug));
 
   useEffect(() => {
     let isMounted = true;

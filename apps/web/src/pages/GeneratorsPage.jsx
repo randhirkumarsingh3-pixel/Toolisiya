@@ -44,6 +44,7 @@ const GeneratorsPage = () => {
             {typeof seoData.structured_data === 'string' ? seoData.structured_data : JSON.stringify(seoData.structured_data)}
           </script>
         )}
+        <link rel="canonical" href={seoData?.canonical_url || 'https://toolisiya.com/generators'} />
       </Helmet>
       <div className="min-h-screen flex flex-col">
         <main className="flex-1 py-12 bg-muted/30">

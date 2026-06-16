@@ -236,6 +236,7 @@ const BrowseAllCategoriesPage = () => {
       <Helmet>
         <title>Browse All Categories - Toolisiya</title>
         <meta name="description" content="Explore all categories of free online tools including Document, PDF, Image, Finance, Developer, Generators, Career, Science, Productivity, Converters, Real Estate, and Invitation tools." />
+        <link rel="canonical" href="https://toolisiya.com/browse-categories" />
       </Helmet>
       
       <main className="flex-1 w-full">

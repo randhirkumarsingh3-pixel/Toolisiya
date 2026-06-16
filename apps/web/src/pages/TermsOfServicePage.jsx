@@ -8,6 +8,7 @@ export default function TermsOfServicePage() {
       <Helmet>
         <title>Terms of Service | Toolisiya</title>
         <meta name="description" content="Terms of Service and usage guidelines for Toolisiya." />
+        <link rel="canonical" href="https://toolisiya.com/terms-of-service" />
       </Helmet>
 
       <main className="flex-1 py-12">
