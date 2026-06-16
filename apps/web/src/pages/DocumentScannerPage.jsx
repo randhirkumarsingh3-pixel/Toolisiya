@@ -102,6 +102,9 @@ export default function DocumentScannerPage() {
     reader.onload = (event) => {
       const result = event.target.result;
       if (result) {
+        // Reset crop state so each new page starts fresh
+        setCrop(undefined);
+        setCompletedCrop(null);
         setRawCapture(result);
         stopCamera();
         setStep(2);
@@ -125,6 +128,9 @@ export default function DocumentScannerPage() {
       
       const imageUrl = canvas.toDataURL('image/jpeg', 0.9);
       if (imageUrl && imageUrl.length > 10) {
+        // Reset crop state so each new page starts fresh
+        setCrop(undefined);
+        setCompletedCrop(null);
         setRawCapture(imageUrl);
         stopCamera();
         setStep(2);
@@ -157,40 +163,40 @@ export default function DocumentScannerPage() {
 
     try {
       const image = imgRef.current;
-      const canvas = document.createElement('canvas');
+
+      // Step 1: Draw the cropped area onto a canvas (no filter yet)
+      const cropCanvas = document.createElement('canvas');
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
-
-      canvas.width = completedCrop.width * scaleX;
-      canvas.height = completedCrop.height * scaleY;
-      const ctx = canvas.getContext('2d');
-
-      // Draw cropped area
-      ctx.drawImage(
+      cropCanvas.width = completedCrop.width * scaleX;
+      cropCanvas.height = completedCrop.height * scaleY;
+      const cropCtx = cropCanvas.getContext('2d');
+      cropCtx.drawImage(
         image,
         completedCrop.x * scaleX,
         completedCrop.y * scaleY,
         completedCrop.width * scaleX,
         completedCrop.height * scaleY,
-        0, 0, canvas.width, canvas.height
+        0, 0, cropCanvas.width, cropCanvas.height
       );
 
-      // Apply filters
+      // Step 2: Apply filters by drawing cropped canvas onto a second canvas
+      const filterCanvas = document.createElement('canvas');
+      filterCanvas.width = cropCanvas.width;
+      filterCanvas.height = cropCanvas.height;
+      const filterCtx = filterCanvas.getContext('2d');
+
       let finalContrast = contrast;
-      if (filterMode === 'bw') {
-        finalContrast = contrast + 150; 
-      }
-      
+      if (filterMode === 'bw') finalContrast = contrast + 150;
+
       let filterStr = `brightness(${brightness}%) contrast(${finalContrast}%)`;
-      if (filterMode !== 'original') {
-        filterStr += ' grayscale(100%)';
-      }
+      if (filterMode !== 'original') filterStr += ' grayscale(100%)';
 
-      ctx.filter = filterStr;
-      ctx.globalCompositeOperation = 'copy';
-      ctx.drawImage(canvas, 0, 0);
+      // Set filter BEFORE drawing — this is the correct order
+      filterCtx.filter = filterStr;
+      filterCtx.drawImage(cropCanvas, 0, 0);
 
-      const finalImageUrl = canvas.toDataURL('image/jpeg', 0.95);
+      const finalImageUrl = filterCanvas.toDataURL('image/jpeg', 0.95);
       
       if (finalImageUrl && finalImageUrl.length > 20) {
         const newScan = {
@@ -201,7 +207,9 @@ export default function DocumentScannerPage() {
         setScans(prev => [...prev, newScan]);
         setRawCapture(null);
         
-        // Reset edit settings
+        // Reset all edit settings and crop for the next page
+        setCrop(undefined);
+        setCompletedCrop(null);
         setFilterMode('original');
         setBrightness(100);
         setContrast(100);
