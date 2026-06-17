@@ -381,12 +381,12 @@ const EditableTextItem = ({ item, pageIdx, existingEdit, onCommit, zoom }) => {
         cursor: 'text',
         borderRadius: 2,
         background: editing ? 'rgba(255,255,255,0.95)'
+          : changed ? '#ffffff' // Solid white to act as whiteout over original PDF text
           : hovered ? 'rgba(59,130,246,0.12)'
-          : changed ? 'rgba(234,179,8,0.15)'
           : 'transparent',
         border: editing ? '2px solid #3b82f6'
           : hovered ? '1px solid rgba(59,130,246,0.5)'
-          : changed ? '1px dashed #ca8a04'
+          : changed ? '1px dashed #ca8a04' // Subtle border to indicate it's been edited
           : 'none',
         boxSizing: 'border-box',
         transition: 'background 0.1s, border 0.1s',
@@ -412,11 +412,24 @@ const EditableTextItem = ({ item, pageIdx, existingEdit, onCommit, zoom }) => {
           onClick={e => e.stopPropagation()}
         />
       ) : (
-        hovered && (
-          <div style={{ position: 'absolute', top: -20, left: 0, background: '#1e293b', color: '#94a3b8', fontSize: 9, borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 30 }}>
-            {changed ? '✏️ Edited — click to change' : 'Click to edit text'}
-          </div>
-        )
+        <>
+          {changed && (
+            <div style={{
+              position: 'absolute', inset: 0, width: '100%',
+              fontSize, fontFamily: 'Arial, sans-serif',
+              color: '#000', padding: '0 2px',
+              lineHeight: 1, whiteSpace: 'nowrap',
+              overflow: 'hidden', pointerEvents: 'none'
+            }}>
+              {val}
+            </div>
+          )}
+          {hovered && (
+            <div style={{ position: 'absolute', top: -20, left: 0, background: '#1e293b', color: '#94a3b8', fontSize: 9, borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 30 }}>
+              {changed ? '✏️ Edited — click to change' : 'Click to edit text'}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
