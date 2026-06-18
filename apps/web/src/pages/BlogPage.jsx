@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { blogPosts } from '../data/blogData';
+import { blogPosts } from '../data/blogPosts';
 
 export default function BlogPage() {
   return (

@@ -609,7 +609,68 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* AdSense Placeholder / White Space */}
+
+        {/* About Toolisiya - Editorial section for E-E-A-T and AdSense content depth */}
+        <section className="py-20 border-t border-border bg-background px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">About Toolisiya</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                A free, privacy-first platform built for students, freelancers, and professionals who need to get things done without paying for software.
+              </p>
+            </div>
+            <div className="space-y-8">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Toolisiya is an independent, browser-based productivity platform offering over 80 free online tools across PDF management, image editing, financial calculations, developer utilities, document generation, and more. Unlike traditional software, every tool on Toolisiya runs directly in your web browser with no installation, no sign-up, and no hidden fees.
+              </p>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { head: 'PDF and Document Tools', body: 'Edit, merge, split, compress, convert and annotate PDFs without Adobe Acrobat. Our browser-based PDF editor gives you professional-grade document control at zero cost.', emoji: 'PDF' },
+                  { head: 'Image and Design Tools', body: 'Compress images, remove backgrounds, convert formats, apply filters, scan documents, and create watermarks without downloading software or paying subscriptions.', emoji: 'IMG' },
+                  { head: 'Finance and Business Tools', body: 'Calculate GST, generate professional invoices, plan budgets, compute loan EMIs, and track salary breakdowns with tools designed for the Indian business context.', emoji: 'FIN' },
+                ].map(({ head, body, emoji }) => (
+                  <div key={head} className="p-6 rounded-2xl border border-border bg-card">
+                    <div className="text-sm font-bold text-primary mb-3">{emoji}</div>
+                    <h3 className="font-bold text-foreground mb-2">{head}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">Why Toolisiya Exists</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Toolisiya was founded by Randhir Kumar, a developer frustrated by the daily problem of needing a simple utility to compress a PDF, generate an invoice, or convert an image and finding only paywalls, mandatory registrations, and software downloads required for a one-time task.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Every tool on Toolisiya is built to handle the task immediately, without friction. Most tools run entirely on your device using modern browser APIs so your files and data never touch a server. For tools that require server-side processing, files are permanently deleted immediately after the task completes.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">Who Uses Toolisiya?</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Students use the platform to compress assignment PDFs, scan handwritten notes, and convert images for presentations. Freelancers use the invoice generator, proposal builder, and contract templates to maintain professional client communications. Small business owners rely on the GST calculator, salary calculator, and budget planner for financial clarity. Developers use the JSON formatter, UUID generator, Base64 encoder, and regex tester as quick workflow utilities without leaving their coding environment.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  The platform is particularly popular among users in Tier 2 and Tier 3 cities in India, where access to expensive licensed software is limited but the need for professional-quality tools is just as real.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">Our Commitment to Privacy</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Toolisiya takes an unambiguous stance on user privacy. We do not sell user data. For the majority of tools including the PDF editor, image compressor, photo editor, document scanner, and all calculators, processing happens entirely inside your browser. Your files never leave your device.
+                </p>
+              </div>
+              <div className="bg-muted/40 rounded-2xl p-6 border border-border/50">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Toolisiya is built and maintained in India</strong> by a small independent team passionate about making digital tools accessible to everyone. We simply believe that essential productivity tools should be free, fast, and private.
+                  {' '}<Link to="/about" className="text-primary hover:underline font-medium">Read our full story</Link>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom spacer */}
         <div className="w-full h-8 md:h-16"></div>
 
       </main>
