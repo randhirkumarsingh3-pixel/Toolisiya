@@ -5,6 +5,7 @@ import apiServerClient from '@/lib/apiServerClient.js';
 import { generateSEOTemplate } from '@/utils/seoTemplateGenerator.js';
 import { getToolSeoContent } from '@/data/toolSeoContent.js';
 import { toolPageData } from '@/data/toolPageData.js';
+import { toolPaths } from '@/data/toolPaths.js';
 
 export default function SEOHead({ toolName, category, defaultSlug, defaultTitle, defaultDescription, defaultKeywords }) {
   const location = useLocation();
@@ -50,13 +51,14 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
   
   // Index control for private/admin/incomplete layouts, or tools explicitly marked as non-indexable
   const localSeoContent = getToolSeoContent(cleanToolId);
+  const isToolRoute = Object.keys(toolPaths || {}).includes(cleanToolId) || !!pageData;
   const isNoIndex = 
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/profile') ||
     location.pathname.startsWith('/settings') ||
     location.pathname.startsWith('/app') ||
     location.pathname.startsWith('/verification') ||
-    (localSeoContent && localSeoContent.indexable === false);
+    (isToolRoute && localSeoContent && localSeoContent.indexable === false);
   
   const robotsContent = isNoIndex ? "noindex, follow" : "index, follow";
 

@@ -7859,7 +7859,13 @@ export const getToolSeoContent = (toolId) => {
       faq: richContent.faqs ? richContent.faqs.map(f => ({
         question: f.question,
         answer: f.answer
-      })) : []
+      })) : [],
+      indexable: false,
+      seoQuality: 50,
+      contentQuality: 50,
+      trustScore: 80,
+      technicalScore: 100,
+      lastReviewed: null
     };
   }
 
@@ -7909,7 +7915,13 @@ export const getToolSeoContent = (toolId) => {
             { question: "Do I need to download any software?", answer: "No installation is required. The tool runs entirely within your modern web browser (Chrome, Firefox, Safari, Edge)." },
             { question: "Is my data secure?", answer: "Absolutely. We prioritize your privacy. The vast majority of our tools process data locally on your device, meaning your sensitive information is never uploaded to our servers." },
             { question: "Does it work on mobile devices?", answer: "Yes, the interface is fully responsive and optimized to work flawlessly on smartphones and tablets." }
-          ]
+          ],
+      indexable: false,
+      seoQuality: 40,
+      contentQuality: 40,
+      trustScore: 80,
+      technicalScore: 100,
+      lastReviewed: null
     };
   }
 
@@ -7941,6 +7953,12 @@ export const getToolSeoContent = (toolId) => {
       { question: "Do I need to download any software?", answer: "No installation is required. The tool runs entirely within your modern web browser (Chrome, Firefox, Safari, Edge)." },
       { question: "Is my data secure?", answer: "Absolutely. We prioritize your privacy. The vast majority of our tools process data locally on your device, meaning your sensitive information is never uploaded to our servers." },
       { question: "Does it work on mobile devices?", answer: "Yes, the interface is fully responsive and optimized to work flawlessly on smartphones and tablets." }
-    ]
+    ],
+    indexable: false,
+    seoQuality: 20,
+    contentQuality: 20,
+    trustScore: 80,
+    technicalScore: 100,
+    lastReviewed: null
   };
 };
