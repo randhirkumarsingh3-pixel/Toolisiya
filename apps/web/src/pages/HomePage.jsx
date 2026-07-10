@@ -16,6 +16,9 @@ import ToolCard from '@/components/ToolCard.jsx';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import WhyToolisiyaSection from '@/components/WhyToolisiyaSection.jsx';
 import HowItWorksSection from '@/components/HowItWorksSection.jsx';
+import PlatformStatistics from '@/components/PlatformStatistics.jsx';
+import FeaturedGuides from '@/components/FeaturedGuides.jsx';
+import TrendingToolsSection from '@/components/TrendingToolsSection.jsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 // Fallback icons for categories if needed
@@ -240,8 +243,11 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* AdSense Placeholder / White Space */}
-        <div className="w-full h-8 md:h-16"></div>
+        {/* Platform Statistics Section */}
+        <PlatformStatistics />
+
+        {/* Trending and Recently Updated Section */}
+        <TrendingToolsSection tools={popularTools} />
 
         {/* Dynamic Categories Section */}
         <section className="relative z-10 py-24 bg-muted/30 border-y border-border backdrop-blur-sm px-4">
@@ -609,6 +615,8 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Featured Guides Section */}
+        <FeaturedGuides />
 
         {/* About Toolisiya - Editorial section for E-E-A-T and AdSense content depth */}
         <section className="py-20 border-t border-border bg-background px-4">

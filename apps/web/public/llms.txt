@@ -6,20 +6,23 @@
 - [| Toolisiya](/skillsassessment): No description available
 - [| Toolisiya Learning Hub](/blogpost): No description available
 - [404 - Page Not Found | Toolisiya](/notfound): No description available
-- [About Us | Toolisiya](/about): Learn about Toolisiya, your all-in-one platform for free online productivity tools.
 - [Admin Secure Login - Toolisiya](/adminlogin): No description available
 - [Admin Users - Toolisiya Admin](/usermanagement): No description available
+- [AI Content Policy | Toolisiya](/aicontentpolicy): Read Toolisiya
 - [Analytics Dashboard - Admin Console](/adminanalyticsdashboard): No description available
 - [App Settings - Toolisiya](/pwasettings): No description available
 - [Audit Logs - Admin](/auditlog): No description available
 - [Best Free Developer Tools Online - Toolisiya](/toolsfordevelopers): Enhance your coding workflow with tools for developers online. Access free JSON formatters, base64 encoders, and more.
 - [Best Free Online Tools for Students - Toolisiya](/toolsforstudents): Boost your study sessions with the best tools for students online free. Track habits, count words, and manage time easily.
+- [Blog & Resources - Toolisiya](/blog): Read the latest articles, tutorials, and guides on web performance, document management, and developer tools from the Toolisiya team.
 - [Budget Planner – Create Your Budget Online](/budgetplanner): Plan your budget with our free Budget Planner. Track income, expenses, and savings goals easily.
 - [Contact Us | Toolisiya](/contactus): Get in touch with the Toolisiya team for support, feedback, or business inquiries.
+- [Cookie Policy | Toolisiya](/cookiepolicy): Understand how Toolisiya uses cookies to improve your experience and serve non-personalized ads.
 - [Dashboard - Toolisiya Admin](/admindashboard): No description available
 - [Database Backups - Admin](/databasebackup): No description available
 - [Download Toolisiya App - Install PWA for Android, iOS & Desktop](/pwadownload): Install Toolisiya App on your Android, iOS, or Desktop device. Get 1-click access, full-screen offline support, and native performance.
 - [Essential Tools for Daily Life - Toolisiya](/dailylifetools): Smart tools for daily use. Convert currencies, track habits, and plan your meals completely free online.
+- [Fact-Checking & Editorial Policy | Toolisiya](/factcheckingpolicy): Read Toolisiya
 - [Forgot Password - Toolisiya](/forgotpassword): No description available
 - [Free Birthday Invitation Maker - Create Beautiful Birthday Invitations Online](/birthdayinvitations): Create fun and colorful birthday invitations with bilingual support. Customize with photos, colors, and fonts. Download as PDF or Image.
 - [Free Business Tools Online - Toolisiya](/businesstools): Generate invoices, format documents, and manage tasks with professional tools online free.
@@ -32,28 +35,31 @@
 - [Free Wedding Invitation Maker - Create Beautiful Indian Wedding Invitations Online](/weddinginvitations): Create stunning wedding invitations with Indian cultural elements, bilingual support, and Ganapati feature. Customize with photos, colors, and fonts. Download as PDF or Image.
 - [General Settings - Admin](/generalsettings): No description available
 - [Google Integrations - Admin](/googleintegrations): No description available
-- [Guides & Tutorials | Toolisiya Learning Hub](/bloglist): Discover professional how-to guides, file format comparisons, and developer utility tutorials to streamline your daily workflows.
+- [Learning Center | Toolisiya Knowledge Hub](/bloglist): Master your workflows with our complete tutorials, deep-dive guides, and professional productivity breakdowns across our specialized Academies.
+- [Legal Disclaimer | Toolisiya](/disclaimer): Legal and professional disclaimers regarding the use of Toolisiya
 - [Length Converter – Convert Length Units Online](/lengthconverter): Convert length units instantly with our free Length Converter. Convert between meters, feet, inches, kilometers, miles, and more.
 - [My Profile - Admin](/adminprofile): No description available
 - [Passwordless Login - Toolisiya](/otplogin): No description available
 - [pH Calculator – Calculate pH of Solution Online Instantly](/phcalculator): Calculate pH instantly with our free pH Calculator. Determine acidity or alkalinity of solutions using concentration values easily.
 - [Privacy Policy | Toolisiya](/privacypolicy): Privacy Policy for Toolisiya. Learn how we handle your data, files, and privacy.
+- [Product Roadmap | Toolisiya](/roadmap): See what we
+- [Product Updates & Releases | Toolisiya](/productupdates): Stay up to date with the latest features, tool improvements, and Learning Center guides on Toolisiya.
 - [Real Estate & Construction Tools - Toolisiya.com](/realestatetools): Free online calculators for construction costs, paint, tiles, and carpet area.
+- [Security Center | Toolisiya](/securitycenter): Learn how Toolisiya protects your data with browser-first processing, immediate file deletion, and enterprise-grade encryption.
 - [SEO Management | Admin](/seosettings): No description available
 - [SEO Management | Admin Dashboard](/seomanagement): No description available
-- [SEO Monitoring | Admin](/seomonitoring): No description available
 - [Sign In / Sign Up - Toolisiya](/signup): No description available
 - [SIP Calculator – Calculate Mutual Fund Returns & Investment Growth](/sipcalculator): Estimate your SIP returns and plan investments effectively with our SIP calculator. Track your wealth growth over time easily.
-- [Terms of Service | Toolisiya](/termsofservice): Terms of Service and usage guidelines for Toolisiya.
 - [Tool Control Panel | Admin](/admintoolcontrolpanel): No description available
+- [Tool Quality Dashboard | Admin](/seomonitoring): No description available
 - [Tool Registry & Categories - Admin](/toolsmanagement): No description available
+- [Transparency & Funding Policy | Toolisiya](/transparencypolicy): Learn how Toolisiya is funded, our editorial independence, and our commitment to providing free, unbiased tools.
 - [Unit, File & Currency Converters - Toolisiya.com](/converters): Free online unit converters for length, weight, temperature, volume, live currency exchange rates, and file formats.
 - [Untitled Page](/career): No description available
 - [Untitled Page](/developertools): No description available
 - [Untitled Page](/documentmediatools): No description available
 - [Untitled Page](/fdcalculator): No description available
 - [Untitled Page](/finance): No description available
-- [Untitled Page](/generators): No description available
 - [Untitled Page](/imageconverter): No description available
 - [Untitled Page](/imagephototools): No description available
 - [Untitled Page](/incometaxcalculator): No description available
@@ -67,4 +73,5 @@
 - [Untitled Page](/sciencetools): No description available
 - [Untitled Page](/uuidgenerator): No description available
 - [User Dashboard | Toolisiya](/pwadashboard): No description available
+- [Why Toolisiya? | The Philosophy Behind Our Tools](/whytoolisiya): Discover why Toolisiya exists, our commitment to browser-first processing, and our dedication to free, secure digital tools.
 - [Work Calculator – Calculate Work Done Easily Online](/workcalculator): Calculate work done instantly with our free Work Calculator. Find force, distance, and work using W=F×d formula easily.

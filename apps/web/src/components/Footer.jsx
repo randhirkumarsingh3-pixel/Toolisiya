@@ -93,25 +93,35 @@ export default function Footer() {
               Ecosystem
             </h4>
             <ul className="space-y-3">
-              {categories.slice(0,5).map(cat => (
+              {categories.slice(0,4).map(cat => (
                 <li key={cat.slug}>
                   <Link to={`/${cat.slug}`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {cat.name}
                   </Link>
                 </li>
               ))}
+              <li><Link to="/product-updates" className="text-sm text-muted-foreground hover:text-primary transition-colors">Product Updates</Link></li>
+              <li><Link to="/recently-updated" className="text-sm text-muted-foreground hover:text-primary transition-colors">Recently Updated</Link></li>
+              <li><Link to="/roadmap" className="text-sm text-muted-foreground hover:text-primary transition-colors">Roadmap</Link></li>
             </ul>
           </div>
 
           {/* Company & Legal Links */}
           <div className="lg:col-span-2 space-y-5">
-            <h4 className="font-bold text-foreground">Company</h4>
+            <h4 className="font-bold text-foreground">Legal & Trust</h4>
             <ul className="space-y-3">
+              <li><Link to="/why-toolisiya" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium text-emerald-500">Why Toolisiya?</Link></li>
+              <li><Link to="/security" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Center</Link></li>
               <li><Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Blog & Guides</Link></li>
+              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Learning Center</Link></li>
               <li><Link to="/contact-us" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
               <li><Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link to="/ai-content-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">AI Content Policy</Link></li>
+              <li><Link to="/transparency-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Transparency Policy</Link></li>
+              <li><Link to="/fact-checking" className="text-sm text-muted-foreground hover:text-primary transition-colors">Fact-Checking Policy</Link></li>
+              <li><Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link></li>
+              <li><Link to="/disclaimer" className="text-sm text-muted-foreground hover:text-primary transition-colors">Legal Disclaimer</Link></li>
             </ul>
           </div>
 

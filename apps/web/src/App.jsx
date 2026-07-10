@@ -95,6 +95,17 @@ const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
 const ContactUsPage = lazy(() => import('./pages/ContactUsPage.jsx'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage.jsx'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage.jsx'));
+const EditorialPolicyPage = lazy(() => import('./pages/EditorialPolicyPage.jsx'));
+const TransparencyPolicyPage = lazy(() => import('./pages/TransparencyPolicyPage.jsx'));
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage.jsx'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage.jsx'));
+const FactCheckingPolicyPage = lazy(() => import('./pages/FactCheckingPolicyPage.jsx'));
+const WhyToolisiyaPage = lazy(() => import('./pages/WhyToolisiyaPage.jsx'));
+const SecurityCenterPage = lazy(() => import('./pages/SecurityCenterPage.jsx'));
+const AiContentPolicyPage = lazy(() => import('./pages/AiContentPolicyPage.jsx'));
+const RoadmapPage = lazy(() => import('./pages/RoadmapPage.jsx'));
+const ProductUpdatesPage = lazy(() => import('./pages/ProductUpdatesPage.jsx'));
+const RecentlyUpdatedPage = lazy(() => import('./pages/RecentlyUpdatedPage.jsx'));
 const BlogListPage = lazy(() => import('./pages/BlogListPage.jsx'));
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage.jsx'));
 
@@ -398,6 +409,17 @@ const AppContent = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/terms-and-conditions" element={<Navigate to="/terms-of-service" replace />} />
+            <Route path="/editorial-policy" element={<EditorialPolicyPage />} />
+            <Route path="/transparency-policy" element={<TransparencyPolicyPage />} />
+            <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+            <Route path="/disclaimer" element={<DisclaimerPage />} />
+            <Route path="/fact-checking" element={<FactCheckingPolicyPage />} />
+            <Route path="/why-toolisiya" element={<WhyToolisiyaPage />} />
+            <Route path="/security" element={<SecurityCenterPage />} />
+            <Route path="/ai-content-policy" element={<AiContentPolicyPage />} />
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/product-updates" element={<ProductUpdatesPage />} />
+            <Route path="/recently-updated" element={<RecentlyUpdatedPage />} />
             
             <Route path={import.meta.env.VITE_ADMIN_LOGIN_PATH || "/admin-a8f4c2e9"} element={<AdminLoginPage />} />
             <Route path="/admin-login" element={<Navigate to="/" replace />} />

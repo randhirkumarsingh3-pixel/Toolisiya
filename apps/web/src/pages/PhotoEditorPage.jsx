@@ -979,7 +979,7 @@ const PhotoEditorPage = () => {
                       <div className="w-8 h-8 rounded-full border border-dashed border-muted-foreground/50 flex items-center justify-center relative overflow-hidden bg-muted/30 hover:bg-muted transition-colors cursor-pointer">
                         <input 
                           type="color" 
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                           onChange={(e) => {
                             const newColors = [...brandColors, e.target.value].slice(-10);
                             setBrandColors(newColors);
@@ -994,7 +994,7 @@ const PhotoEditorPage = () => {
                   <div className="space-y-3 pt-4 border-t border-border/50">
                     <Label className="text-sm font-medium">Logo & Watermark</Label>
                     <div className="relative border-2 border-dashed border-border/50 rounded-xl p-6 text-center hover:bg-muted/30 transition-colors">
-                      <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/png, image/jpeg, image/svg+xml" onChange={handleLogoUpload} />
+                      <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/png, image/jpeg, image/svg+xml" onChange={handleLogoUpload} />
                       <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground opacity-50" />
                       <div className="text-xs font-medium">Upload Logo (PNG)</div>
                       <div className="text-[10px] text-muted-foreground mt-1">Stamps as draggable layer</div>
@@ -1055,7 +1055,7 @@ const PhotoEditorPage = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Creator Studio</h2>
                 <p className="text-gray-500 text-sm mb-8">Upload an image to start editing in your professional browser workspace.</p>
                 <div className="relative">
-                  <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" onChange={handleFileChange} />
+                  <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" onChange={handleFileChange} />
                   <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-8 rounded-full shadow-lg shadow-blue-500/20">
                     <Upload className="w-4 h-4 mr-2" /> Select Image
                   </Button>

@@ -136,7 +136,7 @@ const ColorPickerPage = () => {
                     type="color" 
                     value={hex} 
                     onChange={handleHexChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
                 </div>
               </div>

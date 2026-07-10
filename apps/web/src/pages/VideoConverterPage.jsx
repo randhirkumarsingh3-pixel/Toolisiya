@@ -78,7 +78,7 @@ const VideoConverterPage = () => {
               <div className="border-2 border-dashed border-blue-500/30 rounded-xl p-12 text-center hover:bg-blue-500/5 transition-colors cursor-pointer relative">
                 <input 
                   type="file" 
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                   accept="video/*"
                   onChange={handleFileChange}
                 />

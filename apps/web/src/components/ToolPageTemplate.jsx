@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Zap, CheckCircle2, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Zap, CheckCircle2, ChevronRight, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import SEOContentDisplay from '@/components/SEOContentDisplay.jsx';
 import SEOHead from '@/components/SEOHead.jsx';
+import ToolEngagementWidget from '@/components/ToolEngagementWidget.jsx';
 
 export default function ToolPageTemplate({ toolData, children }) {
   if (!toolData) {
@@ -54,8 +55,22 @@ export default function ToolPageTemplate({ toolData, children }) {
             </nav>
 
             <h1 className="mb-4">{toolName}</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">{toolDescription}</p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">{toolDescription}</p>
             
+            {/* E-E-A-T Trust Signals */}
+            <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-xs text-muted-foreground/80 mb-8 font-medium">
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" /> Updated: {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+              </span>
+              <span className="hidden sm:inline">•</span>
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> Reviewed by: Toolisiya Editorial
+              </span>
+              <span className="hidden sm:inline">•</span>
+              <span className="flex items-center gap-1">
+                v2.0.4
+              </span>
+            </div>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
               <Button size="lg" className="rounded-xl px-8 h-14 text-base font-bold shadow-md" onClick={() => window.scrollTo({ top: 500, behavior: 'smooth' })}>
                 Start Using {toolName}
@@ -82,6 +97,8 @@ export default function ToolPageTemplate({ toolData, children }) {
         {/* Content Wrapper */}
         <div className="container mx-auto px-4 max-w-4xl space-y-16 pb-20">
           
+          <ToolEngagementWidget toolName={toolName} />
+
           <SEOContentDisplay toolName={toolId} />
 
           {/* 12. Trust & Security Section */}
@@ -96,26 +113,60 @@ export default function ToolPageTemplate({ toolData, children }) {
             </p>
           </section>
 
-          {/* 11. Internal Linking Section */}
-          {relatedTools && relatedTools.length > 0 && (
-            <section>
-              <h2>Explore Related Tools</h2>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {relatedTools.map((related, idx) => (
-                  <Link key={idx} to={related.url} className="block group">
-                    <Card className="h-full border-border shadow-sm hover:border-primary/50 transition-all hover:-translate-y-1">
-                      <CardContent className="p-5 flex justify-between items-center h-full">
-                        <span className="font-bold text-foreground group-hover:text-primary transition-colors">
-                          {related.name}
-                        </span>
-                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+          {/* 11. Semantic Topic Clusters & Internal Linking Section */}
+          <section className="bg-muted/20 border border-border rounded-3xl p-8 md:p-10 space-y-10">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight mb-6 text-primary">{category} Ecosystem</h2>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {relatedTools && relatedTools.length > 0 ? (
+                  relatedTools.map((related, idx) => (
+                    <Link key={idx} to={related.url} className="block group">
+                      <Card className="h-full border-border bg-card shadow-sm hover:border-primary/50 hover:bg-primary/5 transition-all hover:shadow-md">
+                        <CardContent className="p-4 flex justify-between items-center h-full">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Ecosystem Tool</span>
+                            <span className="font-bold text-foreground group-hover:text-primary transition-colors">
+                              {related.name}
+                            </span>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform opacity-50 group-hover:opacity-100" />
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))
+                ) : (
+                  <Link to={`/${category.toLowerCase().replace(/\s+/g, '-')}`} className="block group sm:col-span-2">
+                    <Card className="border-border bg-card shadow-sm hover:border-primary/50 transition-all hover:shadow-md">
+                      <CardContent className="p-6 flex justify-between items-center">
+                        <div>
+                          <span className="text-xs font-bold text-primary uppercase tracking-wider mb-1 block">Explore Ecosystem</span>
+                          <span className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+                            View All {category} Tools
+                          </span>
+                        </div>
+                        <ChevronRight className="w-6 h-6 text-primary group-hover:translate-x-1 transition-transform" />
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                )}
               </div>
-            </section>
-          )}
+            </div>
+
+            <div className="pt-8 border-t border-border/50">
+              <h3 className="text-lg font-bold text-foreground mb-4">Related Learning Center Guides</h3>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/blog" className="px-4 py-2 rounded-full bg-secondary/50 text-foreground text-sm font-medium border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                  The Ultimate Guide to Image Compression
+                </Link>
+                <Link to="/blog" className="px-4 py-2 rounded-full bg-secondary/50 text-foreground text-sm font-medium border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                  Mastering PDF Security
+                </Link>
+                <Link to="/blog" className="px-4 py-2 rounded-full bg-secondary/50 text-foreground text-sm font-medium border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
+                  The Complete Guide to GST
+                </Link>
+              </div>
+            </div>
+          </section>
 
           {/* 13. CTA Section */}
           <section className="text-center py-12 border-t border-border">

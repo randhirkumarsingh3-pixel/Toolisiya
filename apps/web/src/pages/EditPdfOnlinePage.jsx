@@ -94,7 +94,7 @@ const PAGE_GAP = 20;
 let _uid = 0;
 const genId = () => `a${Date.now()}_${_uid++}`;
 const hex2rgb01 = hex => { const n=parseInt(hex.replace('#',''),16); return {r:((n>>16)&255)/255,g:((n>>8)&255)/255,b:(n&255)/255}; };
-const dataUrlToBytes = url => { const b64=url.split(',')[1],raw=atob(b64),arr=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i); return arr; };
+const dataUrlToBytes = async url => { const res = await fetch(url); const buf = await res.arrayBuffer(); return new Uint8Array(buf); };
 const fmtDate = () => new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
 // ── Signature Modal ──────────────────────────────────────────────────────────
@@ -270,7 +270,7 @@ const AnnItem = ({ ann, zoom, isSelected, onSelect, onUpdate, onDelete, onBringF
   const onItemPD = (e) => {
     e.stopPropagation();
     if (!isSelected) { onSelect(ann.id); return; }
-    if (ann.type === 'text') { setEditing(true); return; }
+    if (ann.type === 'text') { return; } // Removed setEditing(true) from here, click to edit is handled by onClick
     startDrag(e);
   };
 
@@ -283,20 +283,24 @@ const AnnItem = ({ ann, zoom, isSelected, onSelect, onUpdate, onDelete, onBringF
         <div style={{position:'absolute',top:'50%',left:0,width:'100%',height:Math.max(1.5,(ann.strokeWidth||2)*zoom),background:ann.color||'#dc2626',transform:'translateY(-50%)',pointerEvents:'none'}}/>
       </div>
     );
-    if (type==='text') return (
-      <div style={{...base,border:isSelected?'2px solid #3b82f6':'1px dashed rgba(148,163,184,0.5)',background:ann.bgColor||'transparent',borderRadius:2,padding:'2px 4px',overflow:'hidden'}}
-        onPointerDown={(e)=>{e.stopPropagation();if(!isSelected){onSelect(ann.id);return;}startDrag(e);}}
-        onPointerMove={onPM} onPointerUp={onPU}
-        onClick={e=>{if(isSelected){e.stopPropagation();setEditing(true);}}}>
-        {editing
-          ? <textarea autoFocus style={{width:'100%',height:'100%',border:'none',outline:'none',resize:'none',background:'transparent',fontSize:(ann.fontSize||14)*zoom,color:ann.color||'#000',fontFamily:ann.fontFamily||'Arial',fontWeight:ann.bold?'bold':'normal',fontStyle:ann.italic?'italic':'normal',textDecoration:ann.underline?'underline':'none',lineHeight:1.4,padding:0}}
-              value={ann.text||''} onChange={e=>onUpdate(ann.id,ann.page,{text:e.target.value})} onBlur={()=>setEditing(false)} onClick={e=>e.stopPropagation()}/>
-          : <span style={{fontSize:(ann.fontSize||14)*zoom,color:ann.color||'#000',fontFamily:ann.fontFamily||'Arial',fontWeight:ann.bold?'bold':'normal',fontStyle:ann.italic?'italic':'normal',textDecoration:ann.underline?'underline':'none',whiteSpace:'pre-wrap',wordBreak:'break-word',pointerEvents:'none',display:'block',lineHeight:1.4}}>
-              {ann.text||<span style={{opacity:0.35,fontStyle:'italic'}}>Click to type…</span>}
-            </span>
-        }
-      </div>
-    );
+    if (type==='text') {
+      return (
+        <div style={{...base,border:isSelected?'2px solid #3b82f6':'1px dashed rgba(148,163,184,0.5)',background:ann.bgColor||'transparent',borderRadius:2,padding:'2px 4px',overflow:'hidden',display:'flex',flexDirection:'column'}}
+          onPointerDown={(e)=>{e.stopPropagation();if(!isSelected){onSelect(ann.id);return;}startDrag(e);}}
+          onPointerMove={onPM} onPointerUp={onPU}
+          onClick={e=>{if(isSelected){e.stopPropagation();setEditing(true);}}}>
+          {editing
+            ? <textarea autoFocus style={{width:'100%',height:'100%',border:'none',outline:'none',resize:'none',background:'transparent',fontSize:(ann.fontSize||14)*zoom,color:ann.color||'#000',fontFamily:ann.fontFamily||'Arial',fontWeight:ann.bold?'bold':'normal',fontStyle:ann.italic?'italic':'normal',textDecoration:ann.underline?'underline':'none',lineHeight:1.4,padding:0}}
+                value={ann.text||''} onChange={e=>onUpdate(ann.id,ann.page,{text:e.target.value})} onBlur={()=>setEditing(false)} onClick={e=>e.stopPropagation()}/>
+            : <div style={{width:'100%',height:'100%',overflow:'hidden',display:'flex',alignItems:'flex-start'}}>
+                <span style={{fontSize:(ann.fontSize||14)*zoom,color:ann.color||'#000',fontFamily:ann.fontFamily||'Arial',fontWeight:ann.bold?'bold':'normal',fontStyle:ann.italic?'italic':'normal',textDecoration:ann.underline?'underline':'none',whiteSpace:'pre-wrap',wordBreak:'break-word',pointerEvents:'none',display:'block',lineHeight:1.4}}>
+                  {ann.text||<span style={{opacity:0.35,fontStyle:'italic'}}>Click to type…</span>}
+                </span>
+              </div>
+          }
+        </div>
+      );
+    }
     if (type==='image'||type==='signature') return <div style={{...base,border:isSelected?'2px solid #3b82f6':'1px solid rgba(0,0,0,0.08)'}} onPointerDown={onItemPD} onPointerMove={onPM} onPointerUp={onPU}><img src={ann.dataUrl} alt="" style={{width:'100%',height:'100%',objectFit:'contain',pointerEvents:'none',display:'block'}} draggable={false}/></div>;
     if (type==='draw') return <div style={{...base,border:isSelected?'2px dashed #3b82f6':'none',background:'transparent'}} onPointerDown={onItemPD} onPointerMove={onPM} onPointerUp={onPU}><img src={ann.dataUrl} alt="" style={{width:'100%',height:'100%',objectFit:'fill',pointerEvents:'none',display:'block'}} draggable={false}/></div>;
     if (type==='rect') return <div style={{...base,border:`${(ann.strokeWidth||2)*zoom}px solid ${ann.stroke||'#000'}`,background:ann.fill||'transparent',borderRadius:2,opacity:ann.opacity??1}} onPointerDown={onItemPD} onPointerMove={onPM} onPointerUp={onPU}/>;
@@ -344,96 +348,7 @@ const AnnItem = ({ ann, zoom, isSelected, onSelect, onUpdate, onDelete, onBringF
   );
 };
 
-// ── Editable PDF Text Item ───────────────────────────────────────────────────
-// Renders an invisible overlay over real PDF text; click to edit in-place
-const EditableTextItem = ({ item, pageIdx, existingEdit, onCommit, zoom }) => {
-  const [editing, setEditing] = useState(false);
-  const [val, setVal] = useState(existingEdit ?? item.str);
-  const [hovered, setHovered] = useState(false);
-  const inputRef = useRef(null);
-
-  // sync if edit cleared externally
-  useEffect(() => { if (!existingEdit) setVal(item.str); }, [existingEdit, item.str]);
-
-  const open = (e) => {
-    e.stopPropagation();
-    setEditing(true);
-    setTimeout(() => { inputRef.current?.focus(); inputRef.current?.select(); }, 30);
-  };
-
-  const commit = () => {
-    setEditing(false);
-    onCommit(pageIdx, item, val);
-  };
-
-  const fontSize = Math.max(8, item.fontHeight);
-  const changed = val !== item.str;
-
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: item.x,
-        top: item.y,
-        width: Math.max(item.width + 4, 20),
-        height: Math.max(item.fontHeight * 1.35, 12),
-        zIndex: editing ? 18 : 8,
-        cursor: 'text',
-        borderRadius: 2,
-        background: editing ? 'rgba(255,255,255,0.95)'
-          : changed ? '#ffffff' // Solid white to act as whiteout over original PDF text
-          : hovered ? 'rgba(59,130,246,0.12)'
-          : 'transparent',
-        border: editing ? '2px solid #3b82f6'
-          : hovered ? '1px solid rgba(59,130,246,0.5)'
-          : changed ? '1px dashed #ca8a04' // Subtle border to indicate it's been edited
-          : 'none',
-        boxSizing: 'border-box',
-        transition: 'background 0.1s, border 0.1s',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={open}
-    >
-      {editing ? (
-        <input
-          ref={inputRef}
-          value={val}
-          onChange={e => setVal(e.target.value)}
-          onBlur={commit}
-          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } if (e.key === 'Escape') { setVal(existingEdit ?? item.str); setEditing(false); } }}
-          style={{
-            position: 'absolute', inset: 0, width: '100%', minWidth: 40,
-            fontSize, fontFamily: 'Arial, sans-serif',
-            color: '#000', background: 'transparent',
-            border: 'none', outline: 'none', padding: '0 2px',
-            lineHeight: 1, whiteSpace: 'nowrap',
-          }}
-          onClick={e => e.stopPropagation()}
-        />
-      ) : (
-        <>
-          {changed && (
-            <div style={{
-              position: 'absolute', inset: 0, width: '100%',
-              fontSize, fontFamily: 'Arial, sans-serif',
-              color: '#000', padding: '0 2px',
-              lineHeight: 1, whiteSpace: 'nowrap',
-              overflow: 'hidden', pointerEvents: 'none'
-            }}>
-              {val}
-            </div>
-          )}
-          {hovered && (
-            <div style={{ position: 'absolute', top: -20, left: 0, background: '#1e293b', color: '#94a3b8', fontSize: 9, borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 30 }}>
-              {changed ? '✏️ Edited — click to change' : 'Click to edit text'}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-};
+// (EditableTextItem removed, replaced by direct annotations)
 
 // ── Page Canvas ──────────────────────────────────────────────────────────────
 const CURSOR_MAP = { [TOOLS.TEXT]:'text', [TOOLS.DRAW]:'crosshair', [TOOLS.ERASER]:'cell', [TOOLS.HIGHLIGHT]:'crosshair', [TOOLS.STRIKETHROUGH]:'crosshair', [TOOLS.SELECT]:'default' };
@@ -443,7 +358,7 @@ const PageCanvas = React.memo(({
   selectedId, onSelect, onAnnUpdate, onAnnDelete, onBringFwd, onSendBwd,
   onPageClick, onDrawPath, onErase, drawColor, drawWidth,
   isVisible, onDimsLoaded, dims, activeStampType, onDeselect,
-  textEdits, onTextEdit,
+  hiddenPdfText, setHiddenPdfText, addAnn
 }) => {
   const canvasRef = useRef(null);
   const drawCvsRef = useRef(null);
@@ -479,6 +394,18 @@ const PageCanvas = React.memo(({
               // Apply viewport transform to get CSS pixel coords
               const tx = pdfjsLib.Util.transform(cssVp.transform, it.transform);
               const fontHeight = Math.abs(tx[3]);  // height in CSS px
+              
+              const style = content.styles[it.fontName] || {};
+              let fontFam = style.fontFamily || 'Arial';
+              if(fontFam.toLowerCase().includes('times')) fontFam = 'Times New Roman';
+              else if(fontFam.toLowerCase().includes('helv')) fontFam = 'Helvetica';
+              else if(fontFam.toLowerCase().includes('cour')) fontFam = 'Courier New';
+              else if(fontFam.toLowerCase().includes('georgia')) fontFam = 'Georgia';
+              else fontFam = 'Arial';
+              
+              const isBold = (it.fontName && it.fontName.toLowerCase().includes('bold')) || (style.fontFamily && style.fontFamily.toLowerCase().includes('bold'));
+              const isItalic = (it.fontName && it.fontName.toLowerCase().includes('italic')) || (style.fontFamily && style.fontFamily.toLowerCase().includes('italic'));
+              
               return {
                 id: `${pageIdx}_${idx}`,
                 str: it.str,
@@ -492,6 +419,9 @@ const PageCanvas = React.memo(({
                 wPdf: Math.max((it.width || 0), 4),
                 hPdf: Math.max(fontHeight / zoom, 4),
                 fontSizePdf: Math.max(fontHeight / zoom, 4),
+                fontFamily: fontFam,
+                isBold,
+                isItalic
               };
             });
           if (!cancelled) setPdfTextItems(items);
@@ -566,17 +496,33 @@ const PageCanvas = React.memo(({
         {isDrawLike && <canvas ref={drawCvsRef} width={W} height={H} style={{position:'absolute',top:0,left:0,pointerEvents:'none',width:W,height:H}}/>}
         <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',pointerEvents:isDrawLike?'none':'auto',cursor}}
           onPointerDown={!isDrawLike?onPD:undefined}>
-          {/* Editable PDF text overlay — always shown, click to edit existing text */}
-          {pdfTextItems.map(item => (
-            <EditableTextItem
-              key={item.id}
-              item={item}
-              pageIdx={pageIdx}
-              existingEdit={textEdits?.[item.id]}
-              onCommit={onTextEdit}
-              zoom={zoom}
-            />
-          ))}
+          {pdfTextItems.map(item => {
+            if (hiddenPdfText.has(item.id)) return null;
+            return (
+              <div key={item.id}
+                style={{
+                  position: 'absolute', left: item.x, top: item.y, width: item.width, height: item.fontHeight*1.35,
+                  cursor: 'text', zIndex: 5, background: 'transparent'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.1)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newId = genId();
+                  addAnn(pageIdx, {
+                    id: newId, type: 'text', page: pageIdx,
+                    xPt: item.xPdf - 1, yPt: item.yPdf - 1,
+                    wPt: item.wPdf + 2, hPt: item.hPdf + 2,
+                    text: item.str, fontSize: Math.round(item.fontSizePdf),
+                    fontFamily: item.fontFamily, color: '#000000', bgColor: '#ffffff',
+                    bold: item.isBold, italic: item.isItalic, underline: false
+                  });
+                  setHiddenPdfText(prev => new Set(prev).add(item.id));
+                  onSelect(newId);
+                }}
+              />
+            );
+          })}
           {pageAnns.map(ann=>(
             <AnnItem key={ann.id} ann={ann} zoom={zoom} isSelected={selectedId===ann.id}
               onSelect={onSelect} onUpdate={onAnnUpdate} onDelete={onAnnDelete} onBringFwd={onBringFwd} onSendBwd={onSendBwd}/>
@@ -775,7 +721,7 @@ export default function EditPdfOnlinePage() {
   const [shapeStroke, setShapeStroke] = useState('#000000');
   const [shapeStrokeW, setShapeStrokeW] = useState(2);
   const [annotations, setAnnotations] = useState({});
-  const [textEdits, setTextEdits]     = useState({});
+  const [hiddenPdfText, setHiddenPdfText] = useState(new Set());
   const [selectedId, setSelectedId]   = useState(null);
   const [history, setHistory]         = useState([{}]);
   const [histIdx, setHistIdx]         = useState(0);
@@ -812,14 +758,7 @@ export default function EditPdfOnlinePage() {
   const undo = useCallback(() => { if(histIdx===0) return; const i=histIdx-1; setHistIdx(i); setAnnotations(history[i]); setSelectedId(null); }, [histIdx,history]);
   const redo = useCallback(() => { if(histIdx>=history.length-1) return; const i=histIdx+1; setHistIdx(i); setAnnotations(history[i]); setSelectedId(null); }, [histIdx,history]);
 
-  const handleTextEdit = useCallback((pageIdx, item, newVal) => {
-    setTextEdits(prev => {
-      const next = { ...prev };
-      if (newVal === item.str) delete next[item.id];
-      else next[item.id] = { val: newVal, item };
-      return next;
-    });
-  }, []);
+  // Text Edits state removed in favor of direct annotations
 
   const addAnn = useCallback((pageIdx,ann) => {
     setAnnotations(prev=>{const next={...prev,[pageIdx]:[...(prev[pageIdx]||[]),ann]};pushHistory(next);return next;});
@@ -888,7 +827,7 @@ export default function EditPdfOnlinePage() {
       const bytes=new Uint8Array(await file.arrayBuffer());
       const doc=await pdfjsLib.getDocument({data:bytes}).promise;
       setPdfFile(file); setPdfBytes(bytes); setPdfJsDoc(doc); setPageCount(doc.numPages);
-      setAnnotations({}); setTextEdits({}); setHistory([{}]); setHistIdx(0); setSelectedId(null);
+      setAnnotations({}); setHiddenPdfText(new Set()); setHistory([{}]); setHistIdx(0); setSelectedId(null);
       setZoom(1.0); setCurrentPage(0); setPageRotations({}); setVisiblePages(new Set([0,1,2]));
       setTimeout(()=>scrollRef.current?.scrollTo(0,0),50);
       toast.success(`Loaded: ${file.name} (${doc.numPages} pages)`);
@@ -947,16 +886,6 @@ export default function EditPdfOnlinePage() {
         const pidx=parseInt(pidxStr), page=pages[pidx]; if(!page) continue;
         const pH=page.getHeight();
 
-        // ── Process text edits for this page ──
-        for (const [id, edit] of Object.entries(textEdits)) {
-          if (!id.startsWith(`${pidx}_`)) continue;
-          const { val, item } = edit;
-          const x = item.xPdf, y = pH - item.yPdf - item.hPdf;
-          page.drawRectangle({ x: x - 1, y: y - 1, width: item.wPdf + 2, height: item.hPdf + 2, color: rgb(1,1,1) });
-          // approximate y-baseline for pdf-lib which uses bottom-left origin
-          page.drawText(val, { x, y: y + (item.hPdf - item.fontSizePdf)*0.5, size: item.fontSizePdf, font, color: rgb(0,0,0) });
-        }
-
         for(const ann of anns){
           const x=ann.xPt,y=pH-ann.yPt-ann.hPt,w=ann.wPt,h=ann.hPt;
           try{
@@ -965,11 +894,23 @@ export default function EditPdfOnlinePage() {
             else if(ann.type==='strikethrough'){const c=hex2rgb01(ann.color||'#dc2626');page.drawLine({start:{x,y:y+h/2},end:{x:x+w,y:y+h/2},thickness:ann.strokeWidth||2,color:rgb(c.r,c.g,c.b)});}
             else if(ann.type==='text'&&ann.text?.trim()){
               const c=hex2rgb01(ann.color||'#000000'),fs=Math.max(4,ann.fontSize||14);
-              if(ann.bgColor&&ann.bgColor!=='transparent'){const bg=hex2rgb01(ann.bgColor);page.drawRectangle({x,y,width:Math.max(1,w),height:Math.max(1,h),color:rgb(bg.r,bg.g,bg.b)});}
-              (ann.text||'').split('\n').forEach((line,li)=>{ if(!line.trim()) return; page.drawText(line,{x:x+2,y:Math.max(0,y+h-fs*1.3*(li+1)),size:fs,font,color:rgb(c.r,c.g,c.b),maxWidth:Math.max(10,w)}); });
+              if(ann.bgColor&&ann.bgColor!=='transparent'){const bg=hex2rgb01(ann.bgColor);page.drawRectangle({x:x-1,y:y-1,width:Math.max(1,w+2),height:Math.max(1,h+2),color:rgb(bg.r,bg.g,bg.b)});}
+              const lines = (ann.text||'').split('\n');
+              for (let li=0; li<lines.length; li++) {
+                const line = lines[li];
+                if(!line.trim()) continue; 
+                // Determine embedded font based on family and weight
+                let embFont = font;
+                const fam = (ann.fontFamily||'Arial').toLowerCase();
+                if (fam.includes('times')) embFont = await pdfDoc.embedFont(ann.bold ? (ann.italic ? StandardFonts.TimesRomanBoldItalic : StandardFonts.TimesRomanBold) : (ann.italic ? StandardFonts.TimesRomanItalic : StandardFonts.TimesRoman));
+                else if (fam.includes('cour')) embFont = await pdfDoc.embedFont(ann.bold ? (ann.italic ? StandardFonts.CourierBoldOblique : StandardFonts.CourierBold) : (ann.italic ? StandardFonts.CourierOblique : StandardFonts.Courier));
+                else embFont = await pdfDoc.embedFont(ann.bold ? (ann.italic ? StandardFonts.HelveticaBoldOblique : StandardFonts.HelveticaBold) : (ann.italic ? StandardFonts.HelveticaOblique : StandardFonts.Helvetica));
+                
+                page.drawText(line,{x:x+2,y:Math.max(0,y+h-fs*1.3*(li+1)+(fs*0.2)),size:fs,font:embFont,color:rgb(c.r,c.g,c.b),maxWidth:Math.max(10,w)});
+              }
             }
-            else if(ann.type==='signature'||ann.type==='image'){const b=dataUrlToBytes(ann.dataUrl),emb=ann.dataUrl.startsWith('data:image/png')?await pdfDoc.embedPng(b):await pdfDoc.embedJpg(b);page.drawImage(emb,{x,y,width:Math.max(1,w),height:Math.max(1,h)});}
-            else if(ann.type==='draw'){const b=dataUrlToBytes(ann.dataUrl),emb=await pdfDoc.embedPng(b);page.drawImage(emb,{x,y,width:Math.max(1,w),height:Math.max(1,h)});}
+            else if(ann.type==='signature'||ann.type==='image'){const b=await dataUrlToBytes(ann.dataUrl);const emb=ann.dataUrl.startsWith('data:image/png')?await pdfDoc.embedPng(b):await pdfDoc.embedJpg(b);page.drawImage(emb,{x,y,width:Math.max(1,w),height:Math.max(1,h)});}
+            else if(ann.type==='draw'){const b=await dataUrlToBytes(ann.dataUrl);const emb=await pdfDoc.embedPng(b);page.drawImage(emb,{x,y,width:Math.max(1,w),height:Math.max(1,h)});}
             else if(ann.type==='rect'){const sc=hex2rgb01(ann.stroke||'#000'),bc=ann.fill&&ann.fill!=='transparent'?hex2rgb01(ann.fill):null;page.drawRectangle({x,y,width:Math.max(1,w),height:Math.max(1,h),borderColor:rgb(sc.r,sc.g,sc.b),borderWidth:ann.strokeWidth||2,color:bc?rgb(bc.r,bc.g,bc.b):undefined,opacity:ann.opacity??1});}
             else if(ann.type==='circle'){const sc=hex2rgb01(ann.stroke||'#000'),bc=ann.fill&&ann.fill!=='transparent'?hex2rgb01(ann.fill):null;page.drawEllipse({x:x+w/2,y:y+h/2,xScale:w/2,yScale:h/2,borderColor:rgb(sc.r,sc.g,sc.b),borderWidth:ann.strokeWidth||2,color:bc?rgb(bc.r,bc.g,bc.b):undefined,opacity:ann.opacity??1});}
             else if(ann.type==='line'||ann.type==='arrow'){const sc=hex2rgb01(ann.stroke||'#000');page.drawLine({start:{x,y},end:{x:x+w,y:y+h},thickness:ann.strokeWidth||2,color:rgb(sc.r,sc.g,sc.b)});}
@@ -987,7 +928,7 @@ export default function EditPdfOnlinePage() {
       toast.success('PDF exported successfully!');
     }catch(err){console.error(err);toast.error('Export failed: '+err.message);}
     finally{setExporting(false);}
-  },[pdfBytes,annotations,textEdits,dims,pdfFile,pageRotations]);
+  },[pdfBytes,annotations,dims,pdfFile,pageRotations]);
 
   // ── Upload screen ──
   if (!pdfJsDoc) return (

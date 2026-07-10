@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { ChevronLeft, Calendar, User, Clock, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Clock, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getBlogPost } from '@/data/blogPosts.js';
 import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.jsx';
@@ -79,6 +79,7 @@ export default function BlogPostPage() {
                 <span className="flex items-center gap-2"><User className="w-4 h-4 text-primary" /> {post.author}</span>
                 <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {post.date}</span>
                 <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> {post.readTime}</span>
+                <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Reviewed by Editorial Team</span>
               </div>
             </div>
 

@@ -48,14 +48,17 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
   const cleanPath = location.pathname.replace(/\/$/, '');
   const canonicalUrl = seoData.canonical_url || `${domain}${cleanPath}`;
   
-  // Index control for private/admin/incomplete layouts
+  // Index control for private/admin/incomplete layouts, or tools explicitly marked as non-indexable
+  const localSeoContent = getToolSeoContent(cleanToolId);
   const isNoIndex = 
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/profile') ||
     location.pathname.startsWith('/settings') ||
     location.pathname.startsWith('/app') ||
-    location.pathname.startsWith('/verification');
-  const robotsContent = isNoIndex ? "noindex, nofollow" : "index, follow";
+    location.pathname.startsWith('/verification') ||
+    (localSeoContent && localSeoContent.indexable === false);
+  
+  const robotsContent = isNoIndex ? "noindex, follow" : "index, follow";
 
   // Generate richer long-tail default titles based on category
   let enhancedDefaultTitle = defaultTitle;
@@ -131,7 +134,6 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
 
   // 3. Dynamic FAQ Schema based on actual tool Q&As
   let faqSchemaObj = null;
-  const localSeoContent = getToolSeoContent(cleanToolId);
   if (localSeoContent && localSeoContent.faq && localSeoContent.faq.length > 0) {
     faqSchemaObj = {
       "@context": "https://schema.org",
@@ -153,7 +155,42 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
     }
   }
 
-  // 4. Custom Structured Data parsing
+  // 4. Homepage Schema (Organization, WebSite, SearchAction)
+  const isHome = slug === 'home' || slug === '';
+  const homeSchemaObj = isHome ? {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${domain}/#website`,
+        "url": domain,
+        "name": "Toolisiya",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": `${domain}/search?q={search_term_string}`,
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": `${domain}/#organization`,
+        "name": "Toolisiya",
+        "url": domain,
+        "logo": `${domain}/logo.png`,
+        "sameAs": []
+      }
+    ]
+  } : null;
+
+  // 5. Static Page Schemas
+  const staticPageSchema = (() => {
+    if (slug === 'about') return { "@context": "https://schema.org", "@type": "AboutPage", "url": `${domain}/about` };
+    if (slug === 'contact-us') return { "@context": "https://schema.org", "@type": "ContactPage", "url": `${domain}/contact-us` };
+    if (slug === 'privacy-policy' || slug === 'terms-of-service') return { "@context": "https://schema.org", "@type": "WebPage", "url": canonicalUrl };
+    return null;
+  })();
+
+  // 6. Custom Structured Data parsing
   let customSchemaObj = null;
   if (seoData.structured_data) {
     try {
@@ -206,6 +243,20 @@ export default function SEOHead({ toolName, category, defaultSlug, defaultTitle,
       {customSchemaObj && (
         <script type="application/ld+json">
           {JSON.stringify(customSchemaObj)}
+        </script>
+      )}
+
+      {/* Inject Homepage Schema */}
+      {homeSchemaObj && (
+        <script type="application/ld+json">
+          {JSON.stringify(homeSchemaObj)}
+        </script>
+      )}
+
+      {/* Inject Static Page Schema */}
+      {staticPageSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(staticPageSchema)}
         </script>
       )}
     </Helmet>

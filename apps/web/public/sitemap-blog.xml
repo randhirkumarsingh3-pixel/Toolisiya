@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://toolisiya.com/blog/image-compression-guide</loc>
+    <lastmod>May 20, 2026</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://toolisiya.com/blog/covers/image-compression-guide.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://toolisiya.com/blog/pdf-security-guide</loc>
+    <lastmod>June 12, 2026</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://toolisiya.com/blog/covers/pdf-security-guide.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://toolisiya.com/blog/gst-invoicing-compliance</loc>
+    <lastmod>July 02, 2026</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://toolisiya.com/blog/covers/gst-guide.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://toolisiya.com/blog/ats-friendly-resume</loc>
+    <lastmod>July 05, 2026</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://toolisiya.com/blog/covers/resume-guide.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://toolisiya.com/blog/ocr-technology-guide</loc>
+    <lastmod>July 08, 2026</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://toolisiya.com/blog/covers/ocr-guide.png</image:loc>
+    </image:image>
+  </url>
+</urlset>
