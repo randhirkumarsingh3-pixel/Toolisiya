@@ -8,7 +8,7 @@ export const blogPosts = [
     author: "Randhir Kumar",
     date: "May 20, 2026",
     readTime: "8 min read",
-    coverImage: "/blog/covers/image-compression-guide.svg",
+    coverImage: "/blog-assets/covers/image-compression-guide.svg",
     content: `Image compression is one of the most critical aspects of modern web development and digital asset management. A single unoptimized image can slow down your website's page load time, directly hurting your SEO rankings and user retention. Studies show that a one-second delay in page load time can reduce conversions by up to 7%. In this comprehensive guide, we break down the differences between PNG, JPG, and WebP, explain how compression works under the hood, and show you how to choose the right format for every situation.
 
 ## What Is Image Compression?
@@ -107,7 +107,7 @@ The WebP version is 98% smaller than the uncompressed original, with a differenc
     author: "Toolisiya Editorial",
     date: "June 12, 2026",
     readTime: "12 min read",
-    coverImage: "/blog/covers/pdf-security-guide.svg",
+    coverImage: "/blog-assets/covers/pdf-security-guide.svg",
     content: `When handling legal contracts, medical records, or financial statements, the security of your Portable Document Format (PDF) files is paramount. A single error in redaction or a weak password can lead to massive data breaches and compliance violations (such as GDPR or HIPAA). In this definitive guide, we explore the architecture of PDF security, how to properly redact information, the mechanics of file encryption, and how digital signatures authenticate document integrity.
 
 ## 1. The Critical Difference: Redaction vs. Masking
@@ -179,7 +179,7 @@ By combining true redaction, 256-bit AES encryption, and cryptographic signature
     author: "Toolisiya Finance Editorial",
     date: "July 02, 2026",
     readTime: "10 min read",
-    coverImage: "/blog/covers/gst-guide.svg",
+    coverImage: "/blog-assets/covers/gst-guide.svg",
     content: `For businesses operating in India, generating a compliant GST (Goods and Services Tax) invoice is not just about getting paid—it is a strict legal requirement. A single missing field on a tax invoice can prevent your corporate clients from claiming Input Tax Credit (ITC), leading to delayed payments, accounting audits, and fractured client relationships. 
 
 In this exhaustive guide, we will break down the anatomy of a perfect GST invoice, explain how the CGST/SGST/IGST splits work, and demonstrate how to calculate tax liabilities effortlessly using modern digital tools.
@@ -261,7 +261,7 @@ Use the Toolisiya GST Calculator to automate these inclusive/exclusive reverse c
     author: "Toolisiya Career Experts",
     date: "July 05, 2026",
     readTime: "9 min read",
-    coverImage: "/blog/covers/resume-guide.svg",
+    coverImage: "/blog-assets/covers/resume-guide.svg",
     content: `You spent hours designing a gorgeous, multi-column resume with custom graphics, elegant typography, and a modern color palette. You apply for 50 jobs and hear nothing back. Why? Because a robot couldn't read your PDF.
 
 Over 98% of Fortune 500 companies and a vast majority of modern startups utilize an Applicant Tracking System (ATS) like Workday, Greenhouse, or Lever to filter candidates. These systems parse your resume, strip away the formatting, extract the raw text, and score you against the job description. If the ATS cannot parse your layout, you are automatically rejected.
@@ -345,7 +345,7 @@ Read through the text. Does it flow logically from top to bottom? Are the dates 
     author: "Toolisiya Developer Team",
     date: "July 08, 2026",
     readTime: "7 min read",
-    coverImage: "/blog/covers/ocr-guide.svg",
+    coverImage: "/blog-assets/covers/ocr-guide.svg",
     content: `We have all experienced the frustration of being emailed a PDF, only to realize it is actually a photograph of a printed document. You cannot highlight the text, you cannot search for keywords, and you certainly cannot copy and paste a paragraph into your report. 
 
 This is where Optical Character Recognition (OCR) becomes a critical productivity tool. OCR is the artificial intelligence technology that bridges the gap between physical paper and digital data. In this article, we explain the mechanics of OCR, how it has evolved with machine learning, and how you can use it to instantly digitize your workflows.
