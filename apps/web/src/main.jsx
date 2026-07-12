@@ -20,3 +20,15 @@ if ('serviceWorker' in navigator && !import.meta.env.DEV) {
     );
   });
 }
+
+// Automatically reload the page when a new version of the website is deployed
+// to prevent dynamic import / Vite chunk load errors for active users.
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload();
+});
+
+window.addEventListener('error', (event) => {
+  if (event.message && event.message.includes('Failed to fetch dynamically imported module')) {
+    window.location.reload();
+  }
+});
