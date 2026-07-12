@@ -116,7 +116,7 @@ export default function ToolPageTemplate({ toolData, children }) {
           {/* 11. Semantic Topic Clusters & Internal Linking Section */}
           <section className="bg-muted/20 border border-border rounded-3xl p-8 md:p-10 space-y-10">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight mb-6 text-primary">{category} Ecosystem</h2>
+              <h2 className="text-2xl font-bold tracking-tight mb-6 text-primary">{category || 'Related'} Ecosystem</h2>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {relatedTools && relatedTools.length > 0 ? (
                   relatedTools.map((related, idx) => (
@@ -135,13 +135,13 @@ export default function ToolPageTemplate({ toolData, children }) {
                     </Link>
                   ))
                 ) : (
-                  <Link to={`/${category.toLowerCase().replace(/\s+/g, '-')}`} className="block group sm:col-span-2">
+                  <Link to={category ? `/category/${category.toLowerCase().replace(/\s+/g, '-')}` : '/browse-categories'} className="block group sm:col-span-2">
                     <Card className="border-border bg-card shadow-sm hover:border-primary/50 transition-all hover:shadow-md">
                       <CardContent className="p-6 flex justify-between items-center">
                         <div>
                           <span className="text-xs font-bold text-primary uppercase tracking-wider mb-1 block">Explore Ecosystem</span>
                           <span className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                            View All {category} Tools
+                            View All {category || 'Related'} Tools
                           </span>
                         </div>
                         <ChevronRight className="w-6 h-6 text-primary group-hover:translate-x-1 transition-transform" />
