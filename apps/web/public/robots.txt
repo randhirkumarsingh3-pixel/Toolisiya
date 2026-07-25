@@ -9,3 +9,4 @@ Disallow: /settings
 Disallow: /app
 
 Sitemap: https://toolisiya.com/sitemap.xml
+# Rebuild trigger 1784976240
