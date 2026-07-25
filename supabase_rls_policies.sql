@@ -91,6 +91,7 @@ CREATE POLICY "Service role only for _integratedAiImages" ON public."_integrated
 -- Users
 CREATE POLICY "Service role full access on users" ON public."users" FOR ALL USING (auth.role() = 'service_role');
 CREATE POLICY "Users can read own record" ON public."users" FOR SELECT USING (auth.uid()::text = id);
+CREATE POLICY "Users can insert own record" ON public."users" FOR INSERT WITH CHECK (auth.uid()::text = id);
 CREATE POLICY "Users can update own record" ON public."users" FOR UPDATE USING (auth.uid()::text = id);
 
 -- Resumes
