@@ -152,8 +152,25 @@ class AuthStore {
             
             // Upsert the user profile without waiting for it to finish to avoid blocking the UI
             supabase.from('users').upsert(profileData, { onConflict: 'id' })
-              .then(({ error }) => {
-                if (error) console.error("Error syncing OAuth user to public.users:", error);
+              .then(async ({ error }) => {
+                if (error) {
+                  if (error.code === '23505' && session.user.email) {
+                    // Fallback if email already exists in public.users under a different ID
+                    const { error: updateError } = await supabase
+                      .from('users')
+                      .update({
+                        name: profileData.name,
+                        username: profileData.username,
+                        mobile: profileData.mobile
+                      })
+                      .eq('email', session.user.email);
+                    if (updateError) {
+                      console.error("Error updating user profile by email:", updateError);
+                    }
+                  } else {
+                    console.error("Error syncing OAuth user to public.users:", error);
+                  }
+                }
               });
           }
         } else {
