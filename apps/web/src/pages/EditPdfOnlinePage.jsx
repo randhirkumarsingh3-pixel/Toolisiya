@@ -1043,7 +1043,7 @@ export default function EditPdfOnlinePage() {
                     onBringFwd={bringFwd} onSendBwd={sendBwd}
                     onPageClick={onPageClick} onDrawPath={onDrawPath} onErase={eraseAt}
                     drawColor={drawColor} drawWidth={drawWidth}
-                    isVisible={visiblePages.has(i)} onDimsLoaded={onDimsLoaded} dims={dims[i]}
+                    isVisible={visiblePages?.has(i) ?? true} onDimsLoaded={onDimsLoaded} dims={dims[i]}
                     activeStampType={activeStamp} onDeselect={()=>setSelectedId(null)}/>
                 </div>
               ))}
