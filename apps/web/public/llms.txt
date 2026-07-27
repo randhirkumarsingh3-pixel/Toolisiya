@@ -45,6 +45,7 @@
 - [Product Roadmap | Toolisiya](/roadmap): See what we
 - [Product Updates & Releases | Toolisiya](/productupdates): Stay up to date with the latest features, tool improvements, and Learning Center guides on Toolisiya.
 - [Real Estate & Construction Tools - Toolisiya.com](/realestatetools): Free online calculators for construction costs, paint, tiles, and carpet area.
+- [Recently Updated Tools | Toolisiya](/recentlyupdated): View the tools and resources we
 - [Security Center | Toolisiya](/securitycenter): Learn how Toolisiya protects your data with browser-first processing, immediate file deletion, and enterprise-grade encryption.
 - [SEO Management | Admin](/seosettings): No description available
 - [SEO Management | Admin Dashboard](/seomanagement): No description available

@@ -1,0 +1,110 @@
+{
+  "global": {
+    "meta_title": "Toolisiya - Premium Free Online Tools for Everyone",
+    "meta_description": "Discover 100+ free online tools for developers, finance, science, productivity, and document management. No registration required, secure and fast.",
+    "h1_tag": "Premium Free Online Tools",
+    "keywords": "free online tools, developer tools, calculators, pdf tools, image converters, online utilities",
+    "primary_keyword": "free online tools",
+    "schema_type": "Organization",
+    "og_title": "Toolisiya - Premium Free Online Tools",
+    "og_description": "Discover 100+ free online tools for developers, finance, science, productivity, and document management.",
+    "twitter_title": "Toolisiya - Premium Free Online Tools",
+    "twitter_description": "Discover 100+ free online tools for developers, finance, science, productivity, and document management."
+  },
+  "home": {
+    "meta_title": "Toolisiya - Premium Free Online Tools for Developers & Business",
+    "meta_description": "Access over 100+ free online utilities including PDF splitters, UUID generators, finance calculators, and smart to-do lists. Fast, secure, and private.",
+    "h1_tag": "Your All-in-One Digital Toolkit",
+    "keywords": "free online tools, web utilities, calculators, productivity tools, developer utilities",
+    "primary_keyword": "free online tools",
+    "schema_type": "WebSite",
+    "og_title": "Toolisiya - All-in-One Digital Toolkit",
+    "og_description": "Access over 100+ free online utilities including PDF splitters, UUID generators, finance calculators, and smart to-do lists.",
+    "twitter_title": "Toolisiya - All-in-One Digital Toolkit",
+    "twitter_description": "Access over 100+ free online utilities including PDF splitters, UUID generators, finance calculators, and smart to-do lists."
+  },
+  "gst-calculator": {
+    "meta_title": "GST Calculator - Calculate Goods and Services Tax Online | Toolisiya",
+    "meta_description": "Free GST calculator to compute tax amounts instantly. Calculate CGST, SGST, IGST and inclusive/exclusive prices with our easy-to-use online tool.",
+    "h1_tag": "Online GST Calculator",
+    "keywords": "GST calculator, tax calculator, CGST, SGST, IGST, goods and services tax calculator, inclusive tax, exclusive tax",
+    "primary_keyword": "GST calculator",
+    "schema_type": "WebApplication",
+    "og_title": "Free GST Calculator - Calculate Tax Instantly",
+    "og_description": "Compute GST amounts instantly. Calculate CGST, SGST, IGST and inclusive/exclusive prices online.",
+    "twitter_title": "Free GST Calculator",
+    "twitter_description": "Compute GST amounts instantly. Calculate CGST, SGST, IGST online."
+  },
+  "uuid-generator": {
+    "meta_title": "Bulk UUID & GUID Generator Online | Version 4 & 1 | Toolisiya",
+    "meta_description": "Generate cryptographically secure Version 4 and Version 1 UUIDs (GUIDs) instantly. Export bulk identifiers to CSV, JSON, or TXT formats safely in your browser.",
+    "h1_tag": "UUID / GUID Generator",
+    "keywords": "uuid generator, guid generator, version 4 uuid, version 1 uuid, random id generator, bulk uuid, cryptographically secure identifier",
+    "primary_keyword": "uuid generator",
+    "schema_type": "SoftwareApplication",
+    "og_title": "Bulk UUID & GUID Generator Online",
+    "og_description": "Generate cryptographically secure Version 4 and Version 1 UUIDs instantly.",
+    "twitter_title": "Bulk UUID & GUID Generator Online",
+    "twitter_description": "Generate cryptographically secure Version 4 and Version 1 UUIDs instantly."
+  },
+  "image-converter": {
+    "meta_title": "Free Online Image Converter - PNG to JPG, WebP | Toolisiya",
+    "meta_description": "Convert your photos securely in your browser to PNG, JPG, or WebP formats in bulk. Free, fast, and no sign-up required. Download as ZIP.",
+    "h1_tag": "Free Online Image Converter",
+    "keywords": "image converter, png to jpg, jpg to png, convert to webp, bulk image converter, browser image processing",
+    "primary_keyword": "image converter",
+    "schema_type": "SoftwareApplication",
+    "og_title": "Free Online Image Converter",
+    "og_description": "Convert your photos securely in your browser to PNG, JPG, or WebP formats in bulk.",
+    "twitter_title": "Free Online Image Converter",
+    "twitter_description": "Convert your photos securely in your browser to PNG, JPG, or WebP formats in bulk."
+  },
+  "smart-todo-list": {
+    "meta_title": "Free Smart To-Do List - Manage Tasks Online | Toolisiya",
+    "meta_description": "Organize your life with our free Smart To-Do List. Prioritize tasks, track completion, and securely sync your productivity data across devices.",
+    "h1_tag": "Smart To-Do List",
+    "keywords": "todo list, task manager, online task list, smart todo, productivity tool, task tracker",
+    "primary_keyword": "smart todo list",
+    "schema_type": "SoftwareApplication",
+    "og_title": "Free Smart To-Do List - Manage Tasks",
+    "og_description": "Organize your life with our free Smart To-Do List. Prioritize tasks, track completion, and securely sync.",
+    "twitter_title": "Free Smart To-Do List",
+    "twitter_description": "Organize your life with our free Smart To-Do List. Prioritize tasks, track completion, and securely sync."
+  },
+  "pdf-splitter": {
+    "meta_title": "Split PDF Files Online - Extract Pages Free | Toolisiya",
+    "meta_description": "Extract specific pages from a PDF document or split it into multiple files online instantly. Secure, browser-based, and completely free PDF extractor.",
+    "h1_tag": "Split PDF Files Online",
+    "keywords": "pdf splitter, extract pdf pages, split pdf free, cut pdf, separate pdf pages, online pdf tools",
+    "primary_keyword": "pdf splitter",
+    "schema_type": "SoftwareApplication",
+    "og_title": "Split PDF Files Online Free",
+    "og_description": "Extract specific pages from a PDF document or split it into multiple files online instantly.",
+    "twitter_title": "Split PDF Files Online Free",
+    "twitter_description": "Extract specific pages from a PDF document or split it into multiple files online instantly."
+  },
+  "privacy-policy": {
+    "meta_title": "Privacy Policy | Toolisiya",
+    "meta_description": "Read the Toolisiya Privacy Policy to understand how we collect, use, and protect your data while using our free online tools.",
+    "h1_tag": "Privacy Policy",
+    "keywords": "privacy policy, data protection, gdpr, ccpa, toolisiya privacy",
+    "primary_keyword": "privacy policy",
+    "schema_type": "WebPage",
+    "og_title": "Privacy Policy | Toolisiya",
+    "og_description": "Understand how we collect, use, and protect your data.",
+    "twitter_title": "Privacy Policy | Toolisiya",
+    "twitter_description": "Understand how we collect, use, and protect your data."
+  },
+  "terms-of-service": {
+    "meta_title": "Terms of Service | Toolisiya",
+    "meta_description": "Review the Terms of Service for using Toolisiya's free online tools, generators, and calculators.",
+    "h1_tag": "Terms of Service",
+    "keywords": "terms of service, tos, terms and conditions, user agreement, toolisiya terms",
+    "primary_keyword": "terms of service",
+    "schema_type": "WebPage",
+    "og_title": "Terms of Service | Toolisiya",
+    "og_description": "Review the Terms of Service for using Toolisiya's online tools.",
+    "twitter_title": "Terms of Service | Toolisiya",
+    "twitter_description": "Review the Terms of Service for using Toolisiya's online tools."
+  }
+}

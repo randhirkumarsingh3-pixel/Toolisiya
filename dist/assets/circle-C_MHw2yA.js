@@ -1,0 +1,1 @@
+import{J as c}from"./index-DH8wNB0j.js";const r=c("Circle",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]);export{r as C};

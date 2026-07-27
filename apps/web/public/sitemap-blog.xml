@@ -6,7 +6,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://toolisiya.com/blog/covers/image-compression-guide.png</image:loc>
+      <image:loc>https://toolisiya.com/blog-assets/covers/image-compression-guide.svg</image:loc>
     </image:image>
   </url>
   <url>
@@ -15,7 +15,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://toolisiya.com/blog/covers/pdf-security-guide.png</image:loc>
+      <image:loc>https://toolisiya.com/blog-assets/covers/pdf-security-guide.svg</image:loc>
     </image:image>
   </url>
   <url>
@@ -24,7 +24,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://toolisiya.com/blog/covers/gst-guide.png</image:loc>
+      <image:loc>https://toolisiya.com/blog-assets/covers/gst-guide.svg</image:loc>
     </image:image>
   </url>
   <url>
@@ -33,7 +33,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://toolisiya.com/blog/covers/resume-guide.png</image:loc>
+      <image:loc>https://toolisiya.com/blog-assets/covers/resume-guide.svg</image:loc>
     </image:image>
   </url>
   <url>
@@ -42,7 +42,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://toolisiya.com/blog/covers/ocr-guide.png</image:loc>
+      <image:loc>https://toolisiya.com/blog-assets/covers/ocr-guide.svg</image:loc>
     </image:image>
   </url>
 </urlset>
