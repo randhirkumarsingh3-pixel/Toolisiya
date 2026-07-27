@@ -1,0 +1,1 @@
+import{v as t}from"./index-B4n7Oc8x.js";const h=t("ChevronRight",[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]]);export{h as C};

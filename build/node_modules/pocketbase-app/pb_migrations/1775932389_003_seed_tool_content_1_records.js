@@ -1,0 +1,27 @@
+/// <reference path="../pb_data/types.d.ts" />
+migrate((app) => {
+  const collection = app.findCollectionByNameOrId("tool_content");
+
+  const record0 = new Record(collection);
+    record0.set("toolId", "currency_converter");
+    record0.set("toolName", "Currency Converter");
+    record0.set("introduction", "The Currency Converter is an essential tool for travelers, international business professionals, investors, and anyone dealing with multiple currencies. In our globalized economy, currency conversion is a daily necessity for millions of people. This tool provides real-time exchange rates, allowing you to convert between virtually any world currency instantly and accurately. Used by travelers planning budgets, businesses managing international transactions, investors tracking foreign investments, and students studying abroad, the Currency Converter ensures you always know the true value of your money. Unlike static conversion rates, this tool updates continuously with live market rates, ensuring accuracy for financial decisions. Whether you're exchanging money for travel, comparing international prices, or managing multi-currency investments, this tool provides reliable, up-to-date conversion information.");
+    record0.set("howToUse", "Select the currency you're converting from (source currency) and the currency you're converting to (target currency) from the dropdown menus. Enter the amount you want to convert. The tool instantly displays the converted amount using current exchange rates. You can also view the exchange rate (how much of the target currency equals one unit of source currency). The tool allows you to reverse the conversion or convert to multiple currencies simultaneously. You can view historical exchange rate trends to understand currency fluctuations over time. The tool also displays bid-ask spreads, showing the difference between buying and selling rates, which is important for understanding actual transaction costs. You can set up alerts for specific exchange rates, notifying you when rates reach your target levels.");
+    record0.set("realWorldExamples", "A traveler planning a trip to the US converts \u20b950,000 to USD at the current rate (approximately $600). A business importing goods from China converts $10,000 to CNY to understand the cost in Chinese currency. An investor tracking their foreign stock portfolio converts gains from multiple currencies back to their home currency. A student studying abroad converts their monthly allowance to understand their local purchasing power.");
+    record0.set("tipsAndTricks", "Check exchange rates before making large international transfers - rates fluctuate constantly. Understand that banks and money changers often add margins to official rates. For large transactions, compare rates from multiple providers. Use historical rate charts to identify favorable conversion times. When traveling, avoid airport currency exchanges - they typically offer poor rates. Use ATMs in the destination country for better rates than pre-exchanging currency. For business transactions, consider forward contracts to lock in rates for future payments.");
+    record0.set("commonMistakes", "Assuming all currency converters show the same rates - they vary based on data sources and update frequency. Not accounting for transaction fees and margins added by banks and money changers. Confusing bid and ask rates - bid is what you receive when selling, ask is what you pay when buying. Using outdated exchange rates for important financial decisions. Not considering that rates change constantly - a rate valid in the morning may differ by afternoon. Also, forgetting that some currencies have capital controls affecting conversion availability.");
+    record0.set("faqSection", "Q1: What determines exchange rates? A: Supply and demand, interest rates, inflation, political stability, and economic indicators. Q2: Why do rates differ between providers? A: Different sources, update frequencies, and margins added by providers. Q3: What's the difference between bid and ask rates? A: Bid is the rate you receive when selling currency; ask is the rate you pay when buying. Q4: How often do exchange rates change? A: Continuously during trading hours; rates update multiple times per minute. Q5: Should I exchange currency before traveling? A: Generally no - ATMs in destination countries offer better rates than pre-exchange. Q6: What's a forward contract? A: An agreement to exchange currencies at a fixed rate on a future date, useful for businesses. Q7: Are online converters accurate? A: Yes, if they use real-time data from reliable sources like central banks or forex markets.");
+    record0.set("relatedTools", [{"name": "Unit Converter", "url": "/tools/unit-converter"}, {"name": "Discount Calculator", "url": "/tools/discount-calculator"}, {"name": "Salary Calculator", "url": "/tools/salary-calculator"}, {"name": "Investment Calculator", "url": "/tools/investment-calculator"}]);
+    record0.set("keywords", "currency converter, exchange rate, currency conversion, forex converter, money converter, travel currency, international money");
+  try {
+    app.save(record0);
+  } catch (e) {
+    if (e.message.includes("Value must be unique")) {
+      console.log("Record with unique value already exists, skipping");
+    } else {
+      throw e;
+    }
+  }
+}, (app) => {
+  // Rollback: record IDs not known, manual cleanup needed
+})

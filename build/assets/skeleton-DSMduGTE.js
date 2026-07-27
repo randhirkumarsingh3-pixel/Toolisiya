@@ -1,0 +1,1 @@
+import{du as e}from"./ui-components-1aCqecBI.js";import{m as o}from"./index-1uyJvnHZ.js";function a({className:r,...m}){return e.jsx("div",{className:o("animate-pulse rounded-md bg-primary/10",r),...m})}export{a as S};

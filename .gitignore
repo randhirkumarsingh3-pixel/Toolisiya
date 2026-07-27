@@ -13,9 +13,9 @@ node_modules/
 apps/api/.env
 apps/web/.env
 
-# Build outputs
-dist/
-build/
+# Build outputs (committed for Hostinger deployment)
+# dist/
+# build/
 apps/web/dist/
 apps/api/dist/
 
