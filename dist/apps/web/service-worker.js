@@ -1,5 +1,5 @@
-const CACHE_NAME = 'toolisiya-pwa-v6';
-const ASSET_CACHE_NAME = 'toolisiya-assets-v6';
+const CACHE_NAME = 'toolisiya-pwa-v7';
+const ASSET_CACHE_NAME = 'toolisiya-assets-v7';
 
 const STATIC_ASSETS = [
   '/',

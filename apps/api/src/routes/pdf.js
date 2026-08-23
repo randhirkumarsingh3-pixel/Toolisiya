@@ -12,6 +12,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { PDFParse } from 'pdf-parse';
+import { convertPdfToDocx } from '../utils/pdfToDocxConverter.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const router = express.Router();
 
@@ -363,7 +364,8 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
     return res.status(400).json({ error: 'PDF file is required' });
   }
 
-  logger.info(`Converting PDF to Word using ConvertAPI: ${req.file.originalname}`);
+  const mode = req.body?.mode || 'high';
+  logger.info(`Converting PDF to Word locally (${mode} mode): ${req.file.originalname}`);
 
   try {
     // Validate PDF
@@ -372,35 +374,13 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Uploaded file is not a valid PDF or is encrypted/corrupted.' });
     }
 
-    const secret = process.env.CONVERT_API_SECRET || 'd3Qv58EBMWD9z9eXRndK8eTbP3h6Apep';
-    if (!secret) {
-      throw new Error('ConvertAPI secret is missing in environment variables.');
-    }
-
-    // Call ConvertAPI
-    const formData = new FormData();
-    const blob = new Blob([req.file.buffer], { type: 'application/pdf' });
-    formData.append('File', blob, req.file.originalname);
-    
-    const response = await fetch(`https://v2.convertapi.com/convert/pdf/to/docx?Secret=${secret}`, {
-        method: 'POST',
-        body: formData
+    // Convert using local engine
+    const docxBuffer = await convertPdfToDocx(req.file.buffer, {
+      mode,
+      filename: req.file.originalname,
     });
-    
-    if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${await response.text()}`);
-    }
-    
-    const data = await response.json();
-    
-    if (!data.Files || data.Files.length === 0) {
-      throw new Error('No files returned from ConvertAPI.');
-    }
 
-    const fileData = data.Files[0].FileData;
-    const docxBuffer = Buffer.from(fileData, 'base64');
-
-    logger.info(`Successfully converted PDF to Word using ConvertAPI: ${req.file.originalname}`);
+    logger.info(`Successfully converted PDF to Word locally: ${req.file.originalname}`);
 
     const baseName = req.file.originalname.replace(/\.[^/.]+$/, "");
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -408,7 +388,7 @@ router.post('/pdf-to-word', uploadPdf.single('file'), async (req, res) => {
     res.send(docxBuffer);
 
   } catch (error) {
-    logger.error('PDF to Word conversion failed natively:', error);
+    logger.error('PDF to Word conversion failed:', error);
     res.status(500).json({ error: 'Failed to convert PDF to Word: ' + error.message });
   }
 });
