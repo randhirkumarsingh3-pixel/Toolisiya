@@ -16,7 +16,11 @@ const DEFAULT_DATA = {
   billNumber: `BILL-${Math.floor(1000 + Math.random() * 9000)}`,
   date: new Date().toISOString().split('T')[0],
   businessName: 'Your Business Name',
+  gstin: '',
+  address: '',
   customerName: 'Client Name',
+  customerGstin: '',
+  customerAddress: '',
   items: [{ id: '1', name: 'Web Development Services', quantity: 1, price: 15000 }],
   taxRate: 18,
   notes: 'Payment due within 15 days. Thank you for your business!'
@@ -48,7 +52,7 @@ const BillGeneratorPage = () => {
     });
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
-  }, [data.items, data.taxRate, data.notes, data.businessName, data.customerName, data.billNumber, data.date]);
+  }, [data]);
 
   const updateData = (field, value) => setData(prev => ({ ...prev, [field]: value }));
   const addItem = () => updateData('items', [...data.items, { id: Date.now().toString(), name: '', quantity: 1, price: 0 }]);
@@ -77,13 +81,29 @@ const BillGeneratorPage = () => {
                 <div className="space-y-2"><Label>Bill No.</Label><Input value={data.billNumber} onChange={e => updateData('billNumber', e.target.value)} /></div>
                 <div className="space-y-2"><Label>Date</Label><Input type="date" value={data.date} onChange={e => updateData('date', e.target.value)} /></div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Your Business Name</Label><Input value={data.businessName} onChange={e => updateData('businessName', e.target.value)} /></div>
-                <div className="space-y-2"><Label>Billed To</Label><Input value={data.customerName} onChange={e => updateData('customerName', e.target.value)} /></div>
+
+              {/* Business Info */}
+              <div className="space-y-3 pt-3 border-t border-border/50">
+                <h4 className="text-sm font-semibold text-foreground">Your Business Info</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Business Name</Label><Input value={data.businessName} onChange={e => updateData('businessName', e.target.value)} placeholder="Your Business Name" /></div>
+                  <div className="space-y-2"><Label>GSTIN / GST No.</Label><Input value={data.gstin || ''} onChange={e => updateData('gstin', e.target.value)} placeholder="e.g. 22AAAAA0000A1Z5" /></div>
+                </div>
+                <div className="space-y-2"><Label>Business Address</Label><Textarea value={data.address || ''} onChange={e => updateData('address', e.target.value)} placeholder="Address, City, State, Pincode" rows={2} className="resize-none" /></div>
               </div>
-              
-              <div className="space-y-3 pt-4">
-                <div className="flex justify-between items-center"><Label className="text-base">Line Items</Label><Button size="sm" variant="outline" onClick={addItem} className="font-medium"><Plus className="h-4 w-4 mr-1" /> Add Item</Button></div>
+
+              {/* Customer Info */}
+              <div className="space-y-3 pt-3 border-t border-border/50">
+                <h4 className="text-sm font-semibold text-foreground">Customer / Billed To</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2"><Label>Billed To (Client Name)</Label><Input value={data.customerName} onChange={e => updateData('customerName', e.target.value)} placeholder="Customer Name" /></div>
+                  <div className="space-y-2"><Label>Customer GSTIN (Optional)</Label><Input value={data.customerGstin || ''} onChange={e => updateData('customerGstin', e.target.value)} placeholder="Client GSTIN" /></div>
+                </div>
+                <div className="space-y-2"><Label>Customer Address (Optional)</Label><Textarea value={data.customerAddress || ''} onChange={e => updateData('customerAddress', e.target.value)} placeholder="Customer Address" rows={2} className="resize-none" /></div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-border/50">
+                <div className="flex justify-between items-center"><Label className="text-base font-semibold">Line Items</Label><Button size="sm" variant="outline" onClick={addItem} className="font-medium"><Plus className="h-4 w-4 mr-1" /> Add Item</Button></div>
                 {data.items.map((item) => (
                   <div key={item.id} className="flex gap-2 items-center bg-muted/40 p-3 rounded-xl border border-border/50">
                     <Input className="flex-1 bg-background" placeholder="Description" value={item.name} onChange={e => updateItem(item.id, 'name', e.target.value)} />
@@ -127,20 +147,32 @@ const BillGeneratorPage = () => {
                   top: 0
                 }}
               >
-              <div className="flex justify-between items-start mb-12">
+              <div className="flex justify-between items-start mb-10">
                 <div>
                   <h1 className="text-5xl font-extrabold text-slate-900 tracking-tighter mb-2">BILL</h1>
                   <p className="text-lg text-slate-500 font-medium">#{data.billNumber}</p>
+                  <p className="text-sm text-slate-500 font-medium mt-1">Date: {data.date}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-right max-w-[320px]">
                   <h2 className="text-2xl font-bold text-primary tracking-tight">{data.businessName}</h2>
-                  <p className="text-slate-500 mt-2 font-medium">Date: {data.date}</p>
+                  {data.gstin && (
+                    <p className="text-xs font-semibold text-slate-700 mt-1">GSTIN: {data.gstin}</p>
+                  )}
+                  {data.address && (
+                    <p className="text-xs text-slate-500 mt-1 whitespace-pre-line leading-relaxed">{data.address}</p>
+                  )}
                 </div>
               </div>
               
-              <div className="mb-10 bg-slate-50 p-5 rounded-lg border border-slate-100">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Bill To</p>
+              <div className="mb-8 bg-slate-50 p-5 rounded-lg border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Billed To</p>
                 <p className="text-xl font-bold text-slate-800">{data.customerName}</p>
+                {data.customerGstin && (
+                  <p className="text-xs font-semibold text-slate-700 mt-1">GSTIN: {data.customerGstin}</p>
+                )}
+                {data.customerAddress && (
+                  <p className="text-xs text-slate-500 mt-1 whitespace-pre-line leading-relaxed">{data.customerAddress}</p>
+                )}
               </div>
 
               <table className="w-full text-left mb-10 border-collapse">
