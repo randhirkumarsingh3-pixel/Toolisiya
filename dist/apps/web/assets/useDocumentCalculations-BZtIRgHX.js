@@ -1,1 +1,0 @@
-import{K as m}from"./index-BY6xCMwm.js";const A=(o=[],s=0,r=0)=>m.useMemo(()=>{const t=o.reduce((l,u)=>{const p=parseFloat(u.quantity)||0,i=parseFloat(u.price)||0;return l+p*i},0),n=t*((parseFloat(r)||0)/100),a=t-n,c=a*((parseFloat(s)||0)/100),e=a+c;return{subtotal:t,discountAmount:n,taxAmount:c,total:e}},[o,s,r]);export{A as u};

@@ -1,1 +1,0 @@
-import{G as e}from"./index-DQpe2Ns6.js";const t=e("Square",[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",key:"afitv7"}]]);export{t as S};
