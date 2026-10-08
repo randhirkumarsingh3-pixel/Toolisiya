@@ -358,7 +358,7 @@ const PageCanvas = React.memo(({
   selectedId, onSelect, onAnnUpdate, onAnnDelete, onBringFwd, onSendBwd,
   onPageClick, onDrawPath, onErase, drawColor, drawWidth,
   isVisible, onDimsLoaded, dims, activeStampType, onDeselect,
-  hiddenPdfText, setHiddenPdfText, addAnn
+  hiddenPdfText = new Set(), setHiddenPdfText, addAnn
 }) => {
   const canvasRef = useRef(null);
   const drawCvsRef = useRef(null);
@@ -497,7 +497,7 @@ const PageCanvas = React.memo(({
         <div style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',pointerEvents:isDrawLike?'none':'auto',cursor}}
           onPointerDown={!isDrawLike?onPD:undefined}>
           {pdfTextItems.map(item => {
-            if (hiddenPdfText.has(item.id)) return null;
+            if (hiddenPdfText?.has?.(item.id)) return null;
             return (
               <div key={item.id}
                 style={{
@@ -509,7 +509,7 @@ const PageCanvas = React.memo(({
                 onClick={(e) => {
                   e.stopPropagation();
                   const newId = genId();
-                  addAnn(pageIdx, {
+                  addAnn?.(pageIdx, {
                     id: newId, type: 'text', page: pageIdx,
                     xPt: item.xPdf - 1, yPt: item.yPdf - 1,
                     wPt: item.wPdf + 2, hPt: item.hPdf + 2,
@@ -517,7 +517,7 @@ const PageCanvas = React.memo(({
                     fontFamily: item.fontFamily, color: '#000000', bgColor: '#ffffff',
                     bold: item.isBold, italic: item.isItalic, underline: false
                   });
-                  setHiddenPdfText(prev => new Set(prev).add(item.id));
+                  setHiddenPdfText?.(prev => new Set(prev).add(item.id));
                   onSelect(newId);
                 }}
               />
@@ -1044,7 +1044,8 @@ export default function EditPdfOnlinePage() {
                     onPageClick={onPageClick} onDrawPath={onDrawPath} onErase={eraseAt}
                     drawColor={drawColor} drawWidth={drawWidth}
                     isVisible={visiblePages?.has(i) ?? true} onDimsLoaded={onDimsLoaded} dims={dims[i]}
-                    activeStampType={activeStamp} onDeselect={()=>setSelectedId(null)}/>
+                    activeStampType={activeStamp} onDeselect={()=>setSelectedId(null)}
+                    hiddenPdfText={hiddenPdfText} setHiddenPdfText={setHiddenPdfText} addAnn={addAnn}/>
                 </div>
               ))}
             </div>
